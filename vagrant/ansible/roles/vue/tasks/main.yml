@@ -1,2 +1,5 @@
 ---
 - include: deps.yml
+- name: Installing vue-cli
+  command: npm install -g vue-cli
+    creates=/usr/lib/node_modules/vue-cli
