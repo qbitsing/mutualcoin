@@ -1,4 +1,4 @@
-*/node_modules/
+node_modules/
 vagrant/.vagrant/
 vagrant/.DS_Store
 vagrant/ubuntu-xenial-16.04-cloudimg-console.log

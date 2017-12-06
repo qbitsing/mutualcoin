@@ -1,0 +1,19 @@
+{
+  "name": "mutualcoin-db",
+  "version": "1.0.0",
+  "description": "Module DB of mutualcoin platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/dinastia/mutualcoin.git"
+  },
+  "author": "Team Qbits.io",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/dinastia/mutualcoin#readme",
+  "dependencies": {
+    "mongoose": "^4.13.6"
+  }
+}
