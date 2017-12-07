@@ -1,18 +1,13 @@
 import axios from 'axios'
-
 const api = function (resource, data, methods) {
-  var instance = axios.create({
+  const instance = axios.create({
     baseURL: 'https://swapi.co/api/'
   })
   if (methods === 'get') {
-    instance.get(resource, data)
-      .then(response => response.data)
-      .catch(error => error)
+    return instance.get(resource, data)
   }
   if (methods === 'post') {
-    instance.post(resource, data)
-      .then(response => response.data)
-      .catch(error => error)
+    return instance.post(resource, data)
   }
 }
 export default api

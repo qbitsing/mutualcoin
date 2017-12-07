@@ -37,8 +37,10 @@ export default {
     }
   },
   created () {
-    api('people/1/', null, 'get')
-      .then(res => console.log(res))
+    api('people/1', null, 'get')
+      .then(res => { console.log(res.data) })
+      .catch(error => { console.log(error) })
   }
 }
 </script>
+ 
