@@ -8,16 +8,18 @@ const config = require('../config')
 const { sing } = require('../auth')
 const api = asyncify(express.Router())
 
-let userModel
+let db, userModel
 
 api.use('*', async (req, res, next) => {
   if (!userModel) {
     debug('Conecting and getting the user model in mutualcoin-db module')
     try {
-      userModel = await mutualcoinDB(config.db)
+      db = await mutualcoinDB(config.db)
     } catch (error) {
       return next(error)
     }
+
+    userModel = db.user
   }
 
   next()
@@ -33,7 +35,7 @@ api.post('/login', async (req, res, next) => {
   let result
 
   try {
-    result = await userModel.user.singin(credentials)
+    result = await userModel.singin(credentials)
   } catch (error) {
     return next(error)
   }
@@ -69,6 +71,22 @@ api.post('/login', async (req, res, next) => {
       message: result.message
     })
   }
+})
+
+api.post('/register', async (req, res, next) => {
+  debug('A request has come to /api/user/register')
+
+  const { userToCreate } = req.body
+  let userCreated
+  try {
+    userCreated = userModel.register(userToCreate)
+  } catch (error) {
+    return next(error)
+  }
+
+  console.log(userCreated)
+
+  res.send({x: ''})
 })
 
 module.exports = api
