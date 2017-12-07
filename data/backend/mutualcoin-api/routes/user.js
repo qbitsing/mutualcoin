@@ -54,7 +54,7 @@ api.post('/login', async (req, res, next) => {
       phone: result.user.phone,
       hobbies: result.user.hobbies,
       codeReferred: result.user.codeReferred
-    }, config.secret , (error, token) => {
+    }, config.secret, (error, token) => {
       if (error) {
         return next(error)
       }

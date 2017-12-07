@@ -11,7 +11,7 @@ const port = process.env.PORT || 3300
 const app = asyncify(express())
 const server = http.createServer(app)
 
-app.use(bodyParser.json({ limit: '5mb' }))    
+app.use(bodyParser.json({ limit: '5mb' }))
 app.use('/api', api)
 
 // Express ErrorHandel

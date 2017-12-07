@@ -1,0 +1,4 @@
+Run de next comand
+
+cd utils && npm i && cd ../mutualcoin-db && npm i && cd ../mutualcoin-api && npm i
+
