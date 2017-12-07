@@ -1,10 +1,10 @@
 {
-  "name": "mutualcoin-db",
+  "name": "mutualcoin-utils",
   "version": "1.0.0",
-  "description": "Module DB of mutualcoin platform",
+  "description": "Module of utilis of mutualcoin.com platform",
   "main": "index.js",
   "scripts": {
-    "lint": "standart"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -14,12 +14,6 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/dinastia/mutualcoin#readme",
   "dependencies": {
-    "defaults": "^1.0.3",
-    "mongoose": "^4.13.6",
-    "uuid": "^3.1.0",
-    "mutualcoin-utils": "file:../utils"
-  },
-  "devDependencies": {
-    "standart": "^6.1.0"
+    "bcryptjs": "^2.4.3"
   }
 }
