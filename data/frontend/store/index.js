@@ -12,9 +12,10 @@ export const mutations = {
 }
 
 export const actions = {
-  async login (data) {
+  async login ({ commit }, { data }) {
     try {
-      const res = await api('user/login', { data })
+      console.log(data)
+      const { res } = await api('user/login', { data }, 'post')
       console.log(res)
     } catch (e) {
       console.log(e.message)
