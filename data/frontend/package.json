@@ -5,11 +5,7 @@
   "author": "qbits",
   "private": true,
   "scripts": {
-<<<<<<< HEAD
     "dev": "HOST=0.0.0.0 PORT=3000 nuxt",
-=======
-    "dev": "cross-env HOST=0.0.0.0 PORT=3000 nuxt",
->>>>>>> 394fde3743e24ac05dc694fb43dff76fbe3872f3
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
