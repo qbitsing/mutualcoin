@@ -1,7 +1,7 @@
 import axios from 'axios'
 const api = function (resource, data, methods) {
   const instance = axios.create({
-    baseURL: 'https://swapi.co/api/'
+    baseURL: 'http://localhost:3300/api/'
   })
   if (methods === 'get') {
     return instance.get(resource, data)
