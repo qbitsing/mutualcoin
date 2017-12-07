@@ -28,3 +28,17 @@
     </v-flex>
   </v-layout>
 </template>
+<script>
+import api from '~/plugins/axios'
+export default {
+  data () {
+    return {
+      datos: {}
+    }
+  },
+  created () {
+    api('people/1/', null, 'get')
+      .then(res => console.log(res))
+  }
+}
+</script>
