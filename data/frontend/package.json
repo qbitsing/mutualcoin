@@ -5,12 +5,13 @@
   "author": "qbits",
   "private": true,
   "scripts": {
-    "dev": "HOST=0.0.0.0 PORT=3000 nuxt",    
+    "dev": "HOST=0.0.0.0 PORT=3000 nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "nuxt": "^1.0.0-rc11",
     "vuetify": "^0.17.3"
   },
