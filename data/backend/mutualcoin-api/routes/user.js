@@ -27,7 +27,7 @@ api.use('*', async (req, res, next) => {
 
 api.post('/login', async (req, res, next) => {
   debug('A requets has come to /api/user/login')
-  const { email, password } = req.body
+  const { email, password } = req.body.data
   const credentials = {
     email,
     password
@@ -79,7 +79,7 @@ api.post('/register', async (req, res, next) => {
   const { userToCreate } = req.body
   let userCreated
   try {
-    userCreated = userModel.register(userToCreate)
+    userCreated = await userModel.register(userToCreate)
   } catch (error) {
     return next(error)
   }
