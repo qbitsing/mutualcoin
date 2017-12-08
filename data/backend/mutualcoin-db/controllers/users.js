@@ -7,11 +7,12 @@ let UsersModel
 
 function validateEmails(user) {
     let invalidUser = null
+    let cond = [{ email: user.email }]
+    if (user.email2) { 
+        cond.push({email2: user.email2})
+    }
     invalidUser = UsersModel.findOne({
-        $or: [
-            { email: user.email },
-            { email2: user.email2 }
-        ]
+        $or: cond
     })
     return invalidUser
 }
@@ -24,7 +25,7 @@ async function register(user) {
         let email = invalidUser.email === user.email ? user.email : user.email2
         let whatEmail = invalidUser.email === user.email ? 'principal' : 'secundario'
 
-        return new Error(`ERROR: la direccion de correo electronico ${whatEmail}: ${email} ya esta registrada`)
+        throw new Error(`ERROR: la direccion de correo electronico ${whatEmail}: ${email} ya esta registrada`)
     }
 
     user.uuid = uuid.v4()

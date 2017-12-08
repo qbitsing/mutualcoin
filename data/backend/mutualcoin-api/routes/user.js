@@ -84,9 +84,7 @@ api.post('/register', async (req, res, next) => {
     return next(error)
   }
 
-  console.log(userCreated)
-
-  res.send({x: ''})
+  res.send({userCreated})
 })
 
 module.exports = api
