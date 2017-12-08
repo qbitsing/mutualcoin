@@ -5,8 +5,9 @@
   "main": "server.js",
   "scripts": {
     "lint": "standard",
-    "start-dev": "npm run lint -- --fix && DEBUG=mutualcoin:* nodemon server.js",
-    "start": "NODE_ENV=production node server.js"
+    "start-dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
+    "pre:start-dev": "npm run lint -- --fix"
   },
   "repository": {
     "type": "git",

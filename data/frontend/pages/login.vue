@@ -4,7 +4,7 @@
       <div class="text-xs-center">
         <img src="/v.png" alt="Vuetify.js" class="mb-5" />
       </div>
-        <v-form v-model="valid" ref="form" lazy-validation>
+        <v-form @submit="login" v-model="valid" ref="form" lazy-validation>
           <v-text-field
           label="E-mail"
           v-model="email"
@@ -22,7 +22,7 @@
           ></v-text-field>
           <div>
             <v-btn
-              @click="submit"
+              @click="login"
               :disabled="!valid"
               >
               Entrar
@@ -42,25 +42,35 @@
   }
 </style>
 <script>
-  export default {
-    data: () => ({
-      valid: true,
-      e1: true,
-      password: '',
-      email: '',
-      emailRules: [
-        (v) => !!v || 'Digite su e-mail'
-      ],
-      passRules: [
-        (v) => !!v || 'Digite su contraseña'
-      ]
-    }),
-    methods: {
-      submit () {
-        if (this.$refs.form.validate()) {
-          // Peticion
+// import api from '~/plugins/axios'
+export default {
+  data: () => ({
+    valid: true,
+    e1: true,
+    password: '',
+    email: '',
+    emailRules: [
+      (v) => !!v || 'Digite su e-mail'
+    ],
+    passRules: [
+      (v) => !!v || 'Digite su contraseña'
+    ]
+  }),
+  methods: {
+    async login () {
+      if (this.$refs.form.validate()) {
+        try {
+          await this.$store.dispatch('login', {
+            data: {
+              email: this.email,
+              password: this.password
+            }
+          })
+        } catch (e) {
+          alert('Error: ' + e.message)
         }
       }
     }
   }
+}
 </script>

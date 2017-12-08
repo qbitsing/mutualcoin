@@ -34,10 +34,6 @@ export default {
     return {
       datos: {}
     }
-  },
-  created () {
-    this.$router.push('home')
   }
 }
 </script>
- 
