@@ -11,7 +11,7 @@ const api = asyncify(express.Router())
 let db, userModel
 
 api.use('*', async (req, res, next) => {
-  if (!userModel) {
+  if (!db) {
     debug('Conecting and getting the user model in mutualcoin-db module')
     try {
       db = await mutualcoinDB(config.db)
@@ -27,7 +27,7 @@ api.use('*', async (req, res, next) => {
 
 api.post('/login', async (req, res, next) => {
   debug('A requets has come to /api/user/login')
-  const { email, password } = req.body.data
+  const { email, password } = req.body.datas
   const credentials = {
     email,
     password
@@ -84,9 +84,7 @@ api.post('/register', async (req, res, next) => {
     return next(error)
   }
 
-  console.log(userCreated)
-
-  res.send({x: ''})
+  res.send({userCreated})
 })
 
 module.exports = api
