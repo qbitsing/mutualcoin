@@ -61,11 +61,12 @@ export default {
       if (this.$refs.form.validate()) {
         try {
           await this.$store.dispatch('login', {
-            data: {
+            datas: {
               email: this.email,
               password: this.password
             }
           })
+          this.$router.push('home')
         } catch (e) {
           alert('Error: ' + e.message)
         }

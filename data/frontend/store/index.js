@@ -2,23 +2,29 @@ import api from '~/plugins/axios'
 export const state = () => ({
   sidebar: false,
   token: null,
-  userInfo: null
+  userInfo: null,
+  authUser: null
 })
 
 export const mutations = {
-  toggleSidebar (state) {
-    state.sidebar = !state.sidebar
+  SET_USER: function (state, user) {
+    state.authUser = user
+    window.localStorage.token = user.token
+    window.localStorage.user = window.atob(user.token.split('.')[1])
   }
 }
 
 export const actions = {
-  async login ({ commit }, { data }) {
+  async login ({ commit }, { datas }) {
     try {
-      console.log(data)
-      const { res } = await api('user/login', { data }, 'post')
-      console.log(res)
+      console.log(datas)
+      const { data } = await api('user/login', { datas }, 'post')
+      commit('SET_USER', data)
     } catch (e) {
-      console.log(e.message)
+      if (e.response && e.response.status === 401) {
+        throw new Error('Error de credenciales')
+      }
+      throw e
     }
   }
 }
