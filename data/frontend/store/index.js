@@ -2,12 +2,13 @@ import api from '~/plugins/axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-Vue.use(Vuex)
-
-const store = () => new Vuex.Store({
-  state: {
-    authUser: null
-  },
+export const mutations = {
+  SET_USER: function (state, user) {
+    state.authUser = user.token
+    window.localStorage.token = user.token
+    window.localStorage.user = window.atob(user.token.split('.')[1])
+  }
+}
 
   mutations: {
     SET_USER: function (state, user) {

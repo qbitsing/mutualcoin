@@ -28,6 +28,28 @@ async function register(user) {
         throw new Error(`ERROR: la direccion de correo electronico ${whatEmail}: ${email} ya esta registrada`)
     }
 
+    if (!user.bch) { 
+        throw new Error('la dirección BCH es requerida')
+    }
+
+    invalidUser = null
+
+    invalidUser = await UsersModel.findOne({
+        bch: user.bch
+    })
+
+    if (invalidUser) { 
+        throw new Error('La dirección BCH ya esta registrada en otra cuenta')
+    }
+
+    if (!user.bchType) { 
+        throw new Error('El tipo de BHC es requerido')
+    }
+
+    if (!user.password) { 
+        throw new Error('La contraseña es requerida')
+    }
+
     user.uuid = uuid.v4()
 
     invalidUser = null
@@ -97,6 +119,16 @@ async function singin(credentials) {
         user,
         login: true
     }
+}
+
+async function update(uuid, user) { 
+    const userToUpdate = await UsersModel.findOne({ uuid })
+    let invalidUser = null
+
+    if (user.email2) { 
+        invalidUser = await validateEmails()
+    }
+
 }
 
 module.exports = function(db) {
