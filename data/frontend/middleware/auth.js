@@ -1,8 +1,6 @@
 export default function ({ store, error }) {
-  if (!store.state.authUser) {
-    error({
-      message: 'You are not connected',
-      statusCode: 403
-    })
+  const token = localStorage.getItem('token')
+  if (!token) {
+    this.$router.push('/login')
   }
 }
