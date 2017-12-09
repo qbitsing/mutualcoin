@@ -8,7 +8,7 @@ export const state = () => ({
 
 export const mutations = {
   SET_USER: function (state, user) {
-    state.authUser = user
+    state.authUser = user.token
     window.localStorage.token = user.token
     window.localStorage.user = window.atob(user.token.split('.')[1])
   }
