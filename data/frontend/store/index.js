@@ -9,15 +9,17 @@ export const state = () => ({
 export const mutations = {
   SET_USER: function (state, user) {
     state.authUser = user
+    window.localStorage.token = user.token
+    window.localStorage.user = window.atob(user.token.split('.')[1])
   }
 }
 
 export const actions = {
   async login ({ commit }, { datas }) {
     try {
+      console.log(datas)
       const { data } = await api('user/login', { datas }, 'post')
       commit('SET_USER', data)
-      this.$router.push('home')
     } catch (e) {
       if (e.response && e.response.status === 401) {
         throw new Error('Error de credenciales')
