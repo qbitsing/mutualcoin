@@ -3,12 +3,14 @@ export const state = () => ({
   sidebar: false,
   token: null,
   userInfo: null,
+  authToken: null,
   authUser: null
 })
 
 export const mutations = {
   SET_USER: function (state, user) {
-    state.authUser = user.token
+    state.authToken = user.token
+    state.authUser = window.atob(user.token.split('.')[1])
     window.localStorage.token = user.token
     window.localStorage.user = window.atob(user.token.split('.')[1])
   }
