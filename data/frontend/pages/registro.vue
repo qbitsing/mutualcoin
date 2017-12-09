@@ -120,7 +120,9 @@ export default {
           }
         } catch (e) {
           this[l] = false
-          console.log(e.message)
+          console.log(e)
+          swal('Ooops...', 'El correo electrónico ' + this.email + ' ya se encuentra registrado', 'error')
+          this.email = ''
         }
       }
     }

@@ -1,6 +1,5 @@
-export default function ({ store, error }) {
-  const token = localStorage.getItem('token')
-  if (!token) {
-    this.$router.push('/login')
+export default function ({ store, redirect }) {
+  if (!store.state.authUser) {
+    return redirect('/login')
   }
 }
