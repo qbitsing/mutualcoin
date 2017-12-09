@@ -34,7 +34,9 @@ async function register(user) {
 
     invalidUser = null
 
-    invalidUser = await UsersModel.findOne({ bch: user.bch })
+    invalidUser = await UsersModel.findOne({
+        bch: user.bch
+    })
 
     if (invalidUser) { 
         throw new Error('La dirección BCH ya esta registrada en otra cuenta')
