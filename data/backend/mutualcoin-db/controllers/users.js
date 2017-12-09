@@ -121,6 +121,16 @@ async function singin(credentials) {
     }
 }
 
+async function update(uuid, user) { 
+    const userToUpdate = await UsersModel.findOne({ uuid })
+    let invalidUser = null
+
+    if (user.email2) { 
+        invalidUser = await validateEmails()
+    }
+
+}
+
 module.exports = function(db) {
     UsersModel = db.model('user', usersSchema)
 
