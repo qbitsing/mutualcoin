@@ -15,11 +15,9 @@ export const mutations = {
     window.localStorage.user = window.atob(user.token.split('.')[1])
   }
 }
-
 export const actions = {
   async login ({ commit }, { datas }) {
     try {
-      console.log(datas)
       const { data } = await api('user/login', { datas }, 'post')
       commit('SET_USER', data)
     } catch (e) {

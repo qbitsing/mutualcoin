@@ -1,5 +1,7 @@
 const nodeExternals = require('webpack-node-externals')
 const resolve = (dir) => require('path').join(__dirname, dir)
+const bodyParser = require('body-parser')
+const session = require('express-session')
 
 module.exports = {
   /*
@@ -64,6 +66,20 @@ module.exports = {
       }
     }
   },
+  serverMiddleware: [
+    // body-parser middleware
+    bodyParser.json(),
+    // session middleware
+    session({
+      secret: 'super-secret-key',
+      resave: false,
+      saveUninitialized: false,
+      cookie: { maxAge: 60000 }
+    }),
+    // Api middleware
+    // We add /api/login & /api/logout routes
+    '~/api'
+  ],
   watchers: {
     webpack: {
       aggregateTimeout: 300,

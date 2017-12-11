@@ -109,7 +109,7 @@ export default {
               password: this.password
             }
           }
-          const res = await api('/user/register', data, 'post')
+          const res = await api('user/register', data, 'post')
           this[l] = false
           this.loader = null
           if (res.status === 200) {

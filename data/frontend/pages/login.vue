@@ -66,7 +66,12 @@ export default {
               password: this.password
             }
           })
-          this.$router.push('home')
+          const user = JSON.parse(localStorage.user)
+          if (user.admin) {
+            this.$router.push('panel/admin/home')
+          } else {
+            this.$router.push('panel/user/home')
+          }
         } catch (e) {
           alert('Error: ' + e.message)
         }

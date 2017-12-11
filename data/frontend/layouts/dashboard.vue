@@ -86,14 +86,34 @@
         clipped: false,
         drawer: true,
         fixed: false,
-        items: [
-          { icon: 'apps', title: 'Home', to: '/home' },
-          { icon: 'bubble_chart', title: 'oferta', to: '/oferta' }
-        ],
+        items: null,
         miniVariant: false,
         right: true,
         rightDrawer: false,
         title: 'Vuetify.js'
+      }
+    },
+    beforeMount () {
+      const user = JSON.parse(localStorage.user)
+      if (user.admin) {
+        this.items = [
+          { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
+          { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/admin/activarbloque' },
+          { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/admin/usuarios' },
+          { icon: 'apps', title: 'Transaciones', to: '/panel/admin/transaciones' },
+          { icon: 'apps', title: 'Estructura', to: '/panel/admin/estrutura' },
+          { icon: 'apps', title: 'Tickets', to: '/panel/admin/tickets' }
+        ]
+      } else {
+        this.items = [
+          { icon: 'apps', title: 'Home', to: '/panel/home' },
+          { icon: 'apps', title: 'Bloques Activos', to: '/panel/bloquesactivos' },
+          { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/oferta' },
+          { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/usuarios' },
+          { icon: 'apps', title: 'Transaciones', to: '/panel/transaciones' },
+          { icon: 'apps', title: 'Estructura', to: '/panel/estrutura' },
+          { icon: 'apps', title: 'Ticket', to: '/panel/ticket' }
+        ]
       }
     }
   }
