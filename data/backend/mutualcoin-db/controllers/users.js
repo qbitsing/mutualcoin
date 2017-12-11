@@ -5,54 +5,76 @@ const uuid = require('uuid')
 const utils = require('mutualcoin-utils')
 let UsersModel
 
-function validateEmails(user) {
+async function validateEmails(user, update) {
     let invalidUser = null
-    let cond = [{ email: user.email }]
-    if (user.email2) { 
-        cond.push({email2: user.email2})
+    let cond = []
+    if (!update) {
+        cond = [
+            { email: user.email },
+            { email2: user.email }
+        ]
+    } else {
+        cond = [
+            { email: user.email2 },
+            { email2: user.email2 }
+        ]
     }
-    invalidUser = UsersModel.findOne({
-        $or: cond
-    })
-    return invalidUser
+    invalidUser = await UsersModel.findOne({ $or: cond })
+
+    if (invalidUser) {
+        throw new Error(`La dirección de correo: ${cond[0].email} ya esta registrarda`)
+    }
+}
+
+async function validateBCH(user) {
+    if (!user.bch) {
+        throw new Error('la dirección BCH es requerida')
+    }
+
+    const invalidUser = await UsersModel.findOne({ bch: user.bch })
+
+    if (invalidUser) {
+        throw new Error('La dirección BCH ya esta registrada en otra cuenta')
+    }
+}
+
+function validateBCHType(user) {
+    if (!user.bchType) {
+        throw new Error('El tipo de BHC es requerido')
+    }
+}
+
+function validatePassword(user) {
+    if (!user.password) {
+        throw new Error('La contraseña es requerida')
+    }
+}
+
+async function validateReferred(uuid) {
+    let validReferred = null
+
+    validReferred = await UsersModel.findOne({ uuid })
+
+    if (!validReferred) {
+        uuid = 'codeGerardo'
+    }
+
+    return uuid
 }
 
 async function register(user) {
     // validate if the email user is not register
-    let invalidUser = await validateEmails(user)
+    await validateEmails(user, false)
 
-    if (invalidUser) {
-        let email = invalidUser.email === user.email ? user.email : user.email2
-        let whatEmail = invalidUser.email === user.email ? 'principal' : 'secundario'
+    await validateBCH(user)
 
-        throw new Error(`ERROR: la direccion de correo electronico ${whatEmail}: ${email} ya esta registrada`)
-    }
+    validateBCHType(user)
 
-    if (!user.bch) { 
-        throw new Error('la dirección BCH es requerida')
-    }
-
-    invalidUser = null
-
-    invalidUser = await UsersModel.findOne({
-        bch: user.bch
-    })
-
-    if (invalidUser) { 
-        throw new Error('La dirección BCH ya esta registrada en otra cuenta')
-    }
-
-    if (!user.bchType) { 
-        throw new Error('El tipo de BHC es requerido')
-    }
-
-    if (!user.password) { 
-        throw new Error('La contraseña es requerida')
-    }
+    validatePassword(user)
 
     user.uuid = uuid.v4()
 
-    invalidUser = null
+    let invalidUser = null
     invalidUser = await UsersModel.findOne({ uuid: user.uuid })
 
     while (invalidUser) {
@@ -61,31 +83,16 @@ async function register(user) {
         invalidUser = await UsersModel.findOne({ uuid: user.uuid })
     }
 
-    let validReferred = null
-
-    validReferred = await UsersModel.findOne({ uuid: user.codeReferred })
-
-    if (!validReferred) {
-        user.codeReferred = 'codeGerardo'
-    }
+    user.codeReferred =  await validateReferred(user.codeReferred)
 
     const userToCreate = new UsersModel()
 
     userToCreate.admin = user.admin || false
     userToCreate.nickname = user.nickname
     userToCreate.email = user.email
-    userToCreate.email2 = user.email2
     userToCreate.bch = user.bch
     userToCreate.bchType = user.bchType
     userToCreate.uuid = user.uuid
-    userToCreate.firstName = user.firstName
-    userToCreate.lastName = user.lastName
-    userToCreate.age = user.age
-    userToCreate.birthdate = user.birthdate
-    userToCreate.gender = user.gender
-    userToCreate.address = user.address
-    userToCreate.phone = user.phone
-    userToCreate.hobbies = user.hobbies
     userToCreate.codeReferred = user.codeReferred
     userToCreate.password = utils.password.generateHash(user.password)
 
@@ -121,14 +128,61 @@ async function singin(credentials) {
     }
 }
 
-async function update(uuid, user) { 
+async function update(uuid, user) {
     const userToUpdate = await UsersModel.findOne({ uuid })
-    let invalidUser = null
-
-    if (user.email2) { 
-        invalidUser = await validateEmails()
+    if (!userToUpdate) throw new Error('user not found')
+    if (user.email2) {
+        await validateEmails(user, true)
+        userToUpdate.email2 = user.email2
+    }
+    if (user.bch) {
+        await validateBCH(user)
+        userToUpdate.bch = user.bch
+    }
+    if (user.bchType) {
+        validateBCHType(user)
+        userToUpdate.bchType = user.bchType
     }
 
+    if (user.nickname) {
+        userToUpdate.nickname = user.nickname
+    }
+
+    if (user.firstName) {
+        userToUpdate.firstName = user.firstName
+    }
+
+    if (user.lastName) {
+        userToUpdate.lastName = user.lastName
+    }
+
+    if (user.age) {
+        userToUpdate.age = user.age
+    }
+
+    if (user.birthdate) {
+        userToUpdate.birthdate = user.birthdate
+    }
+
+    if (user.gender) {
+        userToUpdate.gender = user.gender
+    }
+
+    if (user.address) {
+        userToUpdate.address = user.address
+    }
+
+    if (user.phone) {
+        userToUpdate.phone = user.phone
+    }
+
+    if (user.hobbies) {
+        userToUpdate.hobbies = user.hobbies
+    }
+
+    await UsersModel.findByIdAndUpdate(userToUpdate._id, userToUpdate)
+
+    return userToUpdate
 }
 
 module.exports = function(db) {
@@ -138,6 +192,7 @@ module.exports = function(db) {
 
     usersMethods.register = register
     usersMethods.singin = singin
+    usersMethods.update = update
 
     return usersMethods
 }
