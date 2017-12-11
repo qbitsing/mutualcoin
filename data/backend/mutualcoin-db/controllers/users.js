@@ -5,7 +5,7 @@ const uuid = require('uuid')
 const utils = require('mutualcoin-utils')
 let UsersModel
 
-async function validateEmails(user, update) {
+async function validateEmails(user, update, uuid) {
     let invalidUser = null
     let cond = []
     if (!update) {
@@ -22,11 +22,14 @@ async function validateEmails(user, update) {
     invalidUser = await UsersModel.findOne({ $or: cond })
 
     if (invalidUser) {
+        if (update && invalidUser.uuid === uuid) { 
+            return
+        }
         throw new Error(`La dirección de correo: ${cond[0].email} ya esta registrarda`)
     }
 }
 
-async function validateBCH(user) {
+async function validateBCH(user, uuid) {
     if (!user.bch) {
         throw new Error('la dirección BCH es requerida')
     }
@@ -34,6 +37,9 @@ async function validateBCH(user) {
     const invalidUser = await UsersModel.findOne({ bch: user.bch })
 
     if (invalidUser) {
+        if (invalidUser.uuid === uuid) { 
+            return
+        }
         throw new Error('La dirección BCH ya esta registrada en otra cuenta')
     }
 }
@@ -132,11 +138,11 @@ async function update(uuid, user) {
     const userToUpdate = await UsersModel.findOne({ uuid })
     if (!userToUpdate) throw new Error('user not found')
     if (user.email2) {
-        await validateEmails(user, true)
+        await validateEmails(user, true, uuid)
         userToUpdate.email2 = user.email2
     }
     if (user.bch) {
-        await validateBCH(user)
+        await validateBCH(user, uuid)
         userToUpdate.bch = user.bch
     }
     if (user.bchType) {
