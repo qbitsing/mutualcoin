@@ -43,7 +43,12 @@
             counter
           ></v-text-field>
         </v-form>
-        <v-btn block @click="submit">
+        <v-btn
+          block
+          :loading="loading"
+          @click="submit"
+          :disabled="loading"
+          >
         Registrarse
         </v-btn>
     </v-flex>
@@ -51,10 +56,13 @@
 </template>
 <script>
 import api from '~/plugins/axios'
+import swal from 'sweetalert2'
 export default {
   data () {
     return {
       valid: false,
+      loader: null,
+      loading: false,
       e1: true,
       wallet: null,
       wallets: [
@@ -88,6 +96,9 @@ export default {
   methods: {
     async submit () {
       if (this.$refs.form.validate()) {
+        this.loader = 'loading'
+        const l = this.loader
+        this[l] = !this[l]
         try {
           const data = {
             userToCreate: {
@@ -99,12 +110,19 @@ export default {
             }
           }
           const res = await api('/user/register', data, 'post')
+          this[l] = false
+          this.loader = null
           if (res.status === 200) {
-            alert('Usuario registrado correctamente')
+            swal('Excelente...', 'Usuario registrado correctamente', 'success')
             this.$router.push('/login')
+          } else {
+            console.log(res)
           }
         } catch (e) {
-          console.log(e.message)
+          this[l] = false
+          console.log(e)
+          swal('Ooops...', 'El correo electrónico ' + this.email + ' ya se encuentra registrado', 'error')
+          this.email = ''
         }
       }
     }
