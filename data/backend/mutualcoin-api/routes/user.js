@@ -87,4 +87,18 @@ api.post('/register', async (req, res, next) => {
   res.send({userCreated})
 })
 
+api.put('/update/:uuid', async (req, res, next) => {
+  const { uuid } = req.params
+  debug(`A request has come to /api/user/update/${uuid}`)
+  const { userToUpdate } = req.body
+  let userUpdated
+  try {
+    userUpdated = await userModel.update(uuid, userToUpdate)
+  } catch (error) {
+    return next(error)
+  }
+
+  res.send({ userUpdated })
+})
+
 module.exports = api
