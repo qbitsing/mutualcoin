@@ -2,7 +2,6 @@ import axios from 'axios'
 const api = function (resource, data, methods) {
   var instance = null
   if (resource === 'user/login' || resource === 'user/register') {
-    console.log(resource)
     instance = axios.create({ baseURL: 'http://localhost:3300/api/' })
   } else {
     instance = axios.create({
