@@ -10,34 +10,6 @@
         <v-btn color="grey" @click.stop="dialog = true">Info</v-btn>
       </v-card-actions>
     </v-layout>
-    <v-dialog
-      v-model="dialog"
-      fullscreen
-      transition="dialog-bottom-transition"
-      :overlay=false
-      scrollable
-    >
-      <v-card>
-          <v-toolbar style="flex: 0 0 auto;">
-          <v-btn icon @click.native="dialog = false" dark>
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Información del Plan</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-menu bottom right offset-y>
-              <v-btn slot="activator" dark icon>
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-            </v-menu>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-text>
-          <h1>Awesome Info</h1>
-        </v-card-text>
-          <div style="flex: 1 1 auto;"></div>
-      </v-card>
-    </v-dialog>
   </v-card>
 </template>
 <script>

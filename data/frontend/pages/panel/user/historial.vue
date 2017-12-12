@@ -46,6 +46,7 @@ export default{
     }
   },
   components: { MutualBloqueHistorial },
-  layout: 'dashboard'
+  layout: 'dashboard',
+  middleware: 'auth'
 }
 </script>

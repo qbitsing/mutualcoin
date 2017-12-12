@@ -94,8 +94,7 @@
       }
     },
     beforeMount () {
-      // const user = this.$store.state.authUser
-      const user = 0
+      const user = this.$store.state.authUser
       if (user.admin) {
         this.items = [
           { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
