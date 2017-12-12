@@ -14,6 +14,7 @@ import {
   VTextField,
   VSelect,
   VProgressCircular,
+  VMenu,
   VDialog
 } from 'vuetify'
 
@@ -41,6 +42,7 @@ Vue.use(Vuetify, {
     VTextField,
     VSelect,
     VProgressCircular,
+    VMenu,
     VDialog
   }
 })
