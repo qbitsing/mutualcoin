@@ -8,7 +8,7 @@
       app
     >
       <v-list>
-        <v-list-tile 
+        <v-list-tile
           router
           :to="item.to"
           :key="i"
@@ -26,7 +26,7 @@
     </v-navigation-drawer>
     <v-toolbar fixed app :clipped-left="clipped">
       <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn 
+      <v-btn
         icon
         @click.stop="miniVariant = !miniVariant"
       >
@@ -106,13 +106,13 @@
         ]
       } else {
         this.items = [
-          { icon: 'apps', title: 'Home', to: '/panel/home' },
-          { icon: 'apps', title: 'Bloques Activos', to: '/panel/bloquesactivos' },
-          { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/oferta' },
-          { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/usuarios' },
-          { icon: 'apps', title: 'Transaciones', to: '/panel/transaciones' },
-          { icon: 'apps', title: 'Estructura', to: '/panel/estrutura' },
-          { icon: 'apps', title: 'Ticket', to: '/panel/ticket' }
+          { icon: 'apps', title: 'Home', to: '/panel/user/home' },
+          { icon: 'apps', title: 'Bloques Activos', to: '/panel/user/bloquesactivos' },
+          { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/user/oferta' },
+          { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/user/usuarios' },
+          { icon: 'apps', title: 'Transaciones', to: '/panel/user/transaciones' },
+          { icon: 'apps', title: 'Estructura', to: '/panel/user/estrutura' },
+          { icon: 'apps', title: 'Ticket', to: '/panel/user/ticket' }
         ]
       }
     }
