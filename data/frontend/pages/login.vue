@@ -66,7 +66,7 @@ export default {
               password: this.password
             }
           })
-          const user = JSON.parse(localStorage.user)
+          const user = this.$store.state.authUser
           if (user.admin) {
             this.$router.push('panel/admin/home')
           } else {

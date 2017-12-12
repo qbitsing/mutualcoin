@@ -3,6 +3,7 @@
   <h1>home</h1>
   <a @click="logout">cerrar sesion</a>
 </div>
+  
 </template>
 <script>
 export default {

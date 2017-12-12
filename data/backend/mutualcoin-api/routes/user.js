@@ -32,6 +32,7 @@ api.post('/login', async (req, res, next) => {
     email,
     password
   }
+  console.log(req.body)
   let result
 
   try {
@@ -41,7 +42,7 @@ api.post('/login', async (req, res, next) => {
   }
 
   if (result.login) {
-    sing({
+    const sesion = {
       admin: result.user.admin,
       nickname: result.user.nickname,
       uuid: result.user.uuid,
@@ -56,14 +57,16 @@ api.post('/login', async (req, res, next) => {
       phone: result.user.phone,
       hobbies: result.user.hobbies,
       codeReferred: result.user.codeReferred
-    }, config.secret, (error, token) => {
+    }
+    sing(sesion, config.secret, (error, token) => {
       if (error) {
         return next(error)
       }
 
       res.status(200).send({
         message: result.message,
-        token
+        token,
+        sesion
       })
     })
   } else {

@@ -1,4 +1,5 @@
 const express = require('express')
+const axios = require('axios')
 
 // Create express router
 const router = express.Router()
@@ -16,15 +17,19 @@ router.use((req, res, next) => {
 
 // Add POST - /api/login
 router.post('/login', (req, res) => {
-  if (req.body.username === 'demo' && req.body.password === 'demo') {
-    req.session.authUser = { username: 'demo' }
-    return res.json({ username: 'demo' })
-  }
-  res.status(401).json({ message: 'Bad credentials' })
+  const { datas } = req.body
+  axios.post('http://192.168.1.38:3300/api/user/login', { datas })
+    .then(r => {
+      req.session.authToken = r.data.token
+      req.session.authUser = r.data.sesion
+      return res.json(r.data)
+    })
+    .catch(e => res.status(401).json({msg: e.message}))
 })
 
 // Add POST - /api/logout
 router.post('/logout', (req, res) => {
+  delete req.session.authToken
   delete req.session.authUser
   res.json({ ok: true })
 })
