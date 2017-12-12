@@ -94,7 +94,8 @@
       }
     },
     beforeMount () {
-      const user = this.$store.state.authUser
+      // const user = this.$store.state.authUser
+      const user = 0
       if (user.admin) {
         this.items = [
           { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
@@ -107,7 +108,7 @@
       } else {
         this.items = [
           { icon: 'apps', title: 'Home', to: '/panel/user/home' },
-          { icon: 'apps', title: 'Bloques Activos', to: '/panel/user/bloquesactivos' },
+          { icon: 'apps', title: 'Historial', to: '/panel/user/historial' },
           { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/user/oferta' },
           { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/user/usuarios' },
           { icon: 'apps', title: 'Transaciones', to: '/panel/user/transaciones' },
