@@ -3,25 +3,16 @@
 const debug = require('debug')('mutualcoin:api:routes')
 const express = require('express')
 const asyncify = require('express-asyncify')
-const mutualcoinDB = require('mutualcoin-db')
 const config = require('../config')
 const { sing } = require('../auth')
 const api = asyncify(express.Router())
 
-let db, userModel
+let userModel
 
 api.use('*', async (req, res, next) => {
-  if (!db) {
-    debug('Conecting and getting the user model in mutualcoin-db module')
-    try {
-      db = await mutualcoinDB(config.db)
-    } catch (error) {
-      return next(error)
-    }
-
-    userModel = db.user
+  if (!userModel) {
+    userModel = req.db.user
   }
-
   next()
 })
 
