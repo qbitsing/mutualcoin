@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app>
     <v-navigation-drawer
       :mini-variant="miniVariant"
       :clipped="clipped"
@@ -44,35 +44,24 @@
       >
         <v-icon>remove</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
+      <v-toolbar-title v-text="$store.state.titleView"></v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>menu</v-icon>
-      </v-btn>
+      <v-menu offset-x offset-y close-on-content-click>
+        <v-btn icon slot="activator">
+          <v-icon>person_pin</v-icon>
+        </v-btn>
+        <v-list>
+          <v-list-tile v-for="item in itemPerfil" :key="item.title" @click="">
+            <v-list-tile-title><v-icon v-html="item.icon"></v-icon>{{ item.title }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-toolbar>
     <v-content>
       <v-container>
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer
-      temporary
-      :right="right"
-      v-model="rightDrawer"
-      fixed
-    >
-      <v-list>
-        <v-list-tile @click.native="right = !right">
-          <v-list-tile-action>
-            <v-icon light>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
     <v-footer :fixed="fixed" app>
       <span>&copy; 2017</span>
     </v-footer>
@@ -87,32 +76,38 @@
         drawer: true,
         fixed: false,
         items: null,
+        itemPerfil: null,
         miniVariant: false,
         right: true,
-        rightDrawer: false,
-        title: 'Vuetify.js'
+        rightDrawer: false
       }
     },
     beforeMount () {
-      const user = this.$store.state.authUser
+      // const user = this.$store.state.authUser
+      const user = 0
       if (user.admin) {
         this.items = [
           { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
           { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/admin/activarbloque' },
           { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/admin/usuarios' },
           { icon: 'apps', title: 'Transaciones', to: '/panel/admin/transaciones' },
-          { icon: 'apps', title: 'Estructura', to: '/panel/admin/estrutura' },
+          { icon: 'apps', title: 'Estructura', to: '/panel/admin/estructura' },
           { icon: 'apps', title: 'Tickets', to: '/panel/admin/tickets' }
         ]
       } else {
         this.items = [
           { icon: 'apps', title: 'Home', to: '/panel/user/home' },
-          { icon: 'apps', title: 'Bloques Activos', to: '/panel/user/bloquesactivos' },
+          { icon: 'apps', title: 'Historial', to: '/panel/user/historial' },
           { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/user/oferta' },
           { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/user/usuarios' },
           { icon: 'apps', title: 'Transaciones', to: '/panel/user/transaciones' },
           { icon: 'apps', title: 'Estructura', to: '/panel/user/estrutura' },
-          { icon: 'apps', title: 'Ticket', to: '/panel/user/ticket' }
+          { icon: 'apps', title: 'Tickets', to: '/panel/user/tickets' }
+        ]
+        this.itemPerfil = [
+          {icon: 'perm_identity', title: 'Perfil'},
+          {icon: 'message', title: 'Buzon'},
+          {icon: 'exit_to_app', title: 'Salir'}
         ]
       }
     }
