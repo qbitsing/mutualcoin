@@ -5,41 +5,13 @@
       <p>Plan de: {{data.cant}} {{data.moneda}}</p>
       <p>Semanas: {{data.weeks}}</p>
       <p>Invertidos:
-        <v-btn color="orange" @click.stop="dialog = true">{{data.inverted}} {{data.moneda}}</v-btn>
+        <v-btn color="primary" @click.stop="dialog = true">{{data.inverted}} {{data.moneda}}</v-btn>
       </p>
       <v-card-actions>
-        <v-btn color="green darken-1" >Iniciar</v-btn>
-        <v-btn color="red darken-1" >Cancelar</v-btn>
+        <v-btn color="success" >Iniciar</v-btn>
+        <v-btn color="error" >Cancelar</v-btn>
       </v-card-actions>
     </v-layout>
-    <v-dialog
-      v-model="dialog"
-      fullscreen
-      transition="dialog-bottom-transition"
-      :overlay=false
-      scrollable
-    >
-      <v-card>
-          <v-toolbar style="flex: 0 0 auto;">
-          <v-btn icon @click.native="dialog = false" dark>
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Inversores</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-menu bottom right offset-y>
-              <v-btn slot="activator" dark icon>
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-            </v-menu>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-text>
-          <h1>Informacion de los inversionistas</h1>
-        </v-card-text>
-          <div style="flex: 1 1 auto;"></div>
-      </v-card>
-    </v-dialog>
   </v-card>
 </template>
 <script>

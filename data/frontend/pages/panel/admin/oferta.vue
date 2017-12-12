@@ -42,6 +42,8 @@ export default{
   },
   components: { MutualBloqueAdmin },
   layout: 'dashboard',
-  middleware: 'auth'
+  beforeMount () {
+    this.$store.commit('TITLE_VIEW', 'Oferta')
+  }
 }
 </script>
