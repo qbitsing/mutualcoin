@@ -12,6 +12,9 @@ export default {
     async logout () {
       await this.$store.dispatch('logout')
     }
+  },
+  beforeMount () {
+    this.$store.commit('TITLE_VIEW', 'Tablero')
   }
 }
 </script>

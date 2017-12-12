@@ -3,19 +3,23 @@ import axios from 'axios'
 export const state = () => ({
   sidebar: false,
   token: null,
+  titleView: null,
   userInfo: null,
   authToken: null,
   authUser: null
 })
 
 export const mutations = {
-  SET_USER: function (state, user) {
+  SET_USER: (state, user) => {
     state.authToken = user.token
     state.authUser = user.sesion
   },
-  LOGOUT: function (state) {
+  LOGOUT: (state) => {
     state.authToken = null
     state.authUser = null
+  },
+  TITLE_VIEW: (state, title) => {
+    state.titleView = title
   }
 }
 export const actions = {
