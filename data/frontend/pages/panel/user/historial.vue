@@ -52,7 +52,7 @@ export default{
   },
   components: { MutualBloqueHistorial },
   layout: 'dashboard',
-  middleware: 'auth',
+  // middleware: 'auth',
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Historial')
   }

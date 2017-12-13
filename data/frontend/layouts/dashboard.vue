@@ -110,7 +110,7 @@ export default {
     }
   },
   components: {MutualDialog},
-  beforeMount (){
+  beforeMount () {
     if (this.admin) {
       this.items = [
         { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
@@ -153,14 +153,14 @@ export default {
         this.$router.push('/login')
       }
     },
-  config (el) {
-    if (el === this.itemConf[1].title) {
-      this.propsDialog.state = true
-      this.propsDialog.title = 'Registro de monedas'
-    } else if (el === this.itemConf[0].title) {
-      this.$router.push('/panel/admin/empresa')
-    }
-  },
+    config (el) {
+      if (el === this.itemConf[1].title) {
+        this.propsDialog.state = true
+        this.propsDialog.title = 'Registro de monedas'
+      } else if (el === this.itemConf[0].title) {
+        this.$router.push('/panel/admin/empresa')
+      }
+    },
     beforeMount () {
       const user = this.$store.state.authUser
       if (user.admin) {
