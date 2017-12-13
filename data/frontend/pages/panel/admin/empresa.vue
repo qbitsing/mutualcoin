@@ -1,14 +1,12 @@
 <template>
-<div>
-  <h1>home</h1>
-</div>
+  
 </template>
 <script>
 export default {
   layout: 'dashboard',
   middleware: 'auth',
   beforeMount () {
-    this.$store.commit('TITLE_VIEW', 'Tablero')
+    this.$store.commit('TITLE_VIEW', 'Configuracion Empresa')
   }
 }
 </script>
