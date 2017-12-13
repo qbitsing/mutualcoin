@@ -20,7 +20,7 @@ import {
 
 Vue.use(Vuetify, {
   theme: {
-    primary: '#9c27b0',
+    primary: '#2A77FF',
     accent: '#ce93d8',
     secondary: '#424242',
     info: '#0D47A1',

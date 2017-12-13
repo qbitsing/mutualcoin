@@ -2,13 +2,13 @@
   <v-container grid-list-md>
     <v-layout row wrap>
       <v-flex xs6 sm4 lg3 v-for="block in blocks" class="pt-2">
-        <mutual-bloque :data="block"></mutual-bloque>
+        <mutual-bloque-admin :data="block"></mutual-bloque-admin>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 <script>
-import MutualBloque from '~/components/bloque.vue'
+import MutualBloqueAdmin from '~/components/bloqueAdmin.vue'
 export default{
   data () {
     return {
@@ -16,7 +16,7 @@ export default{
         moneda: 'BTC',
         cant: 10,
         weeks: 12,
-        inverted: 8
+        inverted: 8.3
       }, {
         moneda: 'ETH',
         cant: 15,
@@ -40,9 +40,8 @@ export default{
       }]
     }
   },
-  components: { MutualBloque },
+  components: { MutualBloqueAdmin },
   layout: 'dashboard',
-  middleware: 'auth',
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Oferta')
   }

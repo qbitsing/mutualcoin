@@ -17,35 +17,44 @@ export default{
         moneda: 'BTC',
         cant: 10,
         start: '12/12/2017',
-        finish: '12/03/2018'
+        finish: '12/03/2018',
+        myInversion: 6
       }, {
         active: true,
         moneda: 'ETH',
         cant: 15,
         start: '12/12/2017',
-        finish: '12/03/2018'
+        finish: '12/03/2018',
+        myInversion: 0.78
       }, {
         active: false,
         moneda: 'ETH',
         cant: 15,
         start: '12/12/2017',
-        finish: '12/03/2018'
+        finish: '12/03/2018',
+        myInversion: 0.2
       }, {
         active: true,
         moneda: 'BTC',
         cant: 3,
         start: '12/12/2017',
-        finish: '12/03/2018'
+        finish: '12/03/2018',
+        myInversion: 1
       }, {
         active: false,
         moneda: 'ETH',
         cant: 15,
         start: '12/12/2017',
-        finish: '12/03/2018'
+        finish: '12/03/2018',
+        myInversion: 0.3
       }]
     }
   },
   components: { MutualBloqueHistorial },
-  layout: 'dashboard'
+  layout: 'dashboard',
+  middleware: 'auth',
+  beforeMount () {
+    this.$store.commit('TITLE_VIEW', 'Historial')
+  }
 }
 </script>

@@ -3,6 +3,7 @@
 const defaulst = require('defaults')
 const connectDB = require('./connect-data-base')
 const user = require('./controllers/users')
+const coin = require('./controllers/coins')
 
 module.exports = async function(config) {
     // configuramos la configuracion por defecto
@@ -31,6 +32,7 @@ module.exports = async function(config) {
     const db = await connectDB(connectConfig)
 
     return {
-        user : user(db)
+        user : user(db),
+        coin : coin(db)
     }
 }

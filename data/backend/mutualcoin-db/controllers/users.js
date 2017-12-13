@@ -22,7 +22,7 @@ async function validateEmails(user, update, uuid) {
     invalidUser = await UsersModel.findOne({ $or: cond })
 
     if (invalidUser) {
-        if (update && invalidUser.uuid === uuid) { 
+        if (update && invalidUser.uuid === uuid) {
             return
         }
         throw new Error(`La dirección de correo: ${cond[0].email} ya esta registrarda`)
@@ -37,7 +37,7 @@ async function validateBCH(user, uuid) {
     const invalidUser = await UsersModel.findOne({ bch: user.bch })
 
     if (invalidUser) {
-        if (invalidUser.uuid === uuid) { 
+        if (invalidUser.uuid === uuid) {
             return
         }
         throw new Error('La dirección BCH ya esta registrada en otra cuenta')

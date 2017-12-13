@@ -47,7 +47,8 @@ const usersSchema = new Schema({
     password: {
         type: String,
         require: true
-    }
+    },
+    accountIsActive: Boolean
 })
 
 module.exports = usersSchema

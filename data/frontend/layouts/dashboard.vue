@@ -153,12 +153,40 @@ export default {
         this.$router.push('/login')
       }
     },
-    config (el) {
-      if (el === this.itemConf[1].title) {
-        this.propsDialog.state = true
-        this.propsDialog.title = 'Registro de monedas'
-      } else if (el === this.itemConf[0].title) {
-        this.$router.push('/panel/admin/empresa')
+  config (el) {
+    if (el === this.itemConf[1].title) {
+      this.propsDialog.state = true
+      this.propsDialog.title = 'Registro de monedas'
+    } else if (el === this.itemConf[0].title) {
+      this.$router.push('/panel/admin/empresa')
+    }
+  },
+    beforeMount () {
+      const user = this.$store.state.authUser
+      if (user.admin) {
+        this.items = [
+          { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
+          { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/admin/activarbloque' },
+          { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/admin/usuarios' },
+          { icon: 'apps', title: 'Transaciones', to: '/panel/admin/transaciones' },
+          { icon: 'apps', title: 'Estructura', to: '/panel/admin/estructura' },
+          { icon: 'apps', title: 'Tickets', to: '/panel/admin/tickets' }
+        ]
+      } else {
+        this.items = [
+          { icon: 'apps', title: 'Home', to: '/panel/user/home' },
+          { icon: 'apps', title: 'Historial', to: '/panel/user/historial' },
+          { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/user/oferta' },
+          { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/user/usuarios' },
+          { icon: 'apps', title: 'Transaciones', to: '/panel/user/transaciones' },
+          { icon: 'apps', title: 'Estructura', to: '/panel/user/estrutura' },
+          { icon: 'apps', title: 'Tickets', to: '/panel/user/tickets' }
+        ]
+        this.itemPerfil = [
+          {icon: 'perm_identity', title: 'Perfil'},
+          {icon: 'message', title: 'Buzon'},
+          {icon: 'exit_to_app', title: 'Salir'}
+        ]
       }
     }
   }
