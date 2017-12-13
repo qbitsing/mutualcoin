@@ -15,12 +15,14 @@ import {
   VSelect,
   VProgressCircular,
   VMenu,
-  VDialog
+  VDialog,
+  VProgressLinear,
+  VStepper
 } from 'vuetify'
 
 Vue.use(Vuetify, {
   theme: {
-    primary: '#9c27b0',
+    primary: '#2A77FF',
     accent: '#ce93d8',
     secondary: '#424242',
     info: '#0D47A1',
@@ -43,6 +45,8 @@ Vue.use(Vuetify, {
     VSelect,
     VProgressCircular,
     VMenu,
-    VDialog
+    VDialog,
+    VProgressLinear,
+    VStepper
   }
 })

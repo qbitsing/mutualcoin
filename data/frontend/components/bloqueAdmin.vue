@@ -1,18 +1,15 @@
 <template>
   <v-card class="card">
-    <h2 :class="data.active ? 'active' : 'finished'">
-      {{data.active ? 'Activo' : 'Finalizado'}}
-    </h2>
     <v-layout column justify-center align-center>
       <img :src="`/${data.moneda}.png`">
       <p>Plan de: {{data.cant}} {{data.moneda}}</p>
-      <p>Fecha Inicio: {{data.start}}</p>
-      <p>Fecha Fin: {{data.finish}}</p>
-      <p>Mi inversión: {{data.myInversion}} {{data.moneda
-
-      }}</p>
+      <p>Semanas: {{data.weeks}}</p>
+      <p>Invertidos:
+        <v-btn color="primary" @click.stop="dialog = true">{{data.inverted}} {{data.moneda}}</v-btn>
+      </p>
       <v-card-actions>
-        <v-btn :to="'timeline'" color="secondary">Info</v-btn>
+        <v-btn color="success" >Iniciar</v-btn>
+        <v-btn color="error" >Cancelar</v-btn>
       </v-card-actions>
     </v-layout>
   </v-card>
@@ -30,16 +27,6 @@
   }
 </script>
 <style lang="css">
-  h2.active {
-    color: #fff;
-    text-align: center;
-    background: #0F4AB2;
-  }
-  h2.finished {
-    color: #fff;
-    text-align: center;
-    background: #B27900;
-  }
   img{
     box-sizing: border-box;
     max-width: 80%;
