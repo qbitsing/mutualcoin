@@ -7,7 +7,7 @@
       app
     >
       <v-list>
-        <v-list-tile 
+        <v-list-tile
           router
           :to="item.to"
           :key="i"
@@ -36,7 +36,7 @@
         <nuxt />
       </v-container>
     </v-content>
-    
+
     <v-footer  app>
       <span>&copy; 2017</span>
     </v-footer>

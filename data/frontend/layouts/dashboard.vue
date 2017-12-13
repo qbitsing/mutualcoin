@@ -110,7 +110,7 @@ export default {
     }
   },
   components: {MutualDialog},
-  beforeMount (){
+  beforeMount () {
     if (this.admin) {
       this.items = [
         { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
@@ -153,7 +153,7 @@ export default {
         this.$router.push('/login')
       }
     },
-  config (el) {
+    config (el) {
       if (el === this.itemConf[1].title) {
         this.propsDialog.state = true
         this.propsDialog.title = 'Registro de monedas'

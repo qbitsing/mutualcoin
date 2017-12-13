@@ -8,7 +8,9 @@
       <p>Plan de: {{data.cant}} {{data.moneda}}</p>
       <p>Fecha Inicio: {{data.start}}</p>
       <p>Fecha Fin: {{data.finish}}</p>
-      <p>Mi inversión: {{data.myInversion}} {{data.moneda}}</p>
+      <p>Mi inversión: {{data.myInversion}} {{data.moneda
+
+      }}</p>
       <v-card-actions>
         <v-btn :to="'timeline'" color="secondary">Info</v-btn>
       </v-card-actions>

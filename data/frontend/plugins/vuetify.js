@@ -15,7 +15,9 @@ import {
   VSelect,
   VProgressCircular,
   VMenu,
-  VDialog
+  VDialog,
+  VProgressLinear,
+  VStepper
 } from 'vuetify'
 
 Vue.use(Vuetify, {
@@ -43,6 +45,8 @@ Vue.use(Vuetify, {
     VSelect,
     VProgressCircular,
     VMenu,
-    VDialog
+    VDialog,
+    VProgressLinear,
+    VStepper
   }
 })
