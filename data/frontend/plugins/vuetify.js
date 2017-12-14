@@ -17,7 +17,8 @@ import {
   VMenu,
   VDialog,
   VProgressLinear,
-  VStepper
+  VStepper,
+  VTooltip
 } from 'vuetify'
 
 Vue.use(Vuetify, {
@@ -47,6 +48,7 @@ Vue.use(Vuetify, {
     VMenu,
     VDialog,
     VProgressLinear,
-    VStepper
+    VStepper,
+    VTooltip
   }
 })

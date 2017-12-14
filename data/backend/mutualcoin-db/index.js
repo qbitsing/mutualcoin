@@ -4,6 +4,7 @@ const defaulst = require('defaults')
 const connectDB = require('./connect-data-base')
 const user = require('./controllers/users')
 const coin = require('./controllers/coins')
+const block = require('./controllers/blocks')
 
 module.exports = async function(config) {
     // configuramos la configuracion por defecto
@@ -33,6 +34,7 @@ module.exports = async function(config) {
 
     return {
         user : user(db),
-        coin : coin(db)
+        coin: coin(db),
+        block: block(db)
     }
 }
