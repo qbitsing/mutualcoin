@@ -9,7 +9,7 @@
           </v-tooltip>
         </v-flex>
         <v-flex xs10>
-          <v-progress-linear :value="data.per" height="15" color="primary"></v-progress-linear>
+          <v-progress-linear :value="(data.dPass*100)/(data.nWeeks*7)" height="15" color="primary"></v-progress-linear>
         </v-flex>
         <v-flex xs1 center>
           <v-tooltip top>
