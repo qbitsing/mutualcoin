@@ -14,6 +14,7 @@
           name="input-10-1"
           label="Contraseña"
           v-model="password"
+          @keyup.13="login"
           :append-icon="e1 ? 'visibility' : 'visibility_off'"
           :append-icon-cb="() => (e1 = !e1)"
           :type="e1 ? 'password' : 'text'"
