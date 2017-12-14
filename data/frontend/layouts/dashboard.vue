@@ -54,16 +54,23 @@
         </v-list>
       </v-menu>
       <mutual-dialog :dialog="propsDialog">
-          <form action="" slot="contenDialog">
+          <v-form v-model="valid" slot="contenDialog" ref="formMoneda" lazy-validation>
             <v-layout wrap>
               <v-flex xs12 sm6>
-                <v-text-field label="Moneda" required></v-text-field>
+                <v-text-field v-model="name" label="Moneda" :rules="nameRules" required ></v-text-field>
               </v-flex>
               <v-flex xs12 sm6>
-                <v-text-field label="Acronimo" required></v-text-field>
+                <v-text-field v-model="acronym" label="Acronimo" :rules="acronymRules" required></v-text-field>
               </v-flex>
             </v-layout>
-          </form>
+            <v-btn
+              color="primary"
+              @click="submitMoneda"
+              :disabled="!valid"
+            >
+              Guardar
+            </v-btn>
+          </v-form>
       </mutual-dialog>
       <v-menu  offset-y origin="center center" transition="scale-transition" bottom>
         <v-btn icon slot="activator">
@@ -91,6 +98,8 @@
 </template>
 
 <script>
+import api from '~/plugins/axios'
+import swal from 'sweetalert2'
 import MutualDialog from '~/components/dialog.vue'
 export default {
   data () {
@@ -106,7 +115,15 @@ export default {
       right: true,
       rightDrawer: false,
       propsDialog: {state: false, title: ''},
-      moneda: {}
+      valid: false,
+      name: null,
+      acronym: null,
+      nameRules: [
+        (v) => !!v || 'Nombre es requerido'
+      ],
+      acronymRules: [
+        (v) => !!v || 'Acronimo es requerido'
+      ]
     }
   },
   components: {MutualDialog},
@@ -159,6 +176,27 @@ export default {
         this.propsDialog.title = 'Registro de monedas'
       } else if (el === this.itemConf[0].title) {
         this.$router.push('/panel/admin/empresa')
+      }
+    },
+    async submitMoneda () {
+      if (this.$refs.formMoneda.validate()) {
+        try {
+          const data = {
+            coinToCreate: {
+              name: this.name,
+              acronym: this.acronym
+            }
+          }
+          const res = await api('coin/create', data, 'post', this.$store.state.authToken)
+          if (res.status === 200) {
+            this.$refs.formMoneda.reset()
+            swal('Excelente...', 'Moneda registrada correctamente', 'success')
+          } else {
+            console.log(res)
+          }
+        } catch (error) {
+
+        }
       }
     }
   }

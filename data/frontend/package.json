@@ -19,6 +19,7 @@
     "js-cookie": "^2.2.0",
     "nuxt": "^1.0.0-rc11",
     "sweetalert2": "^7.0.9",
+    "trae": "^1.4.2",
     "vuetify": "^0.17.3",
     "vuex-persistedstate": "^2.4.2"
   },

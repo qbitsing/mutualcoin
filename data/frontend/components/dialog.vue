@@ -20,6 +20,11 @@
   export default {
     props: {
       dialog: {type: Object, required: true}
+    },
+    watch: {
+      dialog (newVal, oldVal) {
+        console.log(newVal, oldVal)
+      }
     }
   }
 </script>
