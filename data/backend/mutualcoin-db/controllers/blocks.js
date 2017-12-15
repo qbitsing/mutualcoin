@@ -51,11 +51,12 @@ async function create(block) {
         throw new Error('bad request: amount is required')
     }
 
-    if (isNaN(block.amount)) { 
+    if (isNaN(block.amount)) {
         throw new Error('bad request: amount should be a number')
     }
 
     blockToCreate.amount = block.amount
+    blockToCreate.amountLeft = block.amount
     await validateCoin(block.coin)
 
     blockToCreate.coin = block.coin
@@ -64,7 +65,7 @@ async function create(block) {
         throw new Error('bad request: weeks is required')
     }
 
-    if (isNaN(block.weeks)) { 
+    if (isNaN(block.weeks)) {
         throw new Error('bad request: weeks should be a number')
     }
 
