@@ -4,6 +4,7 @@ const { Schema } = require('mongoose')
 
 const blockSchema = new Schema({
     amount: Number,
+    amountLeft: Number,
     coin: String,
     endingDate: Date,
     startDate: Date,
