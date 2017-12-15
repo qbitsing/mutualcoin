@@ -7,11 +7,11 @@ const config = require('../config')
 const api = asyncify(express.Router())
 const ensure = require('express-jwt')
 
-let blockModel
+let blockUserModel
 
 api.use('*', (req, res, next) => {
-  if (!blockModel) {
-    blockModel = req.db.block
+  if (!blockUserModel) {
+    blockUserModel = req.db.blockUser
   }
 
   next()
@@ -20,36 +20,33 @@ api.use('*', (req, res, next) => {
 api.get('/all',
   ensure({ secret: config.secret }),
     async (req, res, next) => {
-      debug('a request has come to api/block/all')
-      let blocks = []
+      debug('a request has come to api/blockUser/all')
+      let blocksUsers = []
       try {
-        blocks = await blockModel.get()
+        blocksUsers = await blockUserModel.get()
       } catch (error) {
         return next(error)
       }
 
-      res.send({ blocks })
+      res.send({ blocksUsers })
     }
 )
 api.post('/create',
     ensure({ secret: config.secret }),
     async (req, res, next) => {
-      debug('a request has come to api/block/create')
-      if (!req.user.admin) {
-        return next(new Error('Unauthorized'))
-      }
-      const { blockToCreate } = req.body
-      if (!blockToCreate) {
+      debug('a request has come to api/blockUser/create')
+      const { blockUserToCreate } = req.body
+      if (!blockUserToCreate) {
         return next(new Error('bad request: please specify the block to create'))
       }
-      let blockCreated
+      let blockUserCreated
       try {
-        blockCreated = await blockModel.create(blockToCreate)
+        blockUserCreated = await blockUserModel.create(blockUserToCreate)
       } catch (error) {
         return next(error)
       }
 
-      res.send({ blockCreated })
+      res.send({ blockUserCreated })
     }
 )
 
