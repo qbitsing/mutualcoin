@@ -4,6 +4,7 @@ const express = require('express')
 const user = require('./routes/user')
 const coin = require('./routes/coin')
 const block = require('./routes/block')
+const blockUser = require('./routes/blockUser')
 const asyncify = require('express-asyncify')
 const api = asyncify(express.Router())
 const mutualcoinDB = require('mutualcoin-db')
@@ -30,5 +31,6 @@ api.use('*', async (req, res, next) => {
 api.use('/user', user)
 api.use('/coin', coin)
 api.use('/block', block)
+api.use('/blockUser', blockUser)
 
 module.exports = api
