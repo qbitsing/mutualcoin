@@ -100,7 +100,7 @@
           <v-data-table
             :headers="coinHeader"
             :items="coinItems"
-            hide-actions
+            hide-actions="false"
             class="elevation-1">
           <template slot="items" scope="props">
             <td>{{ props.item.name }}</td>
@@ -153,6 +153,7 @@ export default {
   data () {
     return {
       admin: this.$store.state.authUser.admin,
+      pagination: {sortBy: 3},
       clipped: false,
       drawer: true,
       fixed: false,
@@ -168,8 +169,7 @@ export default {
       acronym: null,
       coinHeader: [
         {text: 'Nombre'},
-        {text: 'Acronimo'},
-        {text: 'acciones'}
+        {text: 'Acronimo'}
       ],
       coinItems: [],
       nameRules: [
@@ -218,17 +218,17 @@ export default {
       ]
     }
     let token = this.$store.state.authToken
-    var self = this
     async function getCoin () {
       const res = await api('coin/all', null, 'get', token)
       if (res.status === 200) {
-        self.coinItems = res.data.coins
+        this.coinItems = res.data.coins
       } else {
         console.log(res)
       }
     }
 
-    getCoin()
+    var getcoinbind = getCoin.bind(this)
+    getcoinbind()
   },
   methods: {
     async perfil (el) {
