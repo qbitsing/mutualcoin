@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap>
-      <v-flex xs6 sm4 lg3 v-for="block in blocks" class="pt-2">
+      <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2">
         <mutual-bloque-historial :data="block"></mutual-bloque-historial>
       </v-flex>
     </v-layout>
@@ -13,6 +13,7 @@ export default{
   data () {
     return {
       blocks: [{
+        reference: 213,
         active: true,
         moneda: 'BTC',
         cant: 10,
@@ -20,6 +21,7 @@ export default{
         finish: '12/03/2018',
         myInversion: 6
       }, {
+        reference: 213,
         active: true,
         moneda: 'ETH',
         cant: 15,
@@ -27,6 +29,7 @@ export default{
         finish: '12/03/2018',
         myInversion: 0.78
       }, {
+        reference: 3123,
         active: false,
         moneda: 'ETH',
         cant: 15,
@@ -34,6 +37,7 @@ export default{
         finish: '12/03/2018',
         myInversion: 0.2
       }, {
+        reference: 23123,
         active: true,
         moneda: 'BTC',
         cant: 3,
@@ -41,6 +45,7 @@ export default{
         finish: '12/03/2018',
         myInversion: 1
       }, {
+        reference: 3213,
         active: false,
         moneda: 'ETH',
         cant: 15,
