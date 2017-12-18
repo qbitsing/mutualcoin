@@ -89,8 +89,8 @@ async (req, res, next) => {
 )
 
 api.put('/waiting/:uuid',
-ensure({ secret: config.secret }),
-async (req, res, next) => {
+  ensure({ secret: config.secret }),
+  async (req, res, next) => {
     debug('a request has come to api/block/waiting')
     if (!req.user.admin) {
       return next(new Error('Unauthorized'))
@@ -104,6 +104,78 @@ async (req, res, next) => {
     }
     res.send(result)
   }
+)
+
+api.put('/run/:uuid',
+ensure({ secret: config.secret }),
+async (req, res, next) => {
+  debug('a request has come to api/block/run')
+  if (!req.user.admin) {
+    return next(new Error('Unauthorized'))
+  }
+  const { uuid } = req.params
+  let result
+  try {
+    result = await blockModel.run(uuid)
+  } catch (error) {
+    return next(error)
+  }
+  res.send(result)
+}
+)
+
+api.put('/pause/:uuid',
+ensure({ secret: config.secret }),
+async (req, res, next) => {
+  debug('a request has come to api/block/pause')
+  if (!req.user.admin) {
+    return next(new Error('Unauthorized'))
+  }
+  const { uuid } = req.params
+  let result
+  try {
+    result = await blockModel.pause(uuid)
+  } catch (error) {
+    return next(error)
+  }
+  res.send(result)
+}
+)
+
+api.put('/cancel/:uuid',
+ensure({ secret: config.secret }),
+async (req, res, next) => {
+  debug('a request has come to api/block/cancel')
+  if (!req.user.admin) {
+    return next(new Error('Unauthorized'))
+  }
+  const { uuid } = req.params
+  let result
+  try {
+    result = await blockModel.cancel(uuid)
+  } catch (error) {
+    return next(error)
+  }
+  res.send(result)
+}
+)
+
+api.put('/finish/:uuid',
+ensure({ secret: config.secret }),
+async (req, res, next) => {
+  debug('a request has come to api/block/finish')
+  if (!req.user.admin) {
+    return next(new Error('Unauthorized'))
+  }
+  const { uuid } = req.params
+  let result
+  try {
+    result = await blockModel.finish(uuid)
+  } catch (error) {
+    return next(error)
+  }
+  res.send(result)
+}
 )
 
 module.exports = api
