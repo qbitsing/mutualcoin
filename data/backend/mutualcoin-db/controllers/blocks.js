@@ -30,9 +30,14 @@ async function validateUser(uuid) {
     }
 }
 
-async function get() {
-    return await BlockModel.find({})
+function get() {
+    return BlockModel.find({})
 }
+
+function getActive() { 
+    return BlockModel.find({ state: 'active' })
+}
+
 
 async function create(block) {
     let invalidBlock = null
@@ -77,13 +82,31 @@ async function create(block) {
     return await blockToCreate.save()
 }
 
+async function activate(uuid) { 
+    const block = await BlockModel.findOne({ uuid })
+    
+    if (!block) { 
+        throw new Error('Block not found')
+    }
+
+    if (block.state !== 'inactive') { 
+        throw new Error(`bad request: the block cannot be activated because the state is: ${block.state}`)
+    }
+
+    await BlockModel.findByIdAndUpdate(block._id, { state: 'active' })
+    
+    return { result: true }
+}
+
 module.exports = function(db) {
     BlockModel = db.model('block', blockSchema)
     CoinModel = db.model('coin', coinSchema)
     UserModel = db.model('user', userSchema)
     const blockMethods = {}
     blockMethods.get = get
+    blockMethods.getActive = getActive
     blockMethods.create = create
+    blockMethods.activate = activate
 
     return blockMethods
 }

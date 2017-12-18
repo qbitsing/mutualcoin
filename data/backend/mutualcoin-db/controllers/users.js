@@ -193,6 +193,19 @@ function get() {
     return UsersModel.find({ })
 }
 
+function getByNickname(nickname) { 
+    return UsersModel.find({ nickname })
+}
+
+function getByEmail(email) { 
+    const conds = [
+        { email },
+        { email2: email }
+    ]
+
+    return UsersModel.findOne({ $or: conds })
+}
+
 module.exports = function(db) {
     UsersModel = db.model('user', usersSchema)
 
