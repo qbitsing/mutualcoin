@@ -23,6 +23,7 @@
           ></v-text-field>
           <div>
             <v-btn
+              :loading="loading"
               @click="login"
               :disabled="!valid"
               >
@@ -43,11 +44,13 @@
   }
 </style>
 <script>
-// import api from '~/plugins/axios'
+import swal from 'sweetalert2'
 export default {
   data: () => ({
     valid: true,
     e1: true,
+    loader: null,
+    loading: false,
     password: '',
     email: '',
     emailRules: [
@@ -60,6 +63,9 @@ export default {
   methods: {
     async login () {
       if (this.$refs.form.validate()) {
+        this.loader = 'loading'
+        const l = this.loader
+        this[l] = !this[l]
         try {
           await this.$store.dispatch('login', {
             datas: {
@@ -74,8 +80,10 @@ export default {
             this.$router.push('panel/user/home')
           }
         } catch (e) {
-          alert('Error: ' + e.message)
+          swal('Ooops...', e.message, 'error')
         }
+        this[l] = false
+        this.loader = null
       }
     }
   }
