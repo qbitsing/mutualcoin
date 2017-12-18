@@ -100,14 +100,15 @@
           <v-data-table
             :headers="coinHeader"
             :items="coinItems"
-            hide-actions="false"
+            hide-actions
             class="elevation-1">
-          <template slot="items" scope="props">
-            <td>{{ props.item.name }}</td>
-            <td class="text-xs-right">{{ props.item.acronym }}</td>
-          </template>
-        </v-data-table>
-          
+            <template 
+              slot="items"
+              scope="props">
+              <td>{{ props.item.name }}</td>
+              <td class="text-xs-right">{{ props.item.acronym }}</td>
+            </template>
+          </v-data-table>
         </section>
         
       </mutual-dialog>

@@ -19,7 +19,8 @@ import {
   VProgressLinear,
   VStepper,
   VTooltip,
-  VAlert
+  VAlert,
+  VDataTable
 } from 'vuetify'
 
 Vue.use(Vuetify, {
@@ -51,6 +52,7 @@ Vue.use(Vuetify, {
     VProgressLinear,
     VStepper,
     VTooltip,
-    VAlert
+    VAlert,
+    VDataTable
   }
 })
