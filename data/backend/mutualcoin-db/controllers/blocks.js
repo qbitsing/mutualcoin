@@ -18,6 +18,16 @@ async function validateCoin(uuid) {
     }
 }
 
+async function validateBlock(uuid) { 
+    const block = await BlockModel.findOne({ uuid })
+    
+    if (!block) { 
+        throw new Error('Block not found')
+    }
+
+    return block
+}
+
 async function validateUser(uuid) {
     if (!uuid) {
         return
@@ -34,8 +44,8 @@ function get() {
     return BlockModel.find({})
 }
 
-function getActive() { 
-    return BlockModel.find({ state: 'active' })
+function getState(state) { 
+    return BlockModel.find({ state })
 }
 
 
@@ -83,11 +93,7 @@ async function create(block) {
 }
 
 async function activate(uuid) { 
-    const block = await BlockModel.findOne({ uuid })
-    
-    if (!block) { 
-        throw new Error('Block not found')
-    }
+    const block = await validateBlock(uuid)    
 
     if (block.state !== 'inactive') { 
         throw new Error(`bad request: the block cannot be activated because the state is: ${block.state}`)
@@ -98,15 +104,88 @@ async function activate(uuid) {
     return { result: true }
 }
 
+async function waiting(uuid) { 
+    const block = await validateBlock(uuid)
+    let update = {
+        state: 'waiting'
+    }
+    
+    if (block.state !== 'waiting') { 
+        throw new Error(`bad request: the block cannot be waiting because the state is: ${block.state}`)        
+    }
+
+    if (block.amountLeft > 0) { 
+        update.amount = block.amount - amountLeft
+        update.amountLeft = 0
+    }
+
+    await BlockModel.findByIdAndUpdate(block._id, update)
+    
+    return { result: true }    
+}
+
+async function run(uuid) { 
+    const block = await validateBlock(uuid)
+
+    if (block.state !== 'waiting' && block.state !== 'paused') { 
+        throw new Error(`bad request: the block cannot be runnig because the state is: ${block.state}`)                
+    }
+
+    await BlockModel.findByIdAndUpdate(block._id, { state: 'runnig' })
+    
+    return { result: true }
+}
+
+async function pause(uuid) { 
+    const block = await validateBlock(uuid)
+
+    if (block.state !== 'runnig') { 
+        throw new Error(`bad request: the block cannot be paused because the state is: ${block.state}`)        
+    }
+
+    await BlockModel.findByIdAndUpdate(block._id, { state: 'paused' })
+
+    return { result: true }
+}
+
+async function cancel(uuid) { 
+    const block = await validateBlock(uuid)
+
+    if (block.state === 'finished') { 
+        throw new Error(`bad request: the block cannot be cancel because the state is: ${block.state}`)        
+    }
+
+    await BlockModel.findByIdAndUpdate(block._id, { state: 'cancel' })
+
+    return { result: true }
+}
+
+async function finish(uuid) { 
+    const block = await validateBlock(uuid)
+
+    if (block.state !== 'runnig') { 
+        throw new Error(`bad request: the block cannot be finished because the state is: ${block.state}`)        
+    }
+
+    await BlockModel.findByIdAndUpdate(block._id, { state: 'finished' })
+
+    return { result: true }
+}
+
 module.exports = function(db) {
     BlockModel = db.model('block', blockSchema)
     CoinModel = db.model('coin', coinSchema)
     UserModel = db.model('user', userSchema)
     const blockMethods = {}
     blockMethods.get = get
-    blockMethods.getActive = getActive
+    blockMethods.getState = getState
     blockMethods.create = create
     blockMethods.activate = activate
+    blockMethods.waiting = waiting
+    blockMethods.run = run
+    blockMethods.pause = pause
+    blockMethods.cancel = cancel
+    blockMethods.finish = finish
 
     return blockMethods
 }
