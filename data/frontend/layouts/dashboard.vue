@@ -100,7 +100,6 @@
           <v-data-table
             :headers="coinHeader"
             :items="coinItems"
-            :pagination.sync="pagination"
             class="elevation-1">
             <template 
               slot="items"
@@ -158,10 +157,6 @@ export default {
       drawer: true,
       fixed: false,
       items: null,
-      pagination: {
-        sortBy: 'created_time',
-        descending: true
-      },
       itemPerfil: null,
       itemConf: null,
       miniVariant: false,
