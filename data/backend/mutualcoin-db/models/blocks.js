@@ -10,7 +10,19 @@ const blockSchema = new Schema({
     startDate: Date,
     weeks: Number,
     user: String,
-    state: {type: String, enum: ['paused', 'active', 'finished', 'cancel', 'inactive', 'running', 'waiting'], default: 'inactive'},
+    state: {
+        type: String,
+        enum: [
+            'paused',
+            'active',
+            'finished',
+            'cancel',
+            'inactive',
+            'running',
+            'waiting'
+        ],
+        default: 'inactive'
+    },
     runDays: Number
 })
 

@@ -14,10 +14,11 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/dinastia/mutualcoin#readme",
   "dependencies": {
+    "debug": "^3.1.0",
     "defaults": "^1.0.3",
     "mongoose": "^4.13.6",
-    "uuid": "^3.1.0",
-    "mutualcoin-utils": "file:../utils"
+    "mutualcoin-utils": "file:../utils",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "standart": "^6.1.0"

@@ -31,6 +31,22 @@ api.get('/all',
       res.send({ blocks })
     }
 )
+
+api.get('/active',
+ensure({ secret: config.secret }),
+  async (req, res, next) => {
+    debug('a request has come to api/block/active')
+    let blocks = []
+    try {
+      blocks = await blockModel.getActive()
+    } catch (error) {
+      return next(error)
+    }
+
+    res.send({ blocks })
+  }
+)
+
 api.post('/create',
     ensure({ secret: config.secret }),
     async (req, res, next) => {
@@ -51,6 +67,24 @@ api.post('/create',
 
       res.send({ blockCreated })
     }
+)
+
+api.put('/activate/:uuid',
+ensure({ secret: config.secret }),
+async (req, res, next) => {
+    debug('a request has come to api/block/activate')
+    if (!req.user.admin) {
+      return next(new Error('Unauthorized'))
+    }
+    const { uuid } = req.params
+    let result
+    try {
+      result = await blockModel.activate(uuid)
+    } catch (error) {
+      return next(error)
+    }
+    res.send(result)
+  }
 )
 
 module.exports = api

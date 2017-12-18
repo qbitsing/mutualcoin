@@ -20,6 +20,7 @@ import {
   VStepper,
   VTooltip,
   VAlert,
+  VCheckbox,
   VDataTable
 } from 'vuetify'
 
@@ -53,6 +54,7 @@ Vue.use(Vuetify, {
     VStepper,
     VTooltip,
     VAlert,
+    VCheckbox,
     VDataTable
   }
 })

@@ -4,6 +4,7 @@ const debug = require('debug')('mutualcoin:api:routes')
 const express = require('express')
 const asyncify = require('express-asyncify')
 const config = require('../config')
+const ensure = require('express-jwt')
 const { sing } = require('../auth')
 const api = asyncify(express.Router())
 
@@ -14,6 +15,27 @@ api.use('*', async (req, res, next) => {
     userModel = req.db.user
   }
   next()
+})
+
+api.get('/referrals/:uuid',
+  ensure({ secret: config.secret }),
+  async (req, res, next) => {
+    const { uuid, lines } = req.params
+    let referrals
+    try {
+      referrals = await userModel.getLineReferred(uuid)
+    } catch (error) {
+      return next(error)
+    }
+
+    res.send(referrals)
+  }
+)
+
+api.get('/all', async (req, res, next) => {
+  const users = await userModel.get()
+
+  res.send(users)
 })
 
 api.post('/login', async (req, res, next) => {

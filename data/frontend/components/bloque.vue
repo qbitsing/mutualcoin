@@ -2,9 +2,9 @@
   <v-card class="card">
     <v-layout column justify-center align-center>
       <img :src="`/${data.moneda}.png`">
-      <p>Plan de: {{data.cant}} {{data.moneda}}</p>
+      <p>Plan de: {{data.amount}} {{data.coin}}</p>
       <p>Semanas: {{data.weeks}}</p>
-      <p>Invertidos: {{data.inverted}} {{data.moneda}}</p>
+      <p>Restantes: {{data.amountLeft}} {{data.coin}}</p>
       <v-card-actions>
         <v-btn @click="propsDialog.state = true" color="primary" >Invetir</v-btn>
       </v-card-actions>
@@ -15,44 +15,9 @@
             ref="formMoneda"
             lazy-validation>
             <v-layout wrap>
-              <v-flex
-                xs12
-                sm6>
-                <v-text-field
-                  v-model="name"
-                  label="Moneda"
-                  :rules="nameRules"
-                  required />
-              </v-flex>
-              <v-flex
-                xs12
-                sm6>
-                <v-text-field
-                  v-model="acronym"
-                  label="Acronimo"
-                  :rules="acronymRules"
-                  required/>
-              </v-flex>
+              <h2>Awesome form</h2>
             </v-layout>
-            <v-btn
-              color="primary"
-              @click="submitMoneda"
-              :disabled="!valid"
-            >
-              Guardar
-            </v-btn>
           </v-form>
-          <v-data-table
-            :headers="coinHeader"
-            :items="coinItems"
-            hide-actions
-            class="elevation-1">
-          <template slot="items" scope="props">
-            <td>{{ props.item.name }}</td>
-            <td class="text-xs-right">{{ props.item.acronym }}</td>
-          </template>
-        </v-data-table>
-
         </section>
 
       </mutual-dialog>
@@ -64,6 +29,7 @@ import MutualDialog from '~/components/dialog.vue'
 export default {
   data () {
     return {
+      valid: false,
       propsDialog: { state: false, title: 'Invertir en bloque' }
     }
   },

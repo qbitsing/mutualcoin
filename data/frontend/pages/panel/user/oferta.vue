@@ -9,44 +9,28 @@
 </template>
 <script>
 import MutualBloque from '~/components/bloque.vue'
+import api from '~/plugins/axios'
 export default{
   data () {
     return {
-      blocks: [{
-        reference: 123,
-        moneda: 'BTC',
-        cant: 10,
-        weeks: 12,
-        inverted: 8.3
-      }, {
-        reference: 1234,
-        moneda: 'ETH',
-        cant: 15,
-        weeks: 12,
-        inverted: 8
-      }, {
-        reference: 213,
-        moneda: 'ETH',
-        cant: 15,
-        weeks: 12,
-        inverted: 8
-      }, {
-        reference: 13213,
-        moneda: 'BTC',
-        cant: 3,
-        weeks: 12,
-        inverted: 8
-      }, {
-        reference: 12323,
-        moneda: 'ETH',
-        cant: 15,
-        weeks: 12,
-        inverted: 8
-      }]
+      blocks: []
     }
   },
   components: { MutualBloque },
   layout: 'dashboard',
+  async created () {
+    const token = this.$store.state.authToken
+    const res = await api('block/active', {}, 'get', token)
+    for (let block of res.data.blocks) {
+      this.blocks.push({
+        reference: block._id,
+        coin: block.coin.toUpercase(),
+        weeks: block.weeks,
+        amount: block.amount,
+        amountLeft: block.amountLeft
+      })
+    }
+  },
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Oferta')
   }
