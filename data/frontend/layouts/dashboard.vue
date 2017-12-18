@@ -100,7 +100,7 @@
           <v-data-table
             :headers="coinHeader"
             :items="coinItems"
-            hide-actions
+            :pagination.sync="pagination"
             class="elevation-1">
             <template 
               slot="items"
@@ -154,11 +154,14 @@ export default {
   data () {
     return {
       admin: this.$store.state.authUser.admin,
-      pagination: {sortBy: 3},
       clipped: false,
       drawer: true,
       fixed: false,
       items: null,
+      pagination: {
+        sortBy: 'created_time',
+        descending: true
+      },
       itemPerfil: null,
       itemConf: null,
       miniVariant: false,
@@ -169,8 +172,8 @@ export default {
       name: null,
       acronym: null,
       coinHeader: [
-        {text: 'Nombre'},
-        {text: 'Acronimo'}
+        {text: 'Nombre', value: 'name'},
+        {text: 'Acronimo', value: 'name'}
       ],
       coinItems: [],
       nameRules: [
