@@ -6,6 +6,7 @@ const blockSchema = new Schema({
     amount: Number,
     amountLeft: Number,
     coin: String,
+    uuid: String,
     endingDate: Date,
     startDate: Date,
     weeks: Number,
