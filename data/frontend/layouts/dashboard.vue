@@ -94,7 +94,13 @@
               @click="submitMoneda"
               :disabled="!valid"
             >
-              Guardar
+              {{btnMoneda}}
+            </v-btn>
+            <v-btn
+              color="error"
+              @click="cancelarMoneda"
+            >
+              Cancelar
             </v-btn>
           </v-form>
           <v-data-table
@@ -106,6 +112,7 @@
               scope="props">
               <td>{{ props.item.name }}</td>
               <td class="text-xs-right">{{ props.item.acronym }}</td>
+              <td class="text-xs-right"><v-btn small color="warning" dark @click="editarMoneda(props.item)">editar</v-btn></td>
             </template>
           </v-data-table>
         </section>
@@ -154,6 +161,8 @@ export default {
     return {
       admin: this.$store.state.authUser.admin,
       clipped: false,
+      uuid: null,
+      btnMoneda: 'Guardar',
       drawer: true,
       fixed: false,
       items: null,
@@ -168,7 +177,8 @@ export default {
       acronym: null,
       coinHeader: [
         {text: 'Nombre', value: 'name'},
-        {text: 'Acronimo', value: 'name'}
+        {text: 'Acronimo', value: 'name'},
+        {text: 'Acciones'}
       ],
       coinItems: [],
       nameRules: [
@@ -247,23 +257,54 @@ export default {
     async submitMoneda () {
       if (this.$refs.formMoneda.validate()) {
         try {
-          const data = {
-            coinToCreate: {
-              name: this.name,
-              acronym: this.acronym
+          if (this.btnMoneda === 'Guardar') {
+            const data = {
+              coinToCreate: {
+                name: this.name,
+                acronym: this.acronym
+              }
             }
-          }
-          const res = await api('coin/create', data, 'post', this.$store.state.authToken)
-          if (res.status === 200) {
-            this.$refs.formMoneda.reset()
-            swal('Excelente...', 'Moneda registrada correctamente', 'success')
+            const res = await api('coin/create', data, 'post', this.$store.state.authToken)
+            if (res.status === 200) {
+              this.$refs.formMoneda.reset()
+              console.log(res)
+              swal('Excelente...', 'Moneda registrada correctamente', 'success')
+            } else {
+              console.log(res)
+            }
           } else {
-            console.log(res)
+            const data = {
+              coinToUpdate: {
+                name: this.name,
+                acronym: this.acronym
+              }
+            }
+            console.log(data)
+            const res = await api('coin/update/' + this.uuid, data, 'put', this.$store.state.authToken)
+            if (res.status === 200) {
+              this.$refs.formMoneda.reset()
+              swal('Excelente...', 'Moneda actualizada correctamente', 'success')
+            } else {
+              console.log(res)
+            }
           }
         } catch (error) {
 
         }
       }
+    },
+    editarMoneda (el) {
+      this.btnMoneda = 'Actualizar'
+      this.name = el.name
+      this.acronym = el.acronym
+      this.uuid = el.uuid
+    },
+    cancelarMoneda () {
+      this.uuid = null
+      this.$refs.formMoneda.reset()
+      this.btnMoneda = 'Guardar'
+      this.name = null
+      this.acronym = null
     }
   }
 }
