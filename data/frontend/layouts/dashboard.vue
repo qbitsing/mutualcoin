@@ -5,8 +5,7 @@
       :clipped="clipped"
       v-model="drawer"
       fixed
-      app
-      >
+      app>
       <v-list>
         <v-list-tile
           router
@@ -16,51 +15,78 @@
           exact
         >
           <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
+            <v-icon v-html="item.icon"/>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+            <v-list-tile-title v-text="item.title"/>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar fixed app :clipped-left="clipped">
-      <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
+    <v-toolbar 
+      fixed 
+      app 
+      :clipped-left="clipped">
+      <v-toolbar-side-icon @click="drawer = !drawer"/>
       <v-btn
         icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
+        @click.stop="miniVariant = !miniVariant">
+        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"/>
       </v-btn>
       <v-btn
         icon
-        @click.stop="clipped = !clipped"
-      >
+        @click.stop="clipped = !clipped">
         <v-icon>web</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="$store.state.titleView"></v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-menu offset-y origin="center center" transition="scale-transition" bottom v-if="admin">
-        <v-btn icon slot="activator">
+      <v-toolbar-title v-text="$store.state.titleView"/>
+      <v-spacer/>
+      <v-menu 
+        offset-y 
+        origin="center center" 
+        transition="scale-transition" 
+        bottom 
+        v-if="admin">
+        <v-btn 
+          icon 
+          slot="activator">
           <v-icon>settings</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile v-for="item in itemConf" :key="item.title" @click="config(item.title)">
+          <v-list-tile 
+            v-for="item in itemConf" 
+            :key="item.title" 
+            @click="config(item.title)">
             <v-list-tile-title>
-              <v-icon v-html="item.icon"></v-icon>
+              <v-icon v-html="item.icon"/>
               {{ item.title }}
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
       <mutual-dialog :dialog="propsDialog">
-          <v-form v-model="valid" slot="contenDialog" ref="formMoneda" lazy-validation>
+        <section slot="contenDialog">
+          <v-form 
+            v-model="valid" 
+            ref="formMoneda" 
+            lazy-validation>
             <v-layout wrap>
-              <v-flex xs12 sm6>
-                <v-text-field v-model="name" label="Moneda" :rules="nameRules" required ></v-text-field>
+              <v-flex 
+                xs12 
+                sm6>
+                <v-text-field 
+                  v-model="name" 
+                  label="Moneda" 
+                  :rules="nameRules" 
+                  required />
               </v-flex>
-              <v-flex xs12 sm6>
-                <v-text-field v-model="acronym" label="Acronimo" :rules="acronymRules" required></v-text-field>
+              <v-flex 
+                xs12 
+                sm6>
+                <v-text-field 
+                  v-model="acronym" 
+                  label="Acronimo" 
+                  :rules="acronymRules" 
+                  required/>
               </v-flex>
             </v-layout>
             <v-btn
@@ -71,15 +97,38 @@
               Guardar
             </v-btn>
           </v-form>
+          <v-data-table
+            :headers="coinHeader"
+            :items="coinItems"
+            hide-actions
+            class="elevation-1">
+            <template 
+              slot="items"
+              scope="props">
+              <td>{{ props.item.name }}</td>
+              <td class="text-xs-right">{{ props.item.acronym }}</td>
+            </template>
+          </v-data-table>
+        </section>
+        
       </mutual-dialog>
-      <v-menu  offset-y origin="center center" transition="scale-transition" bottom>
-        <v-btn icon slot="activator">
+      <v-menu 
+        offset-y
+        origin="center center"
+        transition="scale-transition"
+        bottom>
+        <v-btn 
+          icon
+          slot="activator">
           <v-icon>person_pin</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile v-for="item in itemPerfil" :key="item.title" @click="perfil(item.title)">
+          <v-list-tile 
+            v-for="item in itemPerfil" 
+            :key="item.title"
+            @click="perfil(item.title)">
             <v-list-tile-title>
-              <v-icon v-html="item.icon"></v-icon>
+              <v-icon v-html="item.icon"/>
               {{ item.title }}
             </v-list-tile-title>
           </v-list-tile>
@@ -105,6 +154,7 @@ export default {
   data () {
     return {
       admin: this.$store.state.authUser.admin,
+      pagination: {sortBy: 3},
       clipped: false,
       drawer: true,
       fixed: false,
@@ -118,6 +168,11 @@ export default {
       valid: false,
       name: null,
       acronym: null,
+      coinHeader: [
+        {text: 'Nombre'},
+        {text: 'Acronimo'}
+      ],
+      coinItems: [],
       nameRules: [
         (v) => !!v || 'Nombre es requerido'
       ],
@@ -127,7 +182,8 @@ export default {
     }
   },
   components: {MutualDialog},
-  beforeMount () {
+
+  created () {
     if (this.admin) {
       this.items = [
         { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
@@ -162,6 +218,18 @@ export default {
         {icon: 'exit_to_app', title: 'Salir'}
       ]
     }
+    let token = this.$store.state.authToken
+    async function getCoin () {
+      const res = await api('coin/all', null, 'get', token)
+      if (res.status === 200) {
+        this.coinItems = res.data.coins
+      } else {
+        console.log(res)
+      }
+    }
+
+    var getcoinbind = getCoin.bind(this)
+    getcoinbind()
   },
   methods: {
     async perfil (el) {
