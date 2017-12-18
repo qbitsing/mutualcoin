@@ -32,13 +32,14 @@ api.get('/all',
     }
 )
 
-api.get('/active',
+api.get('/:state',
 ensure({ secret: config.secret }),
   async (req, res, next) => {
+    const { state } = req.params
     debug('a request has come to api/block/active')
     let blocks = []
     try {
-      blocks = await blockModel.getActive()
+      blocks = await blockModel.getState(state)
     } catch (error) {
       return next(error)
     }
@@ -80,6 +81,24 @@ async (req, res, next) => {
     let result
     try {
       result = await blockModel.activate(uuid)
+    } catch (error) {
+      return next(error)
+    }
+    res.send(result)
+  }
+)
+
+api.put('/waiting/:uuid',
+ensure({ secret: config.secret }),
+async (req, res, next) => {
+    debug('a request has come to api/block/waiting')
+    if (!req.user.admin) {
+      return next(new Error('Unauthorized'))
+    }
+    const { uuid } = req.params
+    let result
+    try {
+      result = await blockModel.waiting(uuid)
     } catch (error) {
       return next(error)
     }
