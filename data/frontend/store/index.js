@@ -1,12 +1,14 @@
 // import api from '~/plugins/axios'
 import axios from 'axios'
+export const strict = false
 export const state = () => ({
   sidebar: false,
   token: null,
   titleView: null,
   userInfo: null,
   authToken: null,
-  authUser: null
+  authUser: null,
+  coins: null
 })
 
 export const mutations = {
@@ -20,6 +22,9 @@ export const mutations = {
   },
   TITLE_VIEW: (state, title) => {
     state.titleView = title
+  },
+  SET_COINS: (state, coins) => {
+    state.coins = coins
   }
 }
 export const actions = {
@@ -49,5 +54,8 @@ export const actions = {
       }
       throw e
     }
+  },
+  setCoins ({commit}, coins) {
+    commit('SET_COINS', coins)
   }
 }
