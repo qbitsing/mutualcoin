@@ -170,8 +170,8 @@ export default {
     },
     async activar (item) {
       console.log(item)
-      const token = this.$store.state.authToken
-      const res = await api(`block/activate/${item.uuid}`)
+      // const token = this.$store.state.authToken
+      // const res = await api(`block/activate/${item.uuid}`)
     }
   },
   created () {
