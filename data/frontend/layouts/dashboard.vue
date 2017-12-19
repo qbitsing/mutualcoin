@@ -178,12 +178,12 @@ export default {
       valid: false,
       name: null,
       acronym: null,
+      coinItems: [],
       coinHeader: [
         {text: 'Nombre', value: 'name'},
         {text: 'Acronimo', value: 'acronym'},
         {text: 'Acciones', sortable: false}
       ],
-      coinItems: [],
       nameRules: [
         (v) => !!v || 'Nombre es requerido'
       ],
@@ -199,6 +199,7 @@ export default {
       this.items = [
         { icon: 'apps', title: 'Home', to: '/panel/admin/home' },
         { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/admin/activarbloque' },
+        { icon: 'bubble_chart', title: 'Bloques en inversion', to: '/panel/admin/bloqueinversion' },
         { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/admin/usuarios' },
         { icon: 'apps', title: 'Transaciones', to: '/panel/admin/transaciones' },
         { icon: 'apps', title: 'Estructura', to: '/panel/admin/estructura' },
@@ -229,18 +230,7 @@ export default {
         {icon: 'exit_to_app', title: 'Salir'}
       ]
     }
-    let token = this.$store.state.authToken
-    async function getCoin () {
-      const res = await api('coin/all', null, 'get', token)
-      if (res.status === 200) {
-        this.coinItems = res.data.coins
-      } else {
-        console.log(res)
-      }
-    }
-
-    var getcoinbind = getCoin.bind(this)
-    getcoinbind()
+    this.getCoin()
   },
   methods: {
     async perfil (el) {
@@ -259,6 +249,7 @@ export default {
     },
     async submitMoneda () {
       if (this.$refs.formMoneda.validate()) {
+        this.coinItems = this.$store.state.coins
         this.loader = 'loading'
         const l = this.loader
         this[l] = !this[l]
@@ -274,6 +265,7 @@ export default {
             if (res.status === 200) {
               this.$refs.formMoneda.reset()
               this.coinItems.push(res.data.coinCreated)
+              this.$store.dispatch('setCoins', this.coinItems)
               swal('Excelente...', 'Moneda registrada correctamente', 'success')
             } else {
               console.log(res)
@@ -290,6 +282,7 @@ export default {
               this.coinItems.forEach((ele, index) => {
                 if (ele.uuid === this.uuid) {
                   this.coinItems.splice(index, 1, res.data.coinUpdated)
+                  this.$store.dispatch('setCoins', this.coinItems)
                 }
               })
               this.btnMoneda = 'Guardar'
@@ -319,7 +312,17 @@ export default {
       this.btnMoneda = 'Guardar'
       this.name = null
       this.acronym = null
+    },
+    async getCoin () {
+      const res = await api('coin/all', {}, 'get', this.$store.state.authToken)
+      if (res.status === 200) {
+        this.$store.dispatch('setCoins', res.data.coins)
+        this.coinItems = this.$store.state.coins
+      } else {
+        console.log(res)
+      }
     }
+
   }
 }
 </script>
