@@ -73,19 +73,19 @@ api.post('/create',
 api.put('/activate/:uuid',
 ensure({ secret: config.secret }),
 async (req, res, next) => {
-    debug('a request has come to api/block/activate')
-    if (!req.user.admin) {
-      return next(new Error('Unauthorized'))
-    }
-    const { uuid } = req.params
-    let result
-    try {
-      result = await blockModel.activate(uuid)
-    } catch (error) {
-      return next(error)
-    }
-    res.send(result)
+  debug('a request has come to api/block/activate')
+  if (!req.user.admin) {
+    return next(new Error('Unauthorized'))
   }
+  const { uuid } = req.params
+  let result
+  try {
+    result = await blockModel.activate(uuid)
+  } catch (error) {
+    return next(error)
+  }
+  res.send(result)
+}
 )
 
 api.put('/waiting/:uuid',

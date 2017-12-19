@@ -20,7 +20,7 @@ api.use('*', async (req, res, next) => {
 api.get('/referrals/:uuid',
   ensure({ secret: config.secret }),
   async (req, res, next) => {
-    const { uuid, lines } = req.params
+    const { uuid } = req.params
     let referrals
     try {
       referrals = await userModel.getLineReferred(uuid)

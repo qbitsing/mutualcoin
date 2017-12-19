@@ -4,7 +4,8 @@
   "description": "Module of utilis of mutualcoin.com platform",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "standard"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "homepage": "https://bitbucket.org/dinastia/mutualcoin#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3"
   }
 }
