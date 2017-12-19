@@ -1,15 +1,14 @@
 <template>
   <v-card class="card">
     <v-layout column justify-center align-center>
-      <img :src="`/${data.moneda}.png`">
-      <p>Plan de: {{data.amount}} {{data.moneda}}</p>
+      <img :src="`/${data.coin}.png`">
+      <p>Plan de: {{data.amount}} {{data.coin}}</p>
       <p>Semanas: {{data.weeks}}</p>
       <p>Invertidos:
         {{data.amount - data.amountLeft}}
       </p>
       <v-card-actions>
-        <v-btn color="success" >Iniciar</v-btn>
-        <v-btn color="error" >Cancelar</v-btn>
+        <v-btn color="success" >Detalles</v-btn>
       </v-card-actions>
     </v-layout>
   </v-card>
