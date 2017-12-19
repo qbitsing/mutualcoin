@@ -90,6 +90,7 @@
               </v-flex>
             </v-layout>
             <v-btn
+              :loading="loading"
               color="primary"
               @click="submitMoneda"
               :disabled="!valid"
@@ -99,7 +100,7 @@
             <v-btn
               color="error"
               @click="cancelarMoneda"
-            >
+              :disabled="loading">
               Cancelar
             </v-btn>
           </v-form>
@@ -160,6 +161,8 @@ export default {
   data () {
     return {
       admin: this.$store.state.authUser.admin,
+      loader: null,
+      loading: false,
       clipped: false,
       uuid: null,
       btnMoneda: 'Guardar',
@@ -177,8 +180,8 @@ export default {
       acronym: null,
       coinHeader: [
         {text: 'Nombre', value: 'name'},
-        {text: 'Acronimo', value: 'name'},
-        {text: 'Acciones'}
+        {text: 'Acronimo', value: 'acronym'},
+        {text: 'Acciones', sortable: false}
       ],
       coinItems: [],
       nameRules: [
@@ -256,6 +259,9 @@ export default {
     },
     async submitMoneda () {
       if (this.$refs.formMoneda.validate()) {
+        this.loader = 'loading'
+        const l = this.loader
+        this[l] = !this[l]
         try {
           if (this.btnMoneda === 'Guardar') {
             const data = {
@@ -267,7 +273,7 @@ export default {
             const res = await api('coin/create', data, 'post', this.$store.state.authToken)
             if (res.status === 200) {
               this.$refs.formMoneda.reset()
-              console.log(res)
+              this.coinItems.push(res.data.coinCreated)
               swal('Excelente...', 'Moneda registrada correctamente', 'success')
             } else {
               console.log(res)
@@ -279,15 +285,23 @@ export default {
                 acronym: this.acronym
               }
             }
-            console.log(data)
             const res = await api('coin/update/' + this.uuid, data, 'put', this.$store.state.authToken)
             if (res.status === 200) {
+              this.coinItems.forEach((ele, index) => {
+                if (ele.uuid === this.uuid) {
+                  this.coinItems.splice(index, 1, res.data.coinUpdated)
+                }
+              })
+              this.btnMoneda = 'Guardar'
               this.$refs.formMoneda.reset()
+              this.uuid = null
               swal('Excelente...', 'Moneda actualizada correctamente', 'success')
             } else {
               console.log(res)
             }
           }
+          this[l] = false
+          this.loader = null
         } catch (error) {
 
         }

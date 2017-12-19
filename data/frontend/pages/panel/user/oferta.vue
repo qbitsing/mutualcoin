@@ -20,11 +20,11 @@ export default{
   layout: 'dashboard',
   async created () {
     const token = this.$store.state.authToken
-    const res = await api('block/active', {}, 'get', token)
+    const res = await api('block/all', {}, 'get', token)
     for (let block of res.data.blocks) {
       this.blocks.push({
         reference: block._id,
-        coin: block.coin.toUpercase(),
+        coin: block.coin.toUpperCase(),
         weeks: block.weeks,
         amount: block.amount,
         amountLeft: block.amountLeft
