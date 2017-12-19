@@ -92,8 +92,8 @@
             <td class="text-xs-center">{{ props.item.state }}</td>
             <td class="text-xs-right">
               <v-btn small color="primary" dark @click="activar(props.item)" v-if="props.item.state == 'inactive'">activar</v-btn>
-              <v-btn small color="primary" dark @click="iniciar(props.item)" v-if="props.item.state == 'active'">iniciar</v-btn>
-              <v-btn small color="primary" dark @click="reanudar(props.item)" v-if="props.item.state == 'waiting'">reanudar</v-btn>
+              <v-btn small color="primary" dark @click="iniciar(props.item)" v-if="props.item.state == 'waiting'">iniciar</v-btn>
+              <v-btn small color="primary" dark @click="reanudar(props.item)" v-if="props.item.state == 'paused'">reanudar</v-btn>
               <v-btn small color="warning" dark @click="pausar(props.item)" v-if="props.item.state == 'running'">pausar</v-btn>
               <v-btn small color="error" dark @click="cancelar(props.item)" v-if="props.item.state != 'finished'">cancelar</v-btn>
               <v-btn small color="secondary" dark @click="info(props.item)" v-if="props.item.state != 'finished'">info</v-btn>
@@ -167,6 +167,11 @@ export default {
     },
     clear () {
       this.$refs.activarBloque.reset()
+    },
+    async activar (item) {
+      console.log(item)
+      const token = this.$store.state.authToken
+      const res = await api(`block/activate/${item.uuid}`)
     }
   },
   created () {
