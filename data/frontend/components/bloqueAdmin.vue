@@ -34,7 +34,7 @@
     },
     methods: {
       goBlock (block) {
-        console.log(block)
+        this.$router.push({path: `/panel/admin/${block}`})
       }
     }
   }
