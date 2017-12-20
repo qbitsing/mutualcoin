@@ -68,12 +68,12 @@ async function get() {
     return await BlockUserModel.find({})
 }
 async function create(blockUser) {
-    // const block = await validateBlock(blockUser)
-    await validateBlock(blockUser)
+    const block = await validateBlock(blockUser)
     await validateUser(blockUser)
     validateConfig(blockUser)
     validateAmount(blockUser)
-
+    let amountLeft = block.amountLeft - blockUser.amount
+    await BlockModel.findByIdAndUpdate(block._id, { amountLeft })
     const blockUserToCreate = new BlockUserModel()
 
     blockUserToCreate.amount = blockSchema.amount
@@ -82,7 +82,6 @@ async function create(blockUser) {
     blockUserToCreate.high = blockSchema.high
     blockUserToCreate.medium = blockSchema.medium
     blockUserToCreate.low = blockSchema.low
-    blockUserToCreate.valid = false
 
     return await blockUserToCreate.save()
 }
