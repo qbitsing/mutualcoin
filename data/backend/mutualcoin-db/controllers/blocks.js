@@ -3,8 +3,9 @@
 const blockSchema = require('../models/blocks')
 const coinSchema = require('../models/coins')
 const userSchema = require('../models/users')
+const blockUserSchema = require('../models/block-user')
 const { v4 } = require('uuid')
-let BlockModel, CoinModel, UserModel
+let BlockModel, CoinModel, UserModel, BlockUserModel
 
 async function validateCoin(uuid) {
   if (!uuid) {
@@ -48,7 +49,6 @@ function getState(state) {
   return BlockModel.find({ $or: state })
 }
 
-
 async function create(block) {
   let invalidBlock = null
   let uuid = v4()
@@ -88,7 +88,7 @@ async function create(block) {
 
   await validateUser(block.user)
   blockToCreate.user = block.user
-  
+
   blockToCreate.uuid = block.uuid
 
   return await blockToCreate.save()
@@ -117,7 +117,7 @@ async function waiting(uuid) {
   }
 
   if (block.amountLeft > 0) {
-    update.amount = block.amount - amountLeft
+    update.amount = block.amount - block.amountLeft
     update.amountLeft = 0
   }
 
@@ -174,10 +174,30 @@ async function finish(uuid) {
   return { result: true }
 }
 
-module.exports = function (db) {
+async function updateAmount(uuid, amount) {
+  const block = await validateBlock(uuid)
+  const investments = await BlockUserModel.find({ block : uuid })
+
+  let invested = 0
+
+  investments.forEach(investment => {
+    invested += investment.amount
+  })
+
+  if (amount < invested) {
+    throw new Error('bad request: the amount cannot be lower to amount invested')
+  }
+
+  await BlockModel.findByIdAndUpdate(block._id, { amount })
+
+  return { result: true }
+}
+
+module.exports = function(db) {
   BlockModel = db.model('block', blockSchema)
   CoinModel = db.model('coin', coinSchema)
   UserModel = db.model('user', userSchema)
+  BlockUserModel = db.model('blocks_user', blockUserSchema)
   const blockMethods = {}
   blockMethods.get = get
   blockMethods.getState = getState
@@ -188,6 +208,7 @@ module.exports = function (db) {
   blockMethods.pause = pause
   blockMethods.cancel = cancel
   blockMethods.finish = finish
+  blockMethods.updateAmount = updateAmount
 
   return blockMethods
 }

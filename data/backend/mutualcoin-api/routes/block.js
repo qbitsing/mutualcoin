@@ -9,34 +9,34 @@ const ensure = require('express-jwt')
 const secret = { secret: config.secret }
 let blockModel
 
-function setConds(query) {
+function setConds (query) {
   const conds = []
 
-  if (query.paused) { 
+  if (query.paused) {
     conds.push({ state: 'paused' })
   }
 
-  if (query.active) { 
+  if (query.active) {
     conds.push({ state: 'active' })
   }
 
-  if (query.finished) { 
+  if (query.finished) {
     conds.push({ state: 'finished' })
   }
 
-  if (query.cancel) { 
+  if (query.cancel) {
     conds.push({ state: 'cancel' })
   }
 
-  if (query.inactive) { 
+  if (query.inactive) {
     conds.push({ state: 'inactive' })
   }
 
-  if (query.running) { 
+  if (query.running) {
     conds.push({ state: 'running' })
   }
 
-  if (query.waiting) { 
+  if (query.waiting) {
     conds.push({ state: 'waiting' })
   }
 
@@ -199,6 +199,24 @@ api.put('/finish/:uuid',
     let result
     try {
       result = await blockModel.finish(uuid)
+    } catch (error) {
+      return next(error)
+    }
+    res.send(result)
+  }
+)
+
+api.put('/amount/:uuid/:amount',
+  ensure({ secret: config.secret }),
+  async (req, res, next) => {
+    debug('a request has come to api/block/finish')
+    if (!req.user.admin) {
+      return next(new Error('Unauthorized'))
+    }
+    const { uuid, amount } = req.params
+    let result
+    try {
+      result = await blockModel.updateAmount(uuid, amount)
     } catch (error) {
       return next(error)
     }
