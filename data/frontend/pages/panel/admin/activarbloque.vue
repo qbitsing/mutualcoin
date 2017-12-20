@@ -28,19 +28,19 @@
                 label="Monto"
                 :rules="inputRules"
                 v-model="amount"
+                @keypress="preventLetters"
                 ></v-text-field>
               </v-flex>
               <v-flex xs12 sm6>
-                <v-select
-                :items="weeks"
-                v-model="week"
+                <v-text-field
+                type="Number"
+                min="0"
+                label="Semanas"
                 :rules="inputRules"
-                label="Semanas de duración"
-                single-line
-                required
-                bottom
+                v-model="weeks"
+                @keypress="preventLetters"
                 >
-                </v-select>
+                </v-text-field>
               </v-flex>
               <v-flex xs12 sm6>
                 <v-layout align-center class="user-layout">
@@ -87,7 +87,7 @@
           <template
             slot="items"
             scope="props">
-            <td class="text-xs-center">{{ props.item.coin }}</td>
+            <td class="text-xs-center">{{ getNameByUuid(props.item.coin) }}</td>
             <td class="text-xs-center">{{ props.item.amount }}</td>
             <td class="text-xs-center">{{ props.item.weeks }}</td>
             <td class="text-xs-center">{{ props.item.state }}</td>
@@ -110,12 +110,12 @@ import api from '~/plugins/axios'
 import swal from 'sweetalert2'
 export default {
   layout: 'dashboard',
-  middleware: 'auth',
+  middleware: ['auth', 'blocks', 'coins'],
   data () {
     return {
       valid: false,
       coin: null,
-      week: null,
+      weeks: null,
       amount: null,
       user: null,
       userCheck: false,
@@ -130,14 +130,6 @@ export default {
       blocks: [],
       inputRules: [
         (v) => !!v || 'Campo requerido'
-      ],
-      weeks: [
-        { text: '4' },
-        { text: '8' },
-        { text: '12' },
-        { text: '16' },
-        { text: '20' },
-        { text: '24' }
       ]
     }
   },
@@ -149,7 +141,7 @@ export default {
           blockToCreate: {
             coin: self.coin.uuid,
             amount: parseInt(self.amount),
-            weeks: parseInt(self.week.text)
+            weeks: parseInt(self.weeks)
           }
         }
         if (this.userCheck) {
@@ -165,23 +157,51 @@ export default {
         }
       }
     },
+    preventLetters (ev) {
+      if (ev.keyCode < 48 || ev.keyCode > 57) {
+        ev.preventDefault()
+      }
+    },
     clear () {
       this.$refs.activarBloque.reset()
     },
     async activar (item) {
-      console.log(item)
       const token = this.$store.state.authToken
-      const res = await api(`block/activate/${item.uuid}`, {}, 'put', token)
-      console.log(res)
+      swal({
+        title: 'Cuidado',
+        text: '¿Está seguro de que desea activar el bloque?',
+        input: 'password',
+        inputPlaceholder: 'Ingrese su contraseña',
+        showCancelButton: true,
+        inputValidator: (value) => {
+          return !value && 'Escribe la contraseña'
+        },
+        showLoaderOnConfirm: true,
+        preConfirm: async (password) => {
+          console.log(item)
+          // await alert(item.uuid)
+          const res = await api(`block/activate/${item.uuid}`, {}, 'put', token)
+          if (res.status === 200) {
+            const index = this.blocks.findIndex(el => el.uuid === item.uuid)
+            console.log(index)
+            return swal('Excelente', 'Bloque activado con éxito.', 'success')
+          } else return swal('Ooops...', 'Error al activar el bloque.', 'error')
+        }
+      })
+      // if (name) {
+      //   swal({type: 'success', title: 'Hi, ' + name})
+      //   // const res = await api(`block/activate/${item.uuid}`, {}, 'put', token)
+      // }
+    },
+    getNameByUuid (uuid) {
+      const coins = this.$store.state.coins
+      const coin = coins.filter(coin => coin.uuid === uuid)
+      return coin[0].name
     }
   },
   async created () {
-    const token = this.$store.state.authToken
-    let res = await api('coin/all', {}, 'get', token)
-    this.coins = res.data.coins
-    res = await api('block/all', {}, 'get', token)
-    this.blocks = res.data.blocks
-    console.log(this.blocks)
+    this.coins = this.$store.state.coins
+    this.blocks = this.$store.state.blocks
   },
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
