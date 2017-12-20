@@ -8,7 +8,8 @@ export const state = () => ({
   userInfo: null,
   authToken: null,
   authUser: null,
-  coins: null
+  coins: null,
+  blocks: null
 })
 
 export const mutations = {
@@ -25,6 +26,9 @@ export const mutations = {
   },
   SET_COINS: (state, coins) => {
     state.coins = coins
+  },
+  SET_BLOCKS: (state, blocks) => {
+    state.blocks = blocks
   }
 }
 export const actions = {

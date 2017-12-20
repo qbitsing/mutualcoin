@@ -1,6 +1,15 @@
 <template>
   <v-card class="card">
-    <v-layout column justify-center align-center>
+    <v-layout column justify-center align-center class="layout">
+      <h2 v-if="data.state === 'waiting'" :class="data.active ? 'waiting' : 'waiting'">
+        {{'En espera'}}
+      </h2>
+      <h2 v-if="data.state === 'running'" :class="data.active ? 'running' : 'running'">
+        {{'En marcha'}}
+      </h2>
+      <h2 v-if="data.state === 'paused'" :class="data.active ? 'paused' : 'paused'">
+        {{'Pausado'}}
+      </h2>
       <img :src="`/${data.coin}.png`">
       <p>Plan de: {{data.amount}} {{data.coin}}</p>
       <p>Semanas: {{data.weeks}}</p>
@@ -8,7 +17,7 @@
         {{data.amount - data.amountLeft}}
       </p>
       <v-card-actions>
-        <v-btn color="success" >Detalles</v-btn>
+        <v-btn color="success" @click="goBlock(data.uuid)">Detalles</v-btn>
       </v-card-actions>
     </v-layout>
   </v-card>
@@ -22,10 +31,29 @@
     },
     props: {
       data: { type: Object, required: true }
+    },
+    methods: {
+      goBlock (block) {
+        console.log(block)
+      }
     }
   }
 </script>
-<style lang="css">
+<style scoped>
+  h2{
+    color: #fff;
+    text-align: center;
+    width: calc(100% - 8px);
+  }
+  h2.paused {
+    background: #B71C1C;
+  }
+  h2.waiting {
+    background: #ffb300;
+  }
+  h2.running {
+    background: #2E7D32;
+  }
   img{
     box-sizing: border-box;
     max-width: 80%;

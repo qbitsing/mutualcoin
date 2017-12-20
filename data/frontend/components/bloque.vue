@@ -39,7 +39,7 @@ export default {
   }
 }
 </script>
-<style lang="css">
+<style lang="css" scoped>
 img{
   box-sizing: border-box;
   max-width: 80%;
