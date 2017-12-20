@@ -8,7 +8,7 @@
         <v-container grid-list-md>
           <v-layout row wrap>
             <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2">
-              <mutual-block  :data="block"  />
+              <mutual-block  :data="block" v-if="block.state === 'active'"/>
             </v-flex>
           </v-layout>
         </v-container>
@@ -22,7 +22,7 @@
         <v-container grid-list-md>
           <v-layout row wrap>
             <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2">
-              <mutual-block  :data="block"  />
+              <mutual-block  :data="block" v-if="block.state === 'waiting' || block.state === 'running' || block.state === 'paused'"/>
             </v-flex>
           </v-layout>
         </v-container>
@@ -51,7 +51,15 @@ export default {
   components: {MutualBlock},
   methods: {
     async getBlock () {
-      const res = await api('block/state', {}, 'get', this.$store.state.authToken, {params: {active: 'active', waiting: 'waiting'}})
+      const params = {
+        params: {
+          active: 'active',
+          waiting: 'waiting',
+          running: 'running',
+          paused: 'paused'
+        }
+      }
+      const res = await api('block/state', {}, 'get', this.$store.state.authToken, params)
       if (res.status === 200) {
         this.coins = this.$store.state.coins
         this.blocks = res.data.blocks
