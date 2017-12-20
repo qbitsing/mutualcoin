@@ -189,10 +189,6 @@ export default {
 }
 </script>
 <style>
-  .mutual-title {
-    color: #fff;
-    background: #2A77FF;
-  }
   .user-layout{
     height: 100%;
   }
