@@ -88,6 +88,8 @@ async function create(block) {
 
   await validateUser(block.user)
   blockToCreate.user = block.user
+  
+  blockToCreate.uuid = block.uuid
 
   return await blockToCreate.save()
 }
