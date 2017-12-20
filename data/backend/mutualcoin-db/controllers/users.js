@@ -1,6 +1,5 @@
 'use strict'
 
-const debug = require('debug')('mutualcoin:db')
 const usersSchema = require('../models/users')
 const uuid = require('uuid')
 const utils = require('mutualcoin-utils')
@@ -184,20 +183,19 @@ async function update(uuid, user) {
     return userToUpdate
 }
 
-function getLineReferred(codeReferred) { 
+function getLineReferred(codeReferred) {
     return UsersModel.find({ codeReferred })
 }
 
-
-function get() { 
+function get() {
     return UsersModel.find({ })
 }
 
-function getByNickname(nickname) { 
+/* function getByNickname(nickname) {
     return UsersModel.find({ nickname })
 }
-
-function getByEmail(email) { 
+*/
+/* function getByEmail(email) {
     const conds = [
         { email },
         { email2: email }
@@ -205,7 +203,7 @@ function getByEmail(email) {
 
     return UsersModel.findOne({ $or: conds })
 }
-
+*/
 module.exports = function(db) {
     UsersModel = db.model('user', usersSchema)
 
