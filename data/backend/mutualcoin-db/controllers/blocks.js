@@ -86,6 +86,8 @@ async function create(block) {
 
   blockToCreate.weeks = block.weeks
 
+  blockToCreate.days = block.weeks * 7
+
   await validateUser(block.user)
   blockToCreate.user = block.user
 

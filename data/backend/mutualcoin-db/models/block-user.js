@@ -9,7 +9,8 @@ const blockUserSchema = new Schema({
     high: Number,
     medium: Number,
     low: Number,
-    valid: Boolean
+    pays: [],
+    last_pay: {}
 })
 
 module.exports = blockUserSchema

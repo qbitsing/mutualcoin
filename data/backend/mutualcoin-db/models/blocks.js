@@ -10,6 +10,7 @@ const blockSchema = new Schema({
     endingDate: Date,
     startDate: Date,
     weeks: Number,
+    days: Number,
     user: String,
     state: {
         type: String,
@@ -24,7 +25,8 @@ const blockSchema = new Schema({
         ],
         default: 'inactive'
     },
-    runDays: Number
+    runDays: Number,
+    daysInfo: []
 })
 
 module.exports = blockSchema
