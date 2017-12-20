@@ -5,7 +5,7 @@ const api = function (resource, data, methods, token, params) {
     instance.defaults.headers.common['Authorization'] = 'Bearer ' + token
   }
   if (methods === 'get') {
-    return instance.get(resource, data)
+    return instance.get(resource, params)
   }
   if (methods === 'post') {
     return instance.post(resource, data)
