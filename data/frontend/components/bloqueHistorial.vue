@@ -29,7 +29,7 @@
     }
   }
 </script>
-<style lang="css">
+<style lang="css" scoped>
   h2.active {
     color: #fff;
     text-align: center;
@@ -44,7 +44,7 @@
     box-sizing: border-box;
     max-width: 80%;
     width: 100px;
-    margin: 20px
+    margin: 20px;
   }
   .card {
     padding-bottom: 20px;
