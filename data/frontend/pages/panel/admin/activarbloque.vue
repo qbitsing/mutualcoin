@@ -13,6 +13,7 @@
                 :items="coins"
                 v-model="coin"
                 label="Moneda"
+                item-text="name"
                 :rules="inputRules"
                 single-line
                 bottom
@@ -56,7 +57,7 @@
                       v-show="userCheck"
                       name="user"
                       :rules="userCheck ? inputRules : []"
-
+                      :hint="'Nombre del Usuario'"
                       label="Código del usuario"
                       v-model="user"
                     ></v-text-field>
@@ -146,7 +147,7 @@ export default {
         const self = this
         const data = {
           blockToCreate: {
-            coin: self.coin.id,
+            coin: self.coin.uuid,
             amount: parseInt(self.amount),
             weeks: parseInt(self.week.text)
           }
@@ -162,7 +163,6 @@ export default {
         } else {
           swal('Ooops...', 'Error al crear el bloque', 'error')
         }
-        console.log(res)
       }
     },
     clear () {
@@ -170,28 +170,18 @@ export default {
     },
     async activar (item) {
       console.log(item)
-      // const token = this.$store.state.authToken
-      // const res = await api(`block/activate/${item.uuid}`)
+      const token = this.$store.state.authToken
+      const res = await api(`block/activate/${item.uuid}`, {}, 'put', token)
+      console.log(res)
     }
   },
-  created () {
+  async created () {
     const token = this.$store.state.authToken
-    const self = this
-    async function getCoins () {
-      const res = await api('coin/all', {}, 'get', token)
-      for (let coin of res.data.coins) {
-        self.coins.push({
-          text: coin.name,
-          id: coin.uuid
-        })
-      }
-    }
-    async function getBlocks () {
-      const res = await api('block/all', {}, 'get', token)
-      self.blocks = res.data.blocks
-    }
-    getBlocks()
-    getCoins()
+    let res = await api('coin/all', {}, 'get', token)
+    this.coins = res.data.coins
+    res = await api('block/all', {}, 'get', token)
+    this.blocks = res.data.blocks
+    console.log(this.blocks)
   },
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
