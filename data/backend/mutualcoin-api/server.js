@@ -11,7 +11,7 @@ const port = process.env.PORT || 3300
 const app = asyncify(express())
 const server = http.createServer(app)
 
-app.use(bodyParser.json({ limit: '5mb' }))
+app.use(bodyParser.json())
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization')
