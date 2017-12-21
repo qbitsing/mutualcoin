@@ -1,6 +1,7 @@
 'use strict'
 
 const { Schema } = require('mongoose')
+const increment = require('simple-mongoose-autoincrement')
 
 const blockSchema = new Schema({
     amount: Number,
@@ -28,5 +29,7 @@ const blockSchema = new Schema({
     runDays: Number,
     daysInfo: []
 })
+
+blockSchema.plugin(increment, { field: 'name' })
 
 module.exports = blockSchema
