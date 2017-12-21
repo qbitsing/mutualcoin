@@ -10,7 +10,7 @@
             <v-flex d-flex offset-xs1 xs4 sm2>
               <v-card flat>
                 <v-layout align-center>
-                  <img class="coin" :src="`/${block.coin}.png`" alt="">
+                  <img class="coin" :src="`/${block._coin.name}.png`" alt="">
                 </v-layout>
               </v-card>
             </v-flex>
@@ -25,13 +25,13 @@
                 <v-flex d-flex xs12>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Inversiones</v-card-title>
-                    <v-card-text class="no-padding" v-text="`${block.amount - block.amountLeft} ${block.coin}`"></v-card-text>
+                    <v-card-text class="no-padding" v-text="`${block.amount - block.amountLeft} ${block._coin.name}`"></v-card-text>
                   </v-card>
                 </v-flex>
                 <v-flex d-flex xs12>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Monto</v-card-title>
-                    <v-card-text v-text="`${block.amount} ${block.coin}`" class="no-padding"></v-card-text>
+                    <v-card-text v-text="`${block.amount} ${block._coin.name}`" class="no-padding"></v-card-text>
                   </v-card>
                 </v-flex>
               </v-layout>
@@ -75,17 +75,17 @@
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text class="text-xs-center">3 {{block.coin}}</v-card-text>
+                <v-card-text class="text-xs-center">3 {{block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text class="text-xs-center">3 {{block.coin}}</v-card-text>
+                <v-card-text class="text-xs-center">3 {{block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text class="text-xs-center">4 {{block.coin}}</v-card-text>
+              <v-card-text class="text-xs-center">4 {{block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
@@ -98,7 +98,26 @@
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
           <v-layout row wrap>
-            
+            <v-data-table
+            :headers="userHeader"
+            :items="userItems"
+            hide-actions
+            class="elevation-1">
+            <template 
+              slot="items"
+              scope="props">
+              <td>{{ props.item._user.email }}</td>
+              <td class="text-xs-right">{{ props.item.amount }}</td>
+              <td class="text-xs-right">{{ props.item.high }}</td>
+              <td class="text-xs-right">{{ props.item.medium }}</td>
+              <td class="text-xs-right">{{ props.item.low }}</td>
+            </template>
+            <template slot="no-data">
+              <v-alert :value="true" color="error" icon="warning">
+                Aun no se a invertido :(
+              </v-alert>
+            </template>
+          </v-data-table>
           </v-layout>
         </v-container>
       </v-card-text>
@@ -113,22 +132,23 @@ export default {
   middleware: ['auth', 'blocks', 'coins'],
   data () {
     return {
-      block: null
+      block: null,
+      userHeader: [
+        {text: 'Usuario', value: 'user'},
+        {text: 'Inversión', value: 'amount'},
+        {text: 'Alto', value: 'high'},
+        {text: 'Medio', value: 'medium'},
+        {text: 'Bajo', value: 'low'}
+      ],
+      useritems: []
     }
   },
   computed: mapState(['blocks', 'coins']),
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
-    this.blocks.forEach((ele, index) => {
-      if (ele.uuid === this.$router.history.current.params.block) {
-        this.block = ele
-        this.coins.forEach((ele, index) => {
-          if (ele.uuid === this.block.coin) {
-            this.block.coin = ele.name
-          }
-        })
-      }
-    })
+    let block = this.blocks.filter(block => block.uuid === this.$router.history.current.params.block)
+    this.block = block[0]
+    console.log(this.block)
   }
 }
 </script>

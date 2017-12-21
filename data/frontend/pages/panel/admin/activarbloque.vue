@@ -17,7 +17,6 @@
                 :rules="inputRules"
                 single-line
                 bottom
-                required
                 >
                 </v-select>
               </v-flex>
@@ -98,10 +97,10 @@
               slot="items"
               scope="props">
               <td class="text-xs-center">{{ props.item.name}}</td>
-              <td class="text-xs-center">{{ getNameByUuid(props.item.coin) }}</td>
+              <td class="text-xs-center">{{ props.item._coin.name }}</td>
               <td class="text-xs-center">{{ props.item.amount }}</td>
               <td class="text-xs-center">{{ props.item.weeks }}</td>
-              <td class="text-xs-center">{{ spanishText(props.item.state) }}</td>
+              <td class="text-xs-center">{{ props.item.state }}</td>
               <td class="text-xs-right">
                 <v-btn small color="primary" @click="changeState(props.item, 'activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
                 <v-btn small color="primary" @click="changeState(props.item, 'waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
@@ -167,7 +166,7 @@ export default {
         const res = await api('block/create', data, 'post', this.authToken)
         if (res.status === 200) {
           this.blocks.push(res.data.blockCreated)
-          this.$store.commit('SET_BLOCKS', this.blocks)
+          this.clear()
           swal('Excelente', 'Bloque creado correctamente', 'success')
         } else {
           swal('Ooops...', 'Error al crear el bloque', 'error')
@@ -199,15 +198,13 @@ export default {
           const res = await api(`block/${route}/${item.uuid}`, {}, 'put', this.authToken)
           if (res.status === 200) {
             item.state = newState
+            const waitingAmount = item.amount - item.amountLeft
+            item.amount = newState === 'waiting' ? waitingAmount : item.amount
             this.$store.commit('SET_BLOCKS', this.blocks)
             return swal('Excelente', `Bloque ${text2} con éxito.`, 'success')
           } else return swal('Ooops...', `Error al ${text1} el bloque.`, 'error')
         }
       })
-    },
-    getNameByUuid (uuid) {
-      const coin = this.coins.filter(coin => coin.uuid === uuid)
-      return coin[0].name
     },
     spanishText (text) {
       if (text === 'running') return 'Corriendo'
@@ -220,7 +217,7 @@ export default {
       else return text
     }
   },
-  beforeMount () {
+  created () {
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
 }

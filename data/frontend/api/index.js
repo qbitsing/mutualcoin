@@ -18,7 +18,7 @@ router.use((req, res, next) => {
 // Add POST - /api/login
 router.post('/login', (req, res) => {
   const { datas } = req.body
-  axios.post('http://192.168.1.38:3300/api/user/login', { datas })
+  axios.post('http://localhost:3300/api/user/login', { datas })
     .then(r => {
       req.session.authToken = r.data.token
       req.session.authUser = r.data.sesion
