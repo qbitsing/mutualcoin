@@ -135,7 +135,7 @@ async function run(uuid) {
     throw new Error(`bad request: the block cannot be runnig because the state is: ${block.state}`)
   }
 
-  await BlockModel.findByIdAndUpdate(block._id, { state: 'runnig' })
+  await BlockModel.findByIdAndUpdate(block._id, { state: 'running' })
 
   return { result: true }
 }
@@ -143,7 +143,7 @@ async function run(uuid) {
 async function pause(uuid) {
   const block = await validateBlock(uuid)
 
-  if (block.state !== 'runnig') {
+  if (block.state !== 'running') {
     throw new Error(`bad request: the block cannot be paused because the state is: ${block.state}`)
   }
 
@@ -167,7 +167,7 @@ async function cancel(uuid) {
 async function finish(uuid) {
   const block = await validateBlock(uuid)
 
-  if (block.state !== 'runnig') {
+  if (block.state !== 'running') {
     throw new Error(`bad request: the block cannot be finished because the state is: ${block.state}`)
   }
 
