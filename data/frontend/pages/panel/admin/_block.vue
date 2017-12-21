@@ -58,32 +58,29 @@
   </section>
 </template>
 <script>
+import {mapState} from 'vuex'
 export default {
   layout: 'dashboard',
   middleware: ['auth', 'blocks', 'coins'],
   data () {
     return {
-      block: null,
-      nameCoin: null
+      block: null
     }
   },
+  computed: mapState(['blocks', 'coins']),
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
-    this.$store.state.blocks.forEach((ele, index) => {
-      if (ele.uuid === this.$router.history.current.params.block) { this.block = ele }
+    this.blocks.forEach((ele, index) => {
+      if (ele.uuid === this.$router.history.current.params.block) {
+        this.block = ele
+        this.coins.forEach((ele, index) => {
+          if (ele.uuid === this.block.coin) {
+            console.log(ele.name)
+            this.block.coin = ele.name
+          }
+        })
+      }
     })
-    this.nameMoneda(this.block.coin)
-    this.block.coin = this.nameCoin
-  },
-  methods: {
-    nameMoneda (uuid) {
-      this.$store.state.coins.forEach((ele, index) => {
-        if (ele.uuid === uuid) {
-          this.nameCoin = ele.name
-          return this.nameCoin
-        }
-      })
-    }
   }
 }
 </script>
