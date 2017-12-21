@@ -17,6 +17,8 @@ async function validateCoin(uuid) {
   if (!validCoin) {
     throw new Error('bad request: the coin is invalid')
   }
+
+  return validCoin._id
 }
 
 async function validateBlock(uuid) {
@@ -46,7 +48,7 @@ function get() {
 }
 
 function getState(state) {
-  return BlockModel.find({ $or: state })
+  return BlockModel.find({ $or: state }).populate('_coin').exec()
 }
 
 async function create(block) {
@@ -72,7 +74,7 @@ async function create(block) {
 
   blockToCreate.amount = block.amount
   blockToCreate.amountLeft = block.amount
-  await validateCoin(block.coin)
+  blockToCreate._coin =  await validateCoin(block.coin)
 
   blockToCreate.coin = block.coin
 
@@ -87,6 +89,7 @@ async function create(block) {
   blockToCreate.weeks = block.weeks
 
   blockToCreate.days = block.weeks * 7
+  blockToCreate.runDays = block.weeks * 7
 
   await validateUser(block.user)
   blockToCreate.user = block.user
@@ -193,6 +196,12 @@ async function updateAmount(uuid, amount) {
   await BlockModel.findByIdAndUpdate(block._id, { amount })
 
   return { result: true }
+}
+
+async function setInfoDays(uuid, info) {
+  const { daysInfo, runDays } = await validateBlock(uuid)
+  const length = daysInfo.length
+
 }
 
 module.exports = function(db) {
