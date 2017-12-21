@@ -10,12 +10,9 @@
 <script>
 import MutualBloque from '~/components/bloque.vue'
 import api from '~/plugins/axios'
+import {mapState} from 'vuex'
 export default{
-  data () {
-    return {
-      blocks: []
-    }
-  },
+  computed: mapState(['blocks', 'coins', 'authToken']),
   components: { MutualBloque },
   layout: 'dashboard',
   async created () {

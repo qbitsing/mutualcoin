@@ -87,6 +87,7 @@
           <template
             slot="items"
             scope="props">
+            <td class="text-xs-center">{{ '1' }}</td>
             <td class="text-xs-center">{{ getNameByUuid(props.item.coin) }}</td>
             <td class="text-xs-center">{{ props.item.amount }}</td>
             <td class="text-xs-center">{{ props.item.weeks }}</td>
@@ -98,7 +99,6 @@
               <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'reanudar', 'reanudado')" v-if="props.item.state == 'paused'">reanudar</v-btn>
               <v-btn small color="warning" @click="changeState(props.item, 'pause', 'paused', 'pausar', 'pausado')" v-if="props.item.state == 'running'">pausar</v-btn>
               <v-btn small color="error" @click="changeState(props.item, 'cancel', 'cancel', 'cancelar', 'cancelado')" v-if="props.item.state != 'finished' && props.item.state != 'cancel'">cancelar</v-btn>
-              <v-btn small color="secondary" @click="info(props.item)">info</v-btn>
             </td>
           </template>
         </v-data-table>
@@ -122,6 +122,7 @@ export default {
       user: null,
       userCheck: false,
       blockHeader: [
+        {text: 'Identificador', align: 'center', value: 'id'},
         {text: 'Moneda', align: 'center', value: 'coin'},
         {text: 'Monto', align: 'center', value: 'amount'},
         {text: 'Semanas', align: 'center', value: 'weeks'},
@@ -133,7 +134,7 @@ export default {
       ],
       numberRules: [
         (v) => !!v || 'Campo requerido.',
-        (v) => v < 1 || 'Debe ser mayor a cero.'
+        (v) => v > 0 || 'Debe ser mayor a cero.'
       ]
     }
   },
