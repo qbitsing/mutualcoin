@@ -67,6 +67,15 @@ function validateAmount(blockUser) {
 async function get() {
     return await BlockUserModel.find({})
 }
+
+function getBy(propertie) {
+    let search = {}
+
+    return function (value) { 
+        search[propertie] = value
+        return BlockUserModel.find(search)
+    }
+}
 async function create(blockUser) {
     const block = await validateBlock(blockUser)
     await validateUser(blockUser)
@@ -93,6 +102,7 @@ module.exports = function(db) {
 
     const methods = {}
     methods.get = get
+    methods.getBy = getBy
     methods.create = create
     return methods
 }

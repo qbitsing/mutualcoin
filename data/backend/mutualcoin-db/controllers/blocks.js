@@ -114,7 +114,7 @@ async function waiting(uuid) {
     state: 'waiting'
   }
 
-  if (block.state !== 'waiting') {
+  if (block.state !== 'active') {
     throw new Error(`bad request: the block cannot be waiting because the state is: ${block.state}`)
   }
 

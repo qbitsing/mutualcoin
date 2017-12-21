@@ -19,35 +19,50 @@ api.use('*', (req, res, next) => {
 
 api.get('/all',
   ensure({ secret: config.secret }),
-    async (req, res, next) => {
-      debug('a request has come to api/blockUser/all')
-      let blocksUsers = []
-      try {
-        blocksUsers = await blockUserModel.get()
-      } catch (error) {
-        return next(error)
-      }
-
-      res.send({ blocksUsers })
+  async (req, res, next) => {
+    debug('a request has come to api/blockUser/all')
+    let blocksUsers = []
+    try {
+      blocksUsers = await blockUserModel.get()
+    } catch (error) {
+      return next(error)
     }
+
+    res.send({ blocksUsers })
+  }
 )
-api.post('/create',
-    ensure({ secret: config.secret }),
-    async (req, res, next) => {
-      debug('a request has come to api/blockUser/create')
-      const { blockUserToCreate } = req.body
-      if (!blockUserToCreate) {
-        return next(new Error('bad request: please specify the block to create'))
-      }
-      let blockUserCreated
-      try {
-        blockUserCreated = await blockUserModel.create(blockUserToCreate)
-      } catch (error) {
-        return next(error)
-      }
 
-      res.send({ blockUserCreated })
+api.get('/:propertie/:value', ensure({ secret: config.secret }), async (req, res, next) => {
+  const { propertie, value } = req.params
+  debug(`a request has come to api/blockUser/${propertie}`)
+  let blocksUsers = []
+  try {
+    blocksUsers = await blockUserModel.getBy(propertie)(value)
+  } catch (error) {
+    return next(error)
+  }
+
+  res.send({ blocksUsers })
+}
+)
+
+api.post('/create',
+  ensure({ secret: config.secret }),
+  async (req, res, next) => {
+    debug('a request has come to api/blockUser/create')
+    const { blockUserToCreate } = req.body
+    if (!blockUserToCreate) {
+      return next(new Error('bad request: please specify the block to create'))
     }
+    let blockUserCreated
+    try {
+      blockUserCreated = await blockUserModel.create(blockUserToCreate)
+    } catch (error) {
+      return next(error)
+    }
+
+    res.send({ blockUserCreated })
+  }
 )
 
 module.exports = api
