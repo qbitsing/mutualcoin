@@ -7,6 +7,7 @@ const blockSchema = new Schema({
     amount: Number,
     amountLeft: Number,
     coin: String,
+    _coin: {type: Schema.Types.ObjectId, ref: 'coin'},
     uuid: String,
     endingDate: Date,
     startDate: Date,
