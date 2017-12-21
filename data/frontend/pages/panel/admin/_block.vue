@@ -98,7 +98,26 @@
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
           <v-layout row wrap>
-            
+            <v-data-table
+            :headers="userHeader"
+            :items="userItems"
+            hide-actions
+            class="elevation-1">
+            <template 
+              slot="items"
+              scope="props">
+              <td>{{ props.item._user.email }}</td>
+              <td class="text-xs-right">{{ props.item.amount }}</td>
+              <td class="text-xs-right">{{ props.item.high }}</td>
+              <td class="text-xs-right">{{ props.item.medium }}</td>
+              <td class="text-xs-right">{{ props.item.low }}</td>
+            </template>
+            <template slot="no-data">
+              <v-alert :value="true" color="error" icon="warning">
+                Aun no se a invertido :(
+              </v-alert>
+            </template>
+          </v-data-table>
           </v-layout>
         </v-container>
       </v-card-text>
@@ -113,22 +132,22 @@ export default {
   middleware: ['auth', 'blocks', 'coins'],
   data () {
     return {
-      block: null
+      block: null,
+      userHeader: [
+        {text: 'Usuario', value: 'user'},
+        {text: 'Inversión', value: 'amount'},
+        {text: 'Alto', value: 'high'},
+        {text: 'Medio', value: 'medium'},
+        {text: 'Bajo', value: 'low'}
+      ],
+      useritems: []
     }
   },
   computed: mapState(['blocks', 'coins']),
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
-    this.blocks.forEach((ele, index) => {
-      if (ele.uuid === this.$router.history.current.params.block) {
-        this.block = ele
-        this.coins.forEach((ele, index) => {
-          if (ele.uuid === this.block.coin) {
-            this.block.coin = ele.name
-          }
-        })
-      }
-    })
+    let block = this.blocks.filter(block => block.uuid === this.$router.history.current.params.block)
+    this.block = block[0]
   }
 }
 </script>

@@ -98,10 +98,10 @@
               slot="items"
               scope="props">
               <td class="text-xs-center">{{ props.item.name}}</td>
-              <td class="text-xs-center">{{ getNameByUuid(props.item.coin) }}</td>
+              <td class="text-xs-center">{{ props.item.coin }}</td>
               <td class="text-xs-center">{{ props.item.amount }}</td>
               <td class="text-xs-center">{{ props.item.weeks }}</td>
-              <td class="text-xs-center">{{ spanishText(props.item.state) }}</td>
+              <td class="text-xs-center">{{ props.item.state }}</td>
               <td class="text-xs-right">
                 <v-btn small color="primary" @click="changeState(props.item, 'activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
                 <v-btn small color="primary" @click="changeState(props.item, 'waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
@@ -220,7 +220,7 @@ export default {
       else return text
     }
   },
-  beforeMount () {
+  created () {
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
 }
