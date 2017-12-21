@@ -22,7 +22,7 @@ export default {
     }
   },
   beforeMount () {
-    this.blocksActive = this.blocks.filter(b => b.state === 'active' && b.amountLeft <= 0)
+    this.blocksActive = this.blocks.filter(b => b.state === 'active' && b.amountLeft > 0)
     this.$store.commit('TITLE_VIEW', 'Oferta')
   }
 }

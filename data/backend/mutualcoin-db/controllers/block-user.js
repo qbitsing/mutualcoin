@@ -53,7 +53,7 @@ function validateConfig(blockUser) {
     throw new Error('bad request: low is not valid')
   }
 
-  if (!((blockUser.low + blockUser.medium + blockUser.high) === 100)) {
+  if (!((parseInt(blockUser.low) + parseInt(blockUser.medium) + parseInt(blockUser.high)) === 100)) {
     throw new Error('bad request: high, medium and low should be add 100%')
   }
 }
@@ -77,6 +77,7 @@ function getBy(propertie) {
   }
 }
 async function create(blockUser) {
+<<<<<<< HEAD
   const block = await validateBlock(blockUser)
   await validateUser(blockUser)
   validateConfig(blockUser)
@@ -93,6 +94,24 @@ async function create(blockUser) {
   blockUserToCreate.low = blockSchema.low
 
   return await blockUserToCreate.save()
+=======
+    const block = await validateBlock(blockUser)
+    await validateUser(blockUser)
+    validateConfig(blockUser)
+    validateAmount(blockUser)
+    let amountLeft = block.amountLeft - blockUser.amount
+    await BlockModel.findByIdAndUpdate(block._id, { amountLeft })
+    const blockUserToCreate = new BlockUserModel()
+
+    blockUserToCreate.amount = blockUser.amount
+    blockUserToCreate.block = blockUser.block
+    blockUserToCreate.user = blockUser.user
+    blockUserToCreate.high = blockUser.high
+    blockUserToCreate.medium = blockUser.medium
+    blockUserToCreate.low = blockUser.low
+
+    return await blockUserToCreate.save()
+>>>>>>> efdd1236b977227b91001cd6ac5dfd01cbabfba5
 }
 
 module.exports = function (db) {

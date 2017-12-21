@@ -222,7 +222,7 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="css" scoped>
   .user-layout{
     height: 100%;
   }
