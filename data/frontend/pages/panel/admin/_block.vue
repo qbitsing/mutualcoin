@@ -41,51 +41,51 @@
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text><h4>Alto</h4></v-card-text>
+                <v-card-text class="text-xs-center"><h4>Alto</h4></v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text><h4>Medio</h4></v-card-text>
+                <v-card-text class="text-xs-center"><h4>Medio</h4></v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text><h4>Bajo</h4></v-card-text>
+              <v-card-text class="text-xs-center"><h4>Bajo</h4></v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text>30%</v-card-text>
+                <v-card-text class="text-xs-center">30%</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text>30%</v-card-text>
+                <v-card-text class="text-xs-center">30%</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text>30%</v-card-text>
+              <v-card-text class="text-xs-center">30%</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text>3 {{block.coin}}</v-card-text>
+                <v-card-text class="text-xs-center">3 {{block.coin}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text>3 {{block.coin}}</v-card-text>
+                <v-card-text class="text-xs-center">3 {{block.coin}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text>4 {{block.coin}}</v-card-text>
+              <v-card-text class="text-xs-center">4 {{block.coin}}</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
