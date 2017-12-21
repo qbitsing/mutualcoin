@@ -201,9 +201,32 @@ async function updateAmount(uuid, amount) {
 }
 
 async function setInfoDays(uuid, info) {
-  const { daysInfo, runDays } = await validateBlock(uuid)
+  let { daysInfo, runDays, _id, state } = await validateBlock(uuid)
+  if (!(state === 'runing' || state === 'paused')) { 
+    throw new Error('bad request: the block cannot receive info because the state is: '+ state)
+  }
   const length = daysInfo.length
+  info = info.filter(i => (length < i.day && i.day <= runDays))
+  info = info.sort((a, b) => a.day > b.day)
+  validateInfo(info, length)
+  daysInfo = daysInfo.concat(info)
 
+
+  await BlockModel.findByIdAndUpdate(_id, {daysInfo})
+
+  return { result: true }
+  
+}
+
+function validateInfo(info, length) { 
+  let oldDay = length
+  for (let i of info) { 
+    oldDay++
+    if ((i.day === oldDay) && i.high && !isNaN(i.high) && i.medium && !isNaN(i.medium) && i.low && !isNaN(i.low)) { 
+    } else { 
+      throw new Error('bad request: the info is not valid')
+    }
+  }
 }
 
 module.exports = function(db) {
@@ -222,6 +245,7 @@ module.exports = function(db) {
   blockMethods.cancel = cancel
   blockMethods.finish = finish
   blockMethods.updateAmount = updateAmount
+  blockMethods.setInfoDays = setInfoDays
 
   return blockMethods
 }
