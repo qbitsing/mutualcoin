@@ -79,30 +79,40 @@
       <v-card-title class="mutual-title">
         <h2>Todos los Bloques</h2>
       </v-card-title>
-      <v-card-text>
-        <v-data-table
-          :headers="blockHeader"
-          :items="blocks"
-          class="elevation-1">
-          <template
-            slot="items"
-            scope="props">
-            <td class="text-xs-center">{{ '1' }}</td>
-            <td class="text-xs-center">{{ getNameByUuid(props.item.coin) }}</td>
-            <td class="text-xs-center">{{ props.item.amount }}</td>
-            <td class="text-xs-center">{{ props.item.weeks }}</td>
-            <td class="text-xs-center">{{ spanishText(props.item.state) }}</td>
-            <td class="text-xs-right">
-              <v-btn small color="primary" @click="changeState(props.item, 'activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
-              <v-btn small color="primary" @click="changeState(props.item, 'waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
-              <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'poner a correr', 'corriendo')" v-if="props.item.state == 'waiting'">iniciar</v-btn>
-              <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'reanudar', 'reanudado')" v-if="props.item.state == 'paused'">reanudar</v-btn>
-              <v-btn small color="warning" @click="changeState(props.item, 'pause', 'paused', 'pausar', 'pausado')" v-if="props.item.state == 'running'">pausar</v-btn>
-              <v-btn small color="error" @click="changeState(props.item, 'cancel', 'cancel', 'cancelar', 'cancelado')" v-if="props.item.state != 'finished' && props.item.state != 'cancel'">cancelar</v-btn>
-            </td>
-          </template>
-        </v-data-table>
-      </v-card-text>
+        <v-card>
+          <v-card-title>
+          <v-text-field
+            append-icon="search"
+            single-line
+            label="Búsqueda"
+            hide-details
+            v-model="search"
+          ></v-text-field>
+        </v-card-title>
+          <v-data-table
+            :headers="blockHeader"
+            :search="search"
+            :items="blocks"
+            class="elevation-1">
+            <template
+              slot="items"
+              scope="props">
+              <td class="text-xs-center">{{ props.item.name}}</td>
+              <td class="text-xs-center">{{ getNameByUuid(props.item.coin) }}</td>
+              <td class="text-xs-center">{{ props.item.amount }}</td>
+              <td class="text-xs-center">{{ props.item.weeks }}</td>
+              <td class="text-xs-center">{{ spanishText(props.item.state) }}</td>
+              <td class="text-xs-right">
+                <v-btn small color="primary" @click="changeState(props.item, 'activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'poner a correr', 'corriendo')" v-if="props.item.state == 'waiting'">iniciar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'reanudar', 'reanudado')" v-if="props.item.state == 'paused'">reanudar</v-btn>
+                <v-btn small color="warning" @click="changeState(props.item, 'pause', 'paused', 'pausar', 'pausado')" v-if="props.item.state == 'running'">pausar</v-btn>
+                <v-btn small color="error" @click="changeState(props.item, 'cancel', 'cancel', 'cancelar', 'cancelado')" v-if="props.item.state != 'finished' && props.item.state != 'cancel'">cancelar</v-btn>
+              </td>
+            </template>
+          </v-data-table>
+        </v-card>
     </v-card>
   </section>
 </template>
@@ -119,6 +129,7 @@ export default {
       coin: null,
       weeks: null,
       amount: null,
+      search: '',
       user: null,
       userCheck: false,
       blockHeader: [
@@ -156,6 +167,7 @@ export default {
         const res = await api('block/create', data, 'post', this.authToken)
         if (res.status === 200) {
           this.blocks.push(res.data.blockCreated)
+          this.$store.commit('SET_BLOCKS', this.blocks)
           swal('Excelente', 'Bloque creado correctamente', 'success')
         } else {
           swal('Ooops...', 'Error al crear el bloque', 'error')
@@ -199,6 +211,7 @@ export default {
     },
     spanishText (text) {
       if (text === 'running') return 'Corriendo'
+      if (text === 'inactive') return 'Inactivo'
       else if (text === 'active') return 'Activo'
       else if (text === 'cancel') return 'Cancelado'
       else if (text === 'paused') return 'Pausado'

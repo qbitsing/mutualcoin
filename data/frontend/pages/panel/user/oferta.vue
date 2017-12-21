@@ -9,24 +9,14 @@
 </template>
 <script>
 import MutualBloque from '~/components/bloque.vue'
-import api from '~/plugins/axios'
+// import api from '~/plugins/axios'
 import {mapState} from 'vuex'
 export default{
   computed: mapState(['blocks', 'coins', 'authToken']),
   components: { MutualBloque },
   layout: 'dashboard',
   async created () {
-    const token = this.$store.state.authToken
-    const res = await api('block/active', {}, 'get', token)
-    for (let block of res.data.blocks) {
-      this.blocks.push({
-        reference: block._id,
-        coin: block.coin.toUpperCase(),
-        weeks: block.weeks,
-        amount: block.amount,
-        amountLeft: block.amountLeft
-      })
-    }
+
   },
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Oferta')
