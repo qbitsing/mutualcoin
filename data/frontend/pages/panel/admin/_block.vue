@@ -2,7 +2,7 @@
   <section>
     <v-card class="mb-2">
       <v-card-title class="mutual-title">
-        <h2>Bloque {{block.uuid}} </h2>
+        <h2>Bloque {{block.name}} </h2>
       </v-card-title>
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
