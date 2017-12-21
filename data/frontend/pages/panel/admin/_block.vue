@@ -2,44 +2,93 @@
   <section>
     <v-card class="mb-2">
       <v-card-title class="mutual-title">
-        <h2>Bloques en inversion</h2>
+        <h2>Bloque {{block.uuid}} </h2>
       </v-card-title>
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
           <v-layout row wrap>
             <v-flex d-flex offset-xs1 xs4 sm2>
-          <v-card flat>
-            <v-layout align-center>
-              <img class="coin" :src="`/${block.coin}.png`" alt="">
-            </v-layout>
-          </v-card>
-        </v-flex>
-        <v-flex d-flex offset-xs1 offset-sm0 xs5 sm3>
-          <v-layout row wrap>
-            <v-flex d-flex>
               <v-card flat>
-                <v-card-title primary class="title no-padding">Estado</v-card-title>
-                <v-card-text class="no-padding" v-text="block.state"></v-card-text>
+                <v-layout align-center>
+                  <img class="coin" :src="`/${block.coin}.png`" alt="">
+                </v-layout>
               </v-card>
             </v-flex>
-            <v-flex d-flex xs12>
-              <v-card flat>
-                <v-card-title primary class="title no-padding">Inversiones</v-card-title>
-                <v-card-text class="no-padding" v-text="`${block.amount - block.amountLeft} ${block.coin}`"></v-card-text>
-              </v-card>
-            </v-flex>
-            <v-flex d-flex xs12>
-              <v-card flat>
-                <v-card-title primary class="title no-padding">Monto</v-card-title>
-                <v-card-text v-text="`${block.amount} ${block.coin}`" class="no-padding"></v-card-text>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-              
+            <v-flex d-flex offset-xs1 offset-sm0 xs5 sm3>
+              <v-layout row wrap>
+                <v-flex d-flex>
+                  <v-card flat>
+                    <v-card-title primary class="title no-padding">Estado</v-card-title>
+                    <v-card-text class="no-padding" v-text="block.state"></v-card-text>
+                  </v-card>
+                </v-flex>
+                <v-flex d-flex xs12>
+                  <v-card flat>
+                    <v-card-title primary class="title no-padding">Inversiones</v-card-title>
+                    <v-card-text class="no-padding" v-text="`${block.amount - block.amountLeft} ${block.coin}`"></v-card-text>
+                  </v-card>
+                </v-flex>
+                <v-flex d-flex xs12>
+                  <v-card flat>
+                    <v-card-title primary class="title no-padding">Monto</v-card-title>
+                    <v-card-text v-text="`${block.amount} ${block.coin}`" class="no-padding"></v-card-text>
+                  </v-card>
+                </v-flex>
+              </v-layout>
             </v-flex>
           </v-layout>
         </v-container>
+        <v-layout row>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-2">
+                <v-card-text><h4>Alto</h4></v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-3">
+                <v-card-text><h4>Medio</h4></v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-4">
+              <v-card-text><h4>Bajo</h4></v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-2">
+                <v-card-text>30%</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-3">
+                <v-card-text>30%</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-4">
+              <v-card-text>30%</v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-2">
+                <v-card-text>3 {{block.coin}}</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-3">
+                <v-card-text>3 {{block.coin}}</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-4">
+              <v-card-text>4 {{block.coin}}</v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
       </v-card-text>
     </v-card>
     <v-card>
@@ -75,7 +124,6 @@ export default {
         this.block = ele
         this.coins.forEach((ele, index) => {
           if (ele.uuid === this.block.coin) {
-            console.log(ele.name)
             this.block.coin = ele.name
           }
         })
