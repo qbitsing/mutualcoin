@@ -10,7 +10,7 @@
             <v-flex d-flex offset-xs1 xs4 sm2>
               <v-card flat>
                 <v-layout align-center>
-                  <img class="coin" :src="`/${block.coin}.png`" alt="">
+                  <img class="coin" :src="`/${block._coin.name}.png`" alt="">
                 </v-layout>
               </v-card>
             </v-flex>
@@ -25,13 +25,13 @@
                 <v-flex d-flex xs12>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Inversiones</v-card-title>
-                    <v-card-text class="no-padding" v-text="`${block.amount - block.amountLeft} ${block.coin}`"></v-card-text>
+                    <v-card-text class="no-padding" v-text="`${block.amount - block.amountLeft} ${block._coin.name}`"></v-card-text>
                   </v-card>
                 </v-flex>
                 <v-flex d-flex xs12>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Monto</v-card-title>
-                    <v-card-text v-text="`${block.amount} ${block.coin}`" class="no-padding"></v-card-text>
+                    <v-card-text v-text="`${block.amount} ${block._coin.name}`" class="no-padding"></v-card-text>
                   </v-card>
                 </v-flex>
               </v-layout>
@@ -75,17 +75,17 @@
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text class="text-xs-center">3 {{block.coin}}</v-card-text>
+                <v-card-text class="text-xs-center">3 {{block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text class="text-xs-center">3 {{block.coin}}</v-card-text>
+                <v-card-text class="text-xs-center">3 {{block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text class="text-xs-center">4 {{block.coin}}</v-card-text>
+              <v-card-text class="text-xs-center">4 {{block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
@@ -148,6 +148,7 @@ export default {
     this.$store.commit('TITLE_VIEW', 'Bloque')
     let block = this.blocks.filter(block => block.uuid === this.$router.history.current.params.block)
     this.block = block[0]
+    console.log(this.block)
   }
 }
 </script>
