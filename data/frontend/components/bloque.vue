@@ -10,7 +10,7 @@
       </v-card-actions>
       <mutual-dialog :dialog="propsDialog">
         <section slot="contenDialog">
-            <v-form>
+            <v-form ref ="inversion">
               <v-card flat class="no-padding-bottom">
                 <v-card-text class="no-padding-bottom">
                   <v-layout wrap>
@@ -30,32 +30,69 @@
                       type="Number"
                       label="Monto"
                       min="0"
-                      :rules="numberRules"
+                      :rules="amountRules"
                       v-model="amount"
                       @keypress="preventLetters">
+                      </v-text-field>
+                    </v-flex>
+                    <v-flex xs12>
+                      <h2>Porcentajes de inversión</h2>
+                    </v-flex>
+                    <v-flex xs12 sm4>
+                      <v-text-field
+                      type="Number"
+                      label="Alto"
+                      min="0"
+                      :rules="precentRules"
+                      v-model="high"
+                      @keypress="preventAll">
+                      </v-text-field>
+                    </v-flex>
+                    <v-flex xs12 sm4>
+                      <v-text-field
+                      type="Number"
+                      label="Medio"
+                      min="0"
+                      :rules="precentRules"
+                      v-model="medium"
+                      @keypress="preventAll">
+                      </v-text-field>
+                    </v-flex>
+                    <v-flex xs12 sm4>
+                      <v-text-field
+                      type="Number"
+                      label="Bajo"
+                      min="0"
+                      :rules="precentRules"
+                      v-model="bottom"
+                      @keypress="preventAll">
                       </v-text-field>
                     </v-flex>
                   </v-layout>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary">invertir</v-btn>
-                  <v-btn color="error">cancelar</v-btn>
+                  <v-btn color="primary" @click="submit">invertir</v-btn>
+                  <v-btn color="error" @click="clear">cancelar</v-btn>
                 </v-card-actions>
               </v-card>
             </v-form>
         </section>
-
       </mutual-dialog>
     </v-layout>
   </v-card>
 </template>
 <script>
 import MutualDialog from '~/components/dialog.vue'
+import api from '~/plugins/axios'
+import {mapState} from 'vuex'
 export default {
   data () {
     return {
       valid: false,
       amount: '',
+      high: null,
+      medium: null,
+      bottom: null,
       wallet: null,
       wallets: [{name: '1'}],
       propsDialog: { state: false, title: 'Invertir en bloque' },
@@ -65,6 +102,14 @@ export default {
       numberRules: [
         (v) => !!v || 'Campo requerido.',
         (v) => v > 0 || 'Debe ser mayor a cero.'
+      ],
+      amountRules: [
+        (v) => !!v || 'Campo requerido.',
+        (v) => v > 0 || 'Debe ser mayor a cero.',
+        (v) => v <= this.data.amountLeft || 'El monto debe ser menor al cupo del bloque.'
+      ],
+      precentRules: [
+        (v) => this.totalP === 100 || 'La suma de los porcentajes debe ser 100'
       ]
     }
   },
@@ -72,10 +117,40 @@ export default {
     console.log(this.data)
   },
   methods: {
+    async submit () {
+      if (this.$refs.inversion.validate()) {
+        const data = {
+          blockUserToCreate: {
+            block: this.data.uuid,
+            high: this.high,
+            medium: this.medium,
+            low: this.bottom,
+            amount: this.amount,
+            user: this.authUser.uuid
+          }
+        }
+        const res = await api('blockUser/create', data, 'post', this.authToken)
+        console.log(res)
+      }
+    },
     preventLetters (ev) {
       if (ev.keyCode < 48 || ev.keyCode > 57) {
         if (ev.keyCode !== 46) ev.preventDefault()
       }
+    },
+    preventAll (ev) {
+      if (ev.keyCode < 48 || ev.keyCode > 57) {
+        ev.preventDefault()
+      }
+    },
+    clear () {
+      this.$refs.inversion.reset()
+    }
+  },
+  computed: {
+    ...mapState(['authUser', 'authToken']),
+    totalP () {
+      return parseInt(this.high) + parseInt(this.medium) + parseInt(this.bottom)
     }
   },
   components: { MutualDialog },
