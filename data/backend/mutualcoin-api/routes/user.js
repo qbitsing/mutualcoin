@@ -100,7 +100,7 @@ api.post('/register', async (req, res, next) => {
     return next(error)
   }
 
-  res.send({userCreated})
+  res.send({ userCreated })
 })
 
 api.put('/update/:uuid', async (req, res, next) => {
