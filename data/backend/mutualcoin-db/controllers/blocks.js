@@ -135,7 +135,7 @@ async function run(uuid) {
     throw new Error(`bad request: the block cannot be runnig because the state is: ${block.state}`)
   }
 
-  await BlockModel.findByIdAndUpdate(block._id, { state: 'runnig' })
+  await BlockModel.findByIdAndUpdate(block._id, { state: 'running' })
 
   return { result: true }
 }
