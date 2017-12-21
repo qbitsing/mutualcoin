@@ -7,8 +7,8 @@
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
           <v-layout row wrap>
-            <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2">
-              <mutual-block  :data="block" v-if="block.state === 'active'"/>
+            <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2" v-if="block.state === 'active'">
+              <mutual-block  :data="block" />
             </v-flex>
           </v-layout>
         </v-container>
@@ -21,8 +21,8 @@
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
           <v-layout row wrap>
-            <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2">
-              <mutual-block  :data="block" v-if="block.state === 'waiting' || block.state === 'running' || block.state === 'paused'"/>
+            <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2" v-if="block.state === 'waiting' || block.state === 'running' || block.state === 'paused'">
+              <mutual-block  :data="block" />
             </v-flex>
           </v-layout>
         </v-container>
