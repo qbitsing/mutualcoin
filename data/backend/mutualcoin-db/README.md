@@ -9,9 +9,9 @@ DataBase module for the platform mutualcoin.com
 const mutualcoinDB = require('mutualcoin-db')
 
 mutualcoinDB(setup)
-    .then(db => {
-        const { user } = db
-        user.register(newUser) // this function is async
-    }).catch(handleError)
+  .then(db => {
+    const { user } = db
+    user.register(newUser) // this function is async
+  }).catch(handleError)
 
 ```
