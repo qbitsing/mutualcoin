@@ -44,7 +44,7 @@ async function validateUser(uuid) {
 }
 
 function get() {
-  return BlockModel.find({})
+  return BlockModel.find({}).populate('_coin').exec()
 }
 
 function getState(state) {
@@ -95,8 +95,10 @@ async function create(block) {
   blockToCreate.user = block.user
 
   blockToCreate.uuid = block.uuid
+  
+  let x = await blockToCreate.save()
 
-  return await blockToCreate.save()
+  return await BlockModel.findById(x._id).populate('_coin').exec()
 }
 
 async function activate(uuid) {
