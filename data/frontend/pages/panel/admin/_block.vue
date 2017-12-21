@@ -1,6 +1,6 @@
 <template>
   <section>
-    <!--<v-card class="mb-2">
+    <v-card class="mb-2">
       <v-card-title class="mutual-title">
         <h2>Bloques en inversion</h2>
       </v-card-title>
@@ -10,7 +10,7 @@
             <v-flex d-flex offset-xs1 xs4 sm2>
           <v-card flat>
             <v-layout align-center>
-              <img class="coin" :src="`/${tableData.moneda}.png`" alt="">
+              <img class="coin" :src="`/${block.coin}.png`" alt="">
             </v-layout>
           </v-card>
         </v-flex>
@@ -19,19 +19,19 @@
             <v-flex d-flex>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Estado</v-card-title>
-                <v-card-text class="no-padding" v-text="state"></v-card-text>
+                <v-card-text class="no-padding" v-text="block.state"></v-card-text>
               </v-card>
             </v-flex>
             <v-flex d-flex xs12>
               <v-card flat>
-                <v-card-title primary class="title no-padding">Mi Inversión</v-card-title>
-                <v-card-text class="no-padding" v-text="`${data.inverted} ${tableData.moneda}`"></v-card-text>
+                <v-card-title primary class="title no-padding">Inversiones</v-card-title>
+                <v-card-text class="no-padding" v-text="`${block.amount - block.amountLeft} ${block.coin}`"></v-card-text>
               </v-card>
             </v-flex>
             <v-flex d-flex xs12>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Monto</v-card-title>
-                <v-card-text v-text="`${data.amount} ${tableData.moneda}`" class="no-padding"></v-card-text>
+                <v-card-text v-text="`${block.amount} ${block.coin}`" class="no-padding"></v-card-text>
               </v-card>
             </v-flex>
           </v-layout>
@@ -53,24 +53,75 @@
           </v-layout>
         </v-container>
       </v-card-text>
-    </v-card>-->
+    </v-card>
     
   </section>
 </template>
 <script>
 export default {
   layout: 'dashboard',
-  middleware: 'auth',
+  middleware: ['auth', 'blocks', 'coins'],
   data () {
     return {
-      block: null
+      block: null,
+      nameCoin: null
     }
   },
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
-    this.$store.blocks.forEach((ele, index) => {
+    this.$store.state.blocks.forEach((ele, index) => {
       if (ele.uuid === this.$router.history.current.params.block) { this.block = ele }
     })
+    this.nameMoneda(this.block.coin)
+    this.block.coin = this.nameCoin
+  },
+  methods: {
+    nameMoneda (uuid) {
+      this.$store.state.coins.forEach((ele, index) => {
+        if (ele.uuid === uuid) {
+          this.nameCoin = ele.name
+          return this.nameCoin
+        }
+      })
+    }
   }
 }
 </script>
+<style>
+.wp {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+}
+.title, .mutual-text{
+  padding: 7px !important;
+}
+.mutual-text{
+  padding-top: 0 !important;
+}
+.coin{
+  width: 75% !important;
+}
+.wel {
+  min-width: 0;
+  width: 100% !important;
+  margin: 0 !important;
+  border:0;
+  border-radius: 0 !important;
+}
+.no-padding {
+  padding: 0 !important;
+}
+.mutual-table {
+  margin: 20px 0;
+}
+@media (max-width: 810px) {
+  .coin {
+    width: 90% !important;
+  }
+}
+</style>
+
