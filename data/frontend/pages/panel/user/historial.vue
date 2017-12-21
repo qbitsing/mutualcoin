@@ -9,6 +9,8 @@
 </template>
 <script>
 import MutualBloqueHistorial from '~/components/bloqueHistorial.vue'
+import api from '~/plugins/axios'
+import {mapState} from 'vuex'
 export default{
   data () {
     return {
@@ -57,7 +59,12 @@ export default{
   },
   components: { MutualBloqueHistorial },
   layout: 'dashboard',
-  // middleware: 'auth',
+  middleware: 'auth',
+  computed: mapState(['authUser', 'authToken', 'blocks']),
+  async created () {
+    const res = await api(`/blockUser/user/${this.authUser.uuid}`, {}, 'get', this.authToken)
+    console.log(res)
+  },
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Historial')
   }
