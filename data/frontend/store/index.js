@@ -3,13 +3,13 @@ import axios from 'axios'
 export const strict = false
 export const state = () => ({
   sidebar: false,
-  token: null,
   titleView: null,
   userInfo: null,
   authToken: null,
   authUser: null,
   coins: null,
-  blocks: null
+  blocks: null,
+  gainDays: []
 })
 
 export const mutations = {
@@ -29,6 +29,9 @@ export const mutations = {
   },
   SET_BLOCKS: (state, blocks) => {
     state.blocks = blocks
+  },
+  SET_DAYGAIN: (state, dayGain) => {
+    state.gainDays = dayGain
   }
 }
 export const actions = {

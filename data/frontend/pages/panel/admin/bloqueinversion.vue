@@ -43,7 +43,7 @@ export default {
     }
   },
   layout: 'dashboard',
-  middleware: 'auth',
+  middleware: ['auth', 'blocks'],
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloques en inversión')
     this.getBlock()
