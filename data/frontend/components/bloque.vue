@@ -3,7 +3,7 @@
     <v-layout column justify-center align-center>
       <h2>Bloque {{data.name}}</h2>
       <img :src="`/${data._coin.name}.png`">
-      <p>Plan de: {{data.amount}} {{data._coin.name}}</p>
+      <p>Monto: {{data.amount}} {{data._coin.name}}</p>
       <p>Semanas: {{data.weeks}}</p>
       <p>Restantes: {{data.amountLeft}} {{data._coin.name}}</p>
       <v-card-actions>
@@ -126,9 +126,8 @@ export default {
         }
         const res = await api('blockUser/create', data, 'post', this.authToken)
         if (res.status === 200) {
-        // const self = this
           const blocks = this.$store.state.blocks.map(e => {
-            if (e.uuid === this.data.uuid) e.amountLeft = e.amountLeft - this.amount
+            if (e.uuid === this.data.uuid) e.amountLeft = parseFloat((e.amountLeft - this.amount).toFixed(8))
             return e
           })
           this.$store.commit('SET_BLOCKS', blocks)

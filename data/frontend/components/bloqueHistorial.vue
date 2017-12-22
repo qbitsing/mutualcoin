@@ -15,7 +15,7 @@
         <p>Fecha Fin: {{data.objBlock.finish}}</p>
       </div>
       <div v-else>
-        <p>Cupo: {{data.objBlock.amountLeft}} {{data.objBlock._coin.name}}</p>
+        <p>Cupo: {{data.objBlock.amountLeft}}</p>
       </div>
       <p>Mi inversión: {{data.amount}} {{data.objBlock._coin.name}}</p>
       <v-card-actions>
