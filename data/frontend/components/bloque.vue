@@ -84,6 +84,7 @@
 <script>
 import MutualDialog from '~/components/dialog.vue'
 import api from '~/plugins/axios'
+import swal from 'sweetalert2'
 import {mapState} from 'vuex'
 export default {
   data () {
@@ -99,10 +100,6 @@ export default {
       inputRules: [
         (v) => !!v || 'Campo requerido.'
       ],
-      numberRules: [
-        (v) => !!v || 'Campo requerido.',
-        (v) => v > 0 || 'Debe ser mayor a cero.'
-      ],
       amountRules: [
         (v) => !!v || 'Campo requerido.',
         (v) => v > 0 || 'Debe ser mayor a cero.',
@@ -112,9 +109,6 @@ export default {
         (v) => this.totalP === 100 || 'La suma de los porcentajes debe ser 100'
       ]
     }
-  },
-  beforeMount () {
-    console.log(this.data)
   },
   methods: {
     async submit () {
@@ -130,13 +124,25 @@ export default {
           }
         }
         const res = await api('blockUser/create', data, 'post', this.authToken)
-        console.log(res)
+        if (res.status === 200) {
+        // const self = this
+          const blocks = this.$store.state.blocks.map(e => {
+            if (e.uuid === this.data.uuid) e.amountLeft = e.amountLeft - this.amount
+            return e
+          })
+          this.$store.commit('SET_BLOCKS', blocks)
+          swal('Excelente', 'Inversión guardada con éxito', 'success')
+          this.clear()
+        } else {
+          swal('Ooops...', 'Error al invertir', 'error')
+        }
       }
     },
     preventLetters (ev) {
       if (ev.keyCode < 48 || ev.keyCode > 57) {
         if (ev.keyCode !== 46) ev.preventDefault()
       }
+      if (this.amount.toString().length > 9) ev.preventDefault()
     },
     preventAll (ev) {
       if (ev.keyCode < 48 || ev.keyCode > 57) {
