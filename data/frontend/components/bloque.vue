@@ -1,6 +1,7 @@
 <template>
   <v-card class="card">
     <v-layout column justify-center align-center>
+      <h2>Bloque {{data.name}}</h2>
       <img :src="`/${data._coin.name}.png`">
       <p>Plan de: {{data.amount}} {{data._coin.name}}</p>
       <p>Semanas: {{data.weeks}}</p>
@@ -96,7 +97,7 @@ export default {
       bottom: null,
       wallet: null,
       wallets: [{name: '1'}],
-      propsDialog: { state: false, title: 'Invertir en bloque' },
+      propsDialog: { state: false, title: `Invertir en bloque ${this.data.name}` },
       inputRules: [
         (v) => !!v || 'Campo requerido.'
       ],

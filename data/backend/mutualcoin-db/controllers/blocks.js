@@ -202,20 +202,20 @@ async function updateAmount(uuid, amount) {
 
 async function setInfoDays(uuid, info) {
   let { daysInfo, runDays, _id, state } = await validateBlock(uuid)
-  if (!(state === 'runing' || state === 'paused')) {
+  if (state === 'runing' || state === 'paused') {
+    const length = daysInfo.length
+    info = info.filter(i => (length < i.day && i.day <= runDays))
+    info = info.sort((a, b) => a.day > b.day)
+    validateInfo(info, length)
+    daysInfo = daysInfo.concat(info)
+
+
+    await BlockModel.findByIdAndUpdate(_id, { daysInfo })
+
+    return { result: true }
+  } else {
     throw new Error('bad request: the block cannot receive info because the state is: ' + state)
   }
-  const length = daysInfo.length
-  info = info.filter(i => (length < i.day && i.day <= runDays))
-  info = info.sort((a, b) => a.day > b.day)
-  validateInfo(info, length)
-  daysInfo = daysInfo.concat(info)
-
-
-  await BlockModel.findByIdAndUpdate(_id, { daysInfo })
-
-  return { result: true }
-
 }
 
 function validateInfo(info, length) {

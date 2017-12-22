@@ -79,9 +79,9 @@ function getBy(propertie) {
 async function create(blockUser) {
   const block = await validateBlock(blockUser)
   await validateUser(blockUser)
-  validateConfig(blockUser)
+  validateConfig(blockUgser)
   validateAmount(blockUser)
-  let amountLeft = block.amountLeft - blockUser.amount
+  let amountLeft = parseFloat((block.amountLeft - blockUser.amount).toFixed(8))
   if (amountLeft === 0) {
     await BlockModel.findByIdAndUpdate(block._id, { amountLeft, state: 'waiting' })
   } else {
