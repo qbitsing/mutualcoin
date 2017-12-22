@@ -157,6 +157,7 @@
 import api from '~/plugins/axios'
 import swal from 'sweetalert2'
 import MutualDialog from '~/components/dialog.vue'
+import {mapState} from 'vuex'
 export default {
   data () {
     return {
@@ -193,6 +194,8 @@ export default {
     }
   },
   components: {MutualDialog},
+  middleware: ['coins'],
+  computed: mapState(['coins']),
 
   created () {
     if (this.admin) {
@@ -230,7 +233,7 @@ export default {
         {icon: 'exit_to_app', title: 'Salir'}
       ]
     }
-    this.getCoin()
+    this.coinItems = this.coins
   },
   methods: {
     async perfil (el) {
@@ -249,7 +252,6 @@ export default {
     },
     async submitMoneda () {
       if (this.$refs.formMoneda.validate()) {
-        this.coinItems = this.$store.state.coins
         this.loader = 'loading'
         const l = this.loader
         this[l] = !this[l]
@@ -312,15 +314,6 @@ export default {
       this.btnMoneda = 'Guardar'
       this.name = null
       this.acronym = null
-    },
-    async getCoin () {
-      const res = await api('coin/all', {}, 'get', this.$store.state.authToken)
-      if (res.status === 200) {
-        this.$store.dispatch('setCoins', res.data.coins)
-        this.coinItems = this.$store.state.coins
-      } else {
-        console.log(res)
-      }
     }
 
   }

@@ -1,16 +1,23 @@
 <template>
   <v-card class="card">
-    <h2 :class="data.active ? 'active' : 'finished'">
-      {{data.active ? 'Activo' : 'Finalizado'}}
-    </h2>
-    <v-layout column justify-center align-center>
-      <img :src="`/${data.moneda}.png`">
-      <p>Plan de: {{data.cant}} {{data.moneda}}</p>
-      <p>Fecha Inicio: {{data.start}}</p>
-      <p>Fecha Fin: {{data.finish}}</p>
-      <p>Mi inversión: {{data.myInversion}} {{data.moneda
 
-      }}</p>
+    <h2 v-if="data.objBlock.state == 'active'" :class="data.objBlock.state" >Activo</h2>
+    <h2 v-else-if="data.objBlock.state == 'waiting'" :class="data.objBlock.state" >En espera</h2>
+    <h2 v-else-if="data.objBlock.state == 'running'" :class="data.objBlock.state" >Corriendo</h2>
+    <h2 v-else-if="data.objBlock.state == 'paused'" :class="data.objBlock.state" >Pausado</h2>
+    <h2 v-else-if="data.objBlock.state == 'finished'" :class="data.objBlock.state" >Finalizado</h2>
+    <h2 v-else class="cancel" >Cancelado</h2>
+    <v-layout column justify-center align-center>
+      <img :src="`/${data.objBlock._coin.name}.png`">
+      <p>Plan {{data.objBlock.name}} de {{data.objBlock.amount}} {{data.objBlock._coin.name}} </p>
+      <div v-if="data.objBlock.state != 'active'">
+        <p>Fecha Inicio: {{data.objBlock.start}}</p>
+        <p>Fecha Fin: {{data.objBlock.finish}}</p>
+      </div>
+      <div v-else>
+        <p>Cupo: {{data.objBlock.amountLeft}} {{data.objBlock._coin.name}}</p>
+      </div>
+      <p>Mi inversión: {{data.amount}} {{data.objBlock._coin.name}}</p>
       <v-card-actions>
         <v-btn :to="'timeline'" color="secondary">Info</v-btn>
       </v-card-actions>

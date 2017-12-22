@@ -116,6 +116,7 @@
   </section>
 </template>
 <script>
+
 import api from '~/plugins/axios'
 import swal from 'sweetalert2'
 import {mapState} from 'vuex'
@@ -133,7 +134,7 @@ export default {
       userCheck: false,
       blockHeader: [
         {text: 'Identificador', align: 'center', value: 'id'},
-        {text: 'Moneda', align: 'center', value: 'coin'},
+        {text: 'Moneda', align: 'center', value: '_coin.name'},
         {text: 'Monto', align: 'center', value: 'amount'},
         {text: 'Semanas', align: 'center', value: 'weeks'},
         {text: 'Estado', align: 'center', value: 'state'},
@@ -226,8 +227,8 @@ export default {
   .user-layout{
     height: 100%;
   }
-  .user-check .input-group__details{
-    display: none;
+  .user-check > .input-group__details{
+    display: none !important;
   }
   .no-padding-top{
     padding-top: 0;

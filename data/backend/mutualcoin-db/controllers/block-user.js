@@ -79,7 +79,7 @@ function getBy(propertie) {
 async function create(blockUser) {
   const block = await validateBlock(blockUser)
   await validateUser(blockUser)
-  validateConfig(blockUser)
+  validateConfig(blockUgser)
   validateAmount(blockUser)
   let amountLeft = parseFloat((block.amountLeft - blockUser.amount).toFixed(8))
   if (amountLeft === 0) {
