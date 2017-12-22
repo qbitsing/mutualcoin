@@ -43,7 +43,7 @@
                 <v-card-text class="no-padding green--text" v-if="block.state === 'running'">En marcha</v-card-text>
                 <v-card-text class="no-padding yellow--text" v-if="block.state === 'waiting'">En espera</v-card-text>
                 <v-card-text class="no-padding red--text" v-if="block.state === 'paused'">pausado</v-card-text>
-                <v-card-actions >
+                <v-card-actions  v-if="block.state === 'running' || block.state === 'paused'">
                   <v-btn color="primary mx-0" @click="dialogGain">Agregar ganancias</v-btn>
                 </v-card-actions>
               </v-card>
@@ -219,7 +219,7 @@ export default {
     }
   },
   components: {MutualDialog},
-  computed: mapState(['blocks', 'coins']),
+  computed: mapState(['blocks', 'coins', 'authToken']),
   methods: {
     dialogGain () {
       this.propsDialog = {state: true, title: 'Registro de ganancias'}
@@ -251,9 +251,15 @@ export default {
       this.low = ele.low
     },
     async submitGain () {
-      if (!this.gainItems) {
+      if (this.gainItems.length > 0) {
         try {
-          console.log(api)
+          const data = {
+            erasnings: this.gainItems
+          }
+          const res = await api(`block/earnings/${this.$route.params.block}`, data, 'put', this.authToken)
+          if (res.status === 200) {
+            console.log(res)
+          }
         } catch (error) {
 
         }
