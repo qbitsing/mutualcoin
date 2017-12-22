@@ -39,7 +39,7 @@
     }
   }
 </script>
-<style lang="css">
+<style lang="css" scoped>
 .max-height{
   height: 100%;
 }

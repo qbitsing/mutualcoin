@@ -204,7 +204,7 @@
     }
   }
 </script>
-<style lang="css">
+<style lang="css" scoped>
 .wp {
   box-sizing: border-box;
   width: 100%;

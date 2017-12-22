@@ -9,7 +9,7 @@ const ensure = require('express-jwt')
 const secret = { secret: config.secret }
 let blockModel
 
-function setConds (query) {
+function setConds(query) {
   const conds = []
 
   if (query.paused) {
@@ -199,6 +199,25 @@ api.put('/finish/:uuid',
     let result
     try {
       result = await blockModel.finish(uuid)
+    } catch (error) {
+      return next(error)
+    }
+    res.send(result)
+  }
+)
+
+api.put('/earnings/:uuid',
+  ensure({ secret: config.secret }),
+  async (req, res, next) => {
+    debug('a request has come to api/block/earnings')
+    if (!req.user.admin) {
+      return next(new Error('Unauthorized'))
+    }
+    const { uuid } = req.params
+    const { earnings } = req.body
+    let result
+    try {
+      result = await blockModel.setInfoDays(uuid, earnings)
     } catch (error) {
       return next(error)
     }

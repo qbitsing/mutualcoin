@@ -74,7 +74,7 @@ async function create(block) {
 
   blockToCreate.amount = block.amount
   blockToCreate.amountLeft = block.amount
-  blockToCreate._coin =  await validateCoin(block.coin)
+  blockToCreate._coin = await validateCoin(block.coin)
 
   blockToCreate.coin = block.coin
 
@@ -95,7 +95,7 @@ async function create(block) {
   blockToCreate.user = block.user
 
   blockToCreate.uuid = block.uuid
-  
+
   let x = await blockToCreate.save()
 
   return await BlockModel.findById(x._id).populate('_coin').exec()
@@ -183,7 +183,7 @@ async function finish(uuid) {
 
 async function updateAmount(uuid, amount) {
   const block = await validateBlock(uuid)
-  const investments = await BlockUserModel.find({ block : uuid })
+  const investments = await BlockUserModel.find({ block: uuid })
 
   let invested = 0
 
@@ -201,12 +201,35 @@ async function updateAmount(uuid, amount) {
 }
 
 async function setInfoDays(uuid, info) {
-  const { daysInfo, runDays } = await validateBlock(uuid)
+  let { daysInfo, runDays, _id, state } = await validateBlock(uuid)
+  if (!(state === 'runing' || state === 'paused')) {
+    throw new Error('bad request: the block cannot receive info because the state is: ' + state)
+  }
   const length = daysInfo.length
+  info = info.filter(i => (length < i.day && i.day <= runDays))
+  info = info.sort((a, b) => a.day > b.day)
+  validateInfo(info, length)
+  daysInfo = daysInfo.concat(info)
+
+
+  await BlockModel.findByIdAndUpdate(_id, { daysInfo })
+
+  return { result: true }
 
 }
 
-module.exports = function(db) {
+function validateInfo(info, length) {
+  let oldDay = length
+  for (let i of info) {
+    oldDay++
+    if ((i.day === oldDay) && i.high && !isNaN(i.high) && i.medium && !isNaN(i.medium) && i.low && !isNaN(i.low)) {
+    } else {
+      throw new Error('bad request: the info is not valid')
+    }
+  }
+}
+
+module.exports = function (db) {
   BlockModel = db.model('block', blockSchema)
   CoinModel = db.model('coin', coinSchema)
   UserModel = db.model('user', userSchema)
@@ -222,6 +245,7 @@ module.exports = function(db) {
   blockMethods.cancel = cancel
   blockMethods.finish = finish
   blockMethods.updateAmount = updateAmount
+  blockMethods.setInfoDays = setInfoDays
 
   return blockMethods
 }
