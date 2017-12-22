@@ -9,7 +9,7 @@ const ensure = require('express-jwt')
 const secret = { secret: config.secret }
 let blockModel
 
-function setConds(query) {
+function setConds (query) {
   const conds = []
 
   if (query.paused) {

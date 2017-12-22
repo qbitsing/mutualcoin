@@ -77,24 +77,6 @@ function getBy(propertie) {
   }
 }
 async function create(blockUser) {
-<<<<<<< HEAD
-  const block = await validateBlock(blockUser)
-  await validateUser(blockUser)
-  validateConfig(blockUser)
-  validateAmount(blockUser)
-  let amountLeft = block.amountLeft - blockUser.amount
-  await BlockModel.findByIdAndUpdate(block._id, { amountLeft })
-  const blockUserToCreate = new BlockUserModel()
-
-  blockUserToCreate.amount = blockSchema.amount
-  blockUserToCreate.block = blockSchema.block
-  blockUserToCreate.user = blockSchema.user
-  blockUserToCreate.high = blockSchema.high
-  blockUserToCreate.medium = blockSchema.medium
-  blockUserToCreate.low = blockSchema.low
-
-  return await blockUserToCreate.save()
-=======
     const block = await validateBlock(blockUser)
     await validateUser(blockUser)
     validateConfig(blockUser)
@@ -111,7 +93,6 @@ async function create(blockUser) {
     blockUserToCreate.low = blockUser.low
 
     return await blockUserToCreate.save()
->>>>>>> efdd1236b977227b91001cd6ac5dfd01cbabfba5
 }
 
 module.exports = function (db) {
