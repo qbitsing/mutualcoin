@@ -1,6 +1,9 @@
 <template>
   <v-card class="card">
     <v-layout column justify-center align-center class="layout">
+      <h2 v-if="data.state === 'active'" :class="data.active ? 'active' : 'active'">
+        {{'Activo'}}
+      </h2>
       <h2 v-if="data.state === 'waiting'" :class="data.active ? 'waiting' : 'waiting'">
         {{'En espera'}}
       </h2>
@@ -53,6 +56,9 @@
   }
   h2.running {
     background: #2E7D32;
+  }
+  h2.active {
+    background: #2A77FF;
   }
   img{
     box-sizing: border-box;
