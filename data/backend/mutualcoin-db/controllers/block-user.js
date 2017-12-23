@@ -79,7 +79,7 @@ function getBy(propertie) {
 async function create(blockUser) {
   const block = await validateBlock(blockUser)
   await validateUser(blockUser)
-  validateConfig(blockUgser)
+  validateConfig(blockUser)
   validateAmount(blockUser)
   let amountLeft = parseFloat((block.amountLeft - blockUser.amount).toFixed(8))
   if (amountLeft === 0) {
@@ -98,7 +98,6 @@ async function create(blockUser) {
 
   return await blockUserToCreate.save()
 }
-
 module.exports = function (db) {
   BlockModel = db.model('block', blockSchema)
   UserModel = db.model('user', userSchema)

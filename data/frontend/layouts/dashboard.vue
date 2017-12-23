@@ -63,7 +63,7 @@
           </v-list-tile>
         </v-list>
       </v-menu>
-      <mutual-dialog :dialog="propsDialog">
+      <mutual-dialog v-if="admin" :dialog="propsDialog">
         <section slot="contenDialog">
           <v-form 
             v-model="valid" 

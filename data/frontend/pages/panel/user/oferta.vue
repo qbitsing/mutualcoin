@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap>
-      <v-flex xs6 sm4 lg3 v-for="block in blocksActive" :key="block.reference" class="pt-2">
+      <v-flex xs6 sm4 lg3 v-for="block in blocksActive" :key="block.uuid" class="pt-2">
         <mutual-bloque :data="block"></mutual-bloque>
       </v-flex>
     </v-layout>
@@ -9,7 +9,6 @@
 </template>
 <script>
 import MutualBloque from '~/components/bloque.vue'
-// import api from '~/plugins/axios'
 import {mapState} from 'vuex'
 export default {
   middleware: ['auth', 'blocks'],
@@ -21,8 +20,10 @@ export default {
       blocksActive: []
     }
   },
-  beforeMount () {
+  created () {
     this.blocksActive = this.blocks.filter(b => b.state === 'active' && b.amountLeft > 0)
+  },
+  beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Oferta')
   }
 }
