@@ -225,6 +225,25 @@ api.put('/earnings/:uuid',
   }
 )
 
+/* api.put('/pay/:uuid',
+  ensure({ secret: config.secret }),
+  async (req, res, next) => {
+    debug('a request has come to api/block/earnings')
+    if (!req.user.admin) {
+      return next(new Error('Unauthorized'))
+    }
+    const { uuid } = req.params
+    const { earnings } = req.body
+    let result
+    try {
+      result = await blockModel.setInfoDays(uuid, earnings)
+    } catch (error) {
+      return next(error)
+    }
+    res.send(result)
+  }
+) */
+
 api.put('/amount/:uuid/:amount',
   ensure({ secret: config.secret }),
   async (req, res, next) => {

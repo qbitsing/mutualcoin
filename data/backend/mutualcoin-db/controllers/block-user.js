@@ -38,6 +38,8 @@ async function validateUser(blockUser) {
   if (!userValid || !userValid.accountIsActive) {
     throw new Error('bad request: user is not valid')
   }
+
+  return userValid
 }
 
 function validateConfig(blockUser) {
@@ -65,7 +67,7 @@ function validateAmount(blockUser) {
 }
 
 async function get() {
-  return await BlockUserModel.find({})
+  return await BlockUserModel.find({}).populate('_block', '_user').exec()
 }
 
 function getBy(propertie) {
@@ -73,12 +75,12 @@ function getBy(propertie) {
 
   return function (value) {
     search[propertie] = value
-    return BlockUserModel.find(search)
+    return BlockUserModel.find(search).populate('_block', '_user').exec()
   }
 }
 async function create(blockUser) {
   const block = await validateBlock(blockUser)
-  await validateUser(blockUser)
+  const user = await validateUser(blockUser)
   validateConfig(blockUgser)
   validateAmount(blockUser)
   let amountLeft = parseFloat((block.amountLeft - blockUser.amount).toFixed(8))
@@ -91,7 +93,9 @@ async function create(blockUser) {
 
   blockUserToCreate.amount = blockUser.amount
   blockUserToCreate.block = blockUser.block
+  blockUserToCreate._block = block._id
   blockUserToCreate.user = blockUser.user
+  blockUserToCreate._user = user._id
   blockUserToCreate.high = blockUser.high
   blockUserToCreate.medium = blockUser.medium
   blockUserToCreate.low = blockUser.low
