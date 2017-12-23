@@ -43,7 +43,7 @@
                 <v-card-text class="no-padding green--text" v-if="block.state === 'running'">En marcha</v-card-text>
                 <v-card-text class="no-padding yellow--text" v-if="block.state === 'waiting'">En espera</v-card-text>
                 <v-card-text class="no-padding red--text" v-if="block.state === 'paused'">pausado</v-card-text>
-                <v-card-actions >
+                <v-card-actions  v-if="block.state === 'running' || block.state === 'paused'">
                   <v-btn color="primary mx-0" @click="dialogGain">Agregar ganancias</v-btn>
                 </v-card-actions>
               </v-card>
@@ -72,11 +72,11 @@
                   </v-form>
                   <v-data-table :headers="gainHeader" :items="gainItems" class="elevation-1">
                     <template slot="items" scope="props">
-                      <td>{{ props.item.day }}</td>
-                      <td class="text-xs-right">{{ props.item.high }}</td>
-                      <td class="text-xs-right">{{ props.item.medium }}</td>
-                      <td class="text-xs-right">{{ props.item.low }}</td>
-                      <td class="text-xs-right"><v-btn small color="warning" dark @click="editGain(props.item)">editar</v-btn></td>
+                      <td class="text-xs-center">{{ props.item.day }}</td>
+                      <td class="text-xs-center">{{ props.item.high }}</td>
+                      <td class="text-xs-center">{{ props.item.medium }}</td>
+                      <td class="text-xs-center">{{ props.item.low }}</td>
+                      <td class="text-xs-center"><v-btn small color="warning" dark @click="editGain(props.item)">editar</v-btn></td>
                     </template>
                   </v-data-table>
                   <v-btn color="primary" :disabled="gainItems === null" @click="submitGain"> Guardar </v-btn>
@@ -136,6 +136,18 @@
             </v-card>
           </v-flex>
         </v-layout>
+        <v-layout row v-if="block.state === 'running' || block.state === 'paused'">
+          <v-flex xs12 class="no-padding my-2">
+            <v-data-table :headers="dayGainHeader" :items="dayGainItems" class="elevation-1">
+              <template slot="items" scope="props">
+                <td class="text-xs-center">{{ props.item.day }}</td>
+                <td class="text-xs-center">{{ props.item.high }}</td>
+                <td class="text-xs-center">{{ props.item.medium }}</td>
+                <td class="text-xs-center">{{ props.item.low }}</td>
+              </template>
+            </v-data-table>
+          </v-flex>
+        </v-layout>
       </v-card-text>
     </v-card>
     <v-card>
@@ -190,14 +202,21 @@ export default {
         {text: 'Medio', value: 'medium'},
         {text: 'Bajo', value: 'low'}
       ],
+      dayGainHeader: [
+        {text: 'Dia', value: 'day', sortable: false, align: 'center'},
+        {text: 'alto', value: 'heigh', sortable: false, align: 'center'},
+        {text: 'Medio', value: 'medioum', sortable: false, align: 'center'},
+        {text: 'Bajo', value: 'low', sortable: false, align: 'center'}
+      ],
       gainHeader: [
-        {text: 'Dia', value: 'day', sortable: false},
-        {text: 'alto', value: 'heigh', sortable: false},
-        {text: 'Medio', value: 'medioum', sortable: false},
-        {text: 'Bajo', value: 'low', sortable: false},
-        {text: 'Opciones', sortable: false}
+        {text: 'Dia', value: 'day', sortable: false, align: 'center'},
+        {text: 'alto', value: 'heigh', sortable: false, align: 'center'},
+        {text: 'Medio', value: 'medioum', sortable: false, align: 'center'},
+        {text: 'Bajo', value: 'low', sortable: false, align: 'center'},
+        {text: 'Opciones', sortable: false, align: 'center'}
       ],
       btnGain: 'Agregar',
+      dayMax: 0,
       high: 0,
       medium: 0,
       low: 0,
@@ -205,6 +224,7 @@ export default {
       lastDay: null,
       gainItems: [],
       userItems: [],
+      dayGainItems: [],
       propsDialog: {state: false, title: ''},
       valid: false,
       highRules: [
@@ -219,10 +239,12 @@ export default {
     }
   },
   components: {MutualDialog},
-  computed: mapState(['blocks', 'coins']),
+  computed: mapState(['blocks', 'coins', 'authToken']),
   methods: {
     dialogGain () {
       this.propsDialog = {state: true, title: 'Registro de ganancias'}
+      this.dayMaximum()
+      this.dayGain = this.dayMax + 1
     },
     addGain () {
       if (this.btnGain === 'Agregar') {
@@ -251,21 +273,36 @@ export default {
       this.low = ele.low
     },
     async submitGain () {
-      if (!this.gainItems) {
+      if (this.gainItems.length > 0) {
         try {
-          console.log(api)
+          const data = {
+            earnings: this.gainItems
+          }
+          const res = await api(`block/earnings/${this.$route.params.block}`, data, 'put', this.authToken)
+          if (res.status === 200) {
+            this.dayGainItems = res.data.daysInfo
+            this.gainItems = []
+          }
         } catch (error) {
 
         }
       } else {
         swal('Error...', 'No tienes ganancias agregadas', 'error')
       }
+    },
+    dayMaximum () {
+      this.dayGainItems.forEach((ele) => {
+        if (ele.day > this.dayMax) {
+          this.dayMax = ele.day
+        }
+      })
     }
   },
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
     let block = this.blocks.filter(block => block.uuid === this.$route.params.block)
     this.block = block[0]
+    this.dayGainItems = this.block.daysInfo
   }
 }
 </script>
