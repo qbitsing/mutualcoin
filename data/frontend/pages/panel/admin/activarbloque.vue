@@ -120,6 +120,7 @@
 import api from '~/plugins/axios'
 import swal from 'sweetalert2'
 import {mapState} from 'vuex'
+import moment from 'moment'
 export default {
   layout: 'dashboard',
   middleware: ['auth', 'blocks', 'coins'],
@@ -219,6 +220,8 @@ export default {
     }
   },
   created () {
+    moment.locale('es')
+    console.log(moment())
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
 }

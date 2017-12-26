@@ -11,15 +11,15 @@
       <img :src="`/${data.objBlock._coin.name}.png`">
       <p>Plan {{data.objBlock.name}} de {{data.objBlock.amount}} {{data.objBlock._coin.name}} </p>
       <div v-if="data.objBlock.state != 'active'">
-        <p>Fecha Inicio: {{data.objBlock.start}}</p>
-        <p>Fecha Fin: {{data.objBlock.finish}}</p>
+        <p>Fecha Inicio: {{data.objBlock.runDays}}</p>
+        <p>Días corridos: {{data.objBlock.runDays}}</p>
       </div>
       <div v-else>
         <p>Cupo: {{data.objBlock.amountLeft}}</p>
       </div>
       <p>Mi inversión: {{data.amount}} {{data.objBlock._coin.name}}</p>
       <v-card-actions>
-        <v-btn :to="'timeline'" color="secondary">Info</v-btn>
+        <v-btn @click="goTimeline()" color="secondary">Info</v-btn>
       </v-card-actions>
     </v-layout>
   </v-card>
@@ -31,21 +31,37 @@
         dialog: false
       }
     },
+    methods: {
+      goTimeline () {
+        this.$store.commit('SET_INVERSION', this.data)
+        this.$router.push({path: `/panel/user/`})
+      }
+    },
     props: {
       data: { type: Object, required: true }
     }
   }
 </script>
 <style lang="css" scoped>
+h2 {
+  text-align: center;
+  color: #fff;
+}
   h2.active {
-    color: #fff;
-    text-align: center;
     background: #0F4AB2;
   }
+  h2.running {
+    background: #2E7D32;
+
+  }
   h2.finished {
-    color: #fff;
-    text-align: center;
     background: #B27900;
+  }
+  h2.cancel {
+    background: #B71C1C;
+  }
+  h2.finished {
+    background: #424242;
   }
   img{
     box-sizing: border-box;
