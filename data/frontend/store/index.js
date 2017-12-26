@@ -9,7 +9,7 @@ export const state = () => ({
   authUser: null,
   coins: null,
   blocks: null,
-  gainDays: []
+  blocksUser: null
 })
 
 export const mutations = {
@@ -30,12 +30,11 @@ export const mutations = {
   SET_BLOCKS: (state, blocks) => {
     state.blocks = blocks
   },
-  SET_DAYGAIN: (state, dayGain) => {
-    state.gainDays = dayGain
+  SET_BLOCKSUSER: (state, blocksUser) => {
+    state.blocksUser = blocksUser
   },
-  SET_DAYSINFO: (state, daysInfo, ind) => {
-    // console.log(Vue.set)
-    console.log(state.blocks[ind].daysInfo)
+  SET_DAYSINFO: (state, newBlocks) => {
+    state.blocks = newBlocks
   }
 }
 export const actions = {
