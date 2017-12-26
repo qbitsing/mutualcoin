@@ -66,16 +66,28 @@ function validateAmount(blockUser) {
   }
 }
 
-async function get() {
-  return await BlockUserModel.find({}).populate('_block', '_user').exec()
+async function get(_block, _user) {
+  let find = BlockUserModel.find({})
+
+  if (true) { 
+    find = find.populate('_block')
+  }
+
+  if (true) { 
+    find = find.populate('_user')
+  }
+  return await find.exec()
 }
 
 function getBy(propertie) {
   let search = {}
 
-  return function (value) {
+  return function (value, block) {
     search[propertie] = value
-    return BlockUserModel.find(search).populate('_block', '_user').exec()
+    if (propertie === 'user' || block) { 
+      return BlockUserModel.find(search).populate('_block').exec()
+    }
+    return BlockUserModel.find(search).populate('_user').exec()
   }
 }
 async function create(blockUser) {

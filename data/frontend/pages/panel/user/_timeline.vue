@@ -6,7 +6,7 @@
         <v-flex d-flex offset-xs1 xs4 sm2>
           <v-card flat>
             <v-layout align-center>
-              <img class="coin" :src="`/${tableData.moneda}.png`" alt="">
+              <img class="coin" :src="`/${inversion.objBlock._coin.name}.png`" alt="">
             </v-layout>
           </v-card>
         </v-flex>
@@ -21,25 +21,63 @@
             <v-flex d-flex xs12>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Mi Inversión</v-card-title>
-                <v-card-text class="no-padding" v-text="`${data.inverted} ${tableData.moneda}`"></v-card-text>
+                <v-card-text class="no-padding" v-text="`${inversion.amount} ${inversion.objBlock._coin.name}`"></v-card-text>
               </v-card>
             </v-flex>
             <v-flex d-flex xs12>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Monto</v-card-title>
-                <v-card-text v-text="`${data.amount} ${tableData.moneda}`" class="no-padding"></v-card-text>
+                <v-card-text v-text="`${inversion.objBlock.amount} ${inversion.objBlock._coin.name}`" class="no-padding"></v-card-text>
               </v-card>
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex d-flex offset-xs1 offset-sm0 xs10 sm5>
-          <v-alert color="info" v-if="pausedDays" icon="info" value="true">
-            Este bloque a sido pausado por {{pausedDays}} días.
-          </v-alert>
+        <v-flex offset-xs1 offset-sm0 xs6 sm5>
+        <v-layout row>
+          <v-flex xs12 class="no-padding">
+            <v-card dark tile flat color="blue-grey darken-3">
+              <v-card-text><h4>Porcentajes Invertidos</h4></v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-2">
+                <v-card-text>Alto</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-3">
+                <v-card-text>Medio</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-4">
+              <v-card-text>Bajo</v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-2">
+                <v-card-text>{{inversion.high}}</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-3">
+                <v-card-text>{{inversion.medium}}</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-4">
+              <v-card-text>{{inversion.low}}</v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
         </v-flex>
         </v-layout>
       </v-card-title>
-        <mutual-timeline :data="data"></mutual-timeline>
+        <mutual-timeline :data="inversion.objBlock"></mutual-timeline>
         <v-container grid-list-md text-xs-center>
           <v-layout row>
             <v-flex xs10 offset-xs1>
@@ -66,9 +104,11 @@
 <script>
   import MutualTimeline from '~/components/timeline.vue'
   import MutualTable from '~/components/table.vue'
+  import {mapState} from 'vuex'
   export default {
-    middleware: 'auth',
+    middleware: ['auth', 'isInversion'],
     layout: 'dashboard',
+    computed: mapState(['inversion']),
     data () {
       return {
         tableData: {
@@ -177,7 +217,7 @@
       if (this.tableData.week % 4 === 0) {
         this.payData.week = (this.tableData.week / 4) + 1
       }
-      this.payData.moneda = this.tableData.moneda
+      this.payData.moneda = this.inversion.objBlock._coin.name
       for (let index = 0; index < this.tableData.week; index++) {
         let i = index + 1
         if (i % 4 === 0) {
@@ -204,7 +244,7 @@
     }
   }
 </script>
-<style lang="css" scoped>
+<style scoped>
 .wp {
   box-sizing: border-box;
   width: 100%;

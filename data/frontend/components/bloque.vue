@@ -86,6 +86,7 @@
 import MutualDialog from '~/components/dialog.vue'
 import api from '~/plugins/axios'
 import swal from 'sweetalert2'
+import decimal from 'decimal'
 import {mapState} from 'vuex'
 export default {
   data () {
@@ -127,7 +128,7 @@ export default {
         const res = await api('blockUser/create', data, 'post', this.authToken)
         if (res.status === 200) {
           const blocks = this.$store.state.blocks.map(e => {
-            if (e.uuid === this.data.uuid) e.amountLeft = parseFloat((e.amountLeft - this.amount).toFixed(8))
+            if (e.uuid === this.data.uuid) e.amountLeft = decimal.sub(e.amountLeft.toString(), this.amount.toString()).toNumber()
             return e
           })
           this.$store.commit('SET_BLOCKS', blocks)
