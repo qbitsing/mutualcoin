@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title>
         <v-layout row wrap align-center>
-        <v-flex d-flex offset-xs1 xs4 sm2>
+        <v-flex d-flex offset-xs1 xs5 sm2>
           <v-card flat>
             <v-layout align-center>
               <img class="coin" :src="`/${inversion.objBlock._coin.name}.png`" alt="">
@@ -15,7 +15,7 @@
             <v-flex d-flex>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Estado</v-card-title>
-                <v-card-text class="no-padding" v-text="state"></v-card-text>
+                <v-card-text class="no-padding" v-text="inversion.objBlock.state"></v-card-text>
               </v-card>
             </v-flex>
             <v-flex d-flex xs12>
@@ -32,7 +32,7 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex offset-xs1 offset-sm0 xs6 sm5>
+        <v-flex offset-xs1 offset-sm0 xs10 sm5>
         <v-layout row>
           <v-flex xs12 class="no-padding">
             <v-card dark tile flat color="blue-grey darken-3">
