@@ -229,7 +229,7 @@ api.put('/earnings/:uuid',
 api.put('/pay/:uuid/:to',
   ensure({ secret: config.secret }),
   async (req, res, next) => {
-    debug('a request has come to api/block/earnings')
+    debug('a request has come to api/block/pay')
     if (!req.user.admin) {
       return next(new Error('Unauthorized'))
     }
