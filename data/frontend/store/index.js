@@ -32,6 +32,10 @@ export const mutations = {
   },
   SET_DAYGAIN: (state, dayGain) => {
     state.gainDays = dayGain
+  },
+  SET_DAYSINFO: (state, daysInfo, ind) => {
+    // console.log(Vue.set)
+    console.log(state.blocks[ind].daysInfo)
   }
 }
 export const actions = {

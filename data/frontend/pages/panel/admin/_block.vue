@@ -2,7 +2,7 @@
   <section>
     <v-card class="mb-2">
       <v-card-title class="mutual-title">
-        <h2>Bloque {{block.name}} </h2>
+        <h2>Bloque {{blocks[indexBlock].name}} </h2>
       </v-card-title>
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
@@ -10,7 +10,7 @@
             <v-flex d-flex xs5 sm3>
               <v-card flat>
                 <v-layout align-center>
-                  <img class="coin" :src="`/${block._coin.name}.png`" alt="">
+                  <img class="coin" :src="`/${blocks[indexBlock]._coin.name}.png`" alt="">
                 </v-layout>
               </v-card>
             </v-flex>
@@ -19,19 +19,19 @@
                 <v-flex d-flex>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Semanas</v-card-title>
-                    <v-card-text class="no-padding" v-text="block.weeks"></v-card-text>
+                    <v-card-text class="no-padding" v-text="blocks[indexBlock].weeks"></v-card-text>
                   </v-card>
                 </v-flex>
                 <v-flex d-flex xs12>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Inversiones</v-card-title>
-                    <v-card-text class="no-padding" v-text="`${block.amount - block.amountLeft} ${block._coin.name}`"></v-card-text>
+                    <v-card-text class="no-padding" v-text="`${blocks[indexBlock].amount - blocks[indexBlock].amountLeft} ${blocks[indexBlock]._coin.name}`"></v-card-text>
                   </v-card>
                 </v-flex>
                 <v-flex d-flex xs12>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Monto</v-card-title>
-                    <v-card-text v-text="`${block.amount} ${block._coin.name}`" class="no-padding"></v-card-text>
+                    <v-card-text v-text="`${blocks[indexBlock].amount} ${blocks[indexBlock]._coin.name}`" class="no-padding"></v-card-text>
                   </v-card>
                 </v-flex>
               </v-layout>
@@ -39,11 +39,11 @@
             <v-flex d-flex offset-sm2 xs5 sm4>
               <v-card flat>
                 <v-card-title primary class="title no-padding ">Estado</v-card-title>
-                <v-card-text class="no-padding blue--text" v-if="block.state === 'active'">activo</v-card-text>
-                <v-card-text class="no-padding green--text" v-if="block.state === 'running'">En marcha</v-card-text>
-                <v-card-text class="no-padding yellow--text" v-if="block.state === 'waiting'">En espera</v-card-text>
-                <v-card-text class="no-padding red--text" v-if="block.state === 'paused'">pausado</v-card-text>
-                <v-card-actions  v-if="block.state === 'running' || block.state === 'paused'">
+                <v-card-text class="no-padding blue--text" v-if="blocks[indexBlock].state === 'active'">activo</v-card-text>
+                <v-card-text class="no-padding green--text" v-if="blocks[indexBlock].state === 'running'">En marcha</v-card-text>
+                <v-card-text class="no-padding yellow--text" v-if="blocks[indexBlock].state === 'waiting'">En espera</v-card-text>
+                <v-card-text class="no-padding red--text" v-if="blocks[indexBlock].state === 'paused'">pausado</v-card-text>
+                <v-card-actions  v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'">
                   <v-btn color="primary mx-0" @click="dialogGain">Agregar ganancias</v-btn>
                 </v-card-actions>
               </v-card>
@@ -122,23 +122,23 @@
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text class="text-xs-center">3 {{block._coin.name}}</v-card-text>
+                <v-card-text class="text-xs-center">3 {{blocks[indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text class="text-xs-center">3 {{block._coin.name}}</v-card-text>
+                <v-card-text class="text-xs-center">3 {{blocks[indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text class="text-xs-center">4 {{block._coin.name}}</v-card-text>
+              <v-card-text class="text-xs-center">4 {{blocks[indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
-        <v-layout row v-if="block.state === 'running' || block.state === 'paused'">
+        <v-layout row v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'">
           <v-flex xs12 class="no-padding my-2">
-            <v-data-table :headers="dayGainHeader" :items="dayGainItems" class="elevation-1">
+            <v-data-table :headers="dayGainHeader" :items="blocks[indexBlock].daysInfo" class="elevation-1">
               <template slot="items" scope="props">
                 <td class="text-xs-center">{{ props.item.day }}</td>
                 <td class="text-xs-center">{{ props.item.high }}</td>
@@ -194,7 +194,7 @@ export default {
   middleware: ['auth', 'blocks', 'coins'],
   data () {
     return {
-      block: null,
+      indexBlock: null,
       userHeader: [
         {text: 'Usuario', value: 'user'},
         {text: 'Inversión', value: 'amount'},
@@ -224,7 +224,6 @@ export default {
       lastDay: null,
       gainItems: [],
       userItems: [],
-      dayGainItems: [],
       propsDialog: {state: false, title: ''},
       valid: false,
       highRules: [
@@ -280,7 +279,10 @@ export default {
           }
           const res = await api(`block/earnings/${this.$route.params.block}`, data, 'put', this.authToken)
           if (res.status === 200) {
-            this.dayGainItems = res.data.daysInfo
+            res.data.daysInfo.forEach((ele, index) => {
+              this.$set(this.blocks[this.indexBlock].daysInfo, index, ele)
+            })
+            // this.$store.commit('SET_DAYSINFO', res.data.daysInfo, this.indexBlock)
             this.gainItems = []
           }
         } catch (error) {
@@ -291,7 +293,7 @@ export default {
       }
     },
     dayMaximum () {
-      this.dayGainItems.forEach((ele) => {
+      this.blocks[this.indexBlock].daysInfo.forEach((ele) => {
         if (ele.day > this.dayMax) {
           this.dayMax = ele.day
         }
@@ -300,9 +302,8 @@ export default {
   },
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
-    let block = this.blocks.filter(block => block.uuid === this.$route.params.block)
-    this.block = block[0]
-    this.dayGainItems = this.block.daysInfo
+    this.indexBlock = this.blocks.findIndex(block => block.uuid === this.$route.params.block)
+    // this.dayGainItems = this.blocks[this.indexBlock].daysInfo
   }
 }
 </script>
