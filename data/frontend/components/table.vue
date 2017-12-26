@@ -66,7 +66,6 @@
     </v-flex>
   </v-layout>
 </template>
-
 <script>
 export default {
   props: {
@@ -74,6 +73,8 @@ export default {
   }
 }
 </script>
-
-<style lang="css">
+<style scoped>
+.no-padding {
+  padding: 0 !important;
+}
 </style>

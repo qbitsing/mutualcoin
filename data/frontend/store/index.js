@@ -9,6 +9,8 @@ export const state = () => ({
   authUser: null,
   coins: null,
   blocks: null,
+  inversion: null,
+  userInversions: null,
   gainDays: []
 })
 
@@ -17,12 +19,18 @@ export const mutations = {
     state.authToken = user.token
     state.authUser = user.sesion
   },
+  SET_INVERSION: (state, inversion) => {
+    state.inversion = inversion
+  },
   LOGOUT: (state) => {
     state.authToken = null
     state.authUser = null
   },
   TITLE_VIEW: (state, title) => {
     state.titleView = title
+  },
+  SET_USER_INVERSIONS: (state, userInversions) => {
+    state.userInversions = userInversions
   },
   SET_COINS: (state, coins) => {
     state.coins = coins
