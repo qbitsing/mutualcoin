@@ -19,10 +19,12 @@ function calculatePercentages(daysInfo, i, obj) {
 }
 module.exports = function (hasta, investments) { 
   const pays = []
+  hasta = parseInt(hasta)
 
   for (let investment of investments) { 
     let { _block, last_pay, low, medium, high, amount } = investment
     let { daysInfo } = _block, pay
+    last_pay = last_pay || 0
 
     let _low = decimal(''+amount).mul(''+low).div('100')
     let _medium = decimal(''+amount).mul(''+medium).div('100')
@@ -40,7 +42,11 @@ module.exports = function (hasta, investments) {
       user: decimal(''+$$pay).mul(''+$user).div('100').toNumber(),
       app: decimal(''+$$pay).mul(''+$app).div('100').toNumber(),
       red: decimal(''+$$pay).mul(''+$red).div('100').toNumber(),
-      trader: decimal(''+$$pay).mul(''+$trader).div('100').toNumber()
+      trader: decimal(''+$$pay).mul(''+$trader).div('100').toNumber(),
+      amount,
+      low,
+      medium,
+      high
     }
 
     if ($$pay > 0) { 
