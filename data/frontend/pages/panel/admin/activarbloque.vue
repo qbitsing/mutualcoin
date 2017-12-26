@@ -104,8 +104,8 @@
               <td class="text-xs-right">
                 <v-btn small color="primary" @click="changeState(props.item, 'activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
                 <v-btn small color="primary" @click="changeState(props.item, 'waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
-                <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'poner a correr', 'corriendo')" v-if="props.item.state == 'waiting'">iniciar</v-btn>
-                <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'reanudar', 'reanudado')" v-if="props.item.state == 'paused'">reanudar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'iniciar', 'corriendo')" v-if="props.item.state == 'waiting'">iniciar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'reanudar', 'corriendo')" v-if="props.item.state == 'paused'">reanudar</v-btn>
                 <v-btn small color="warning" @click="changeState(props.item, 'pause', 'paused', 'pausar', 'pausado')" v-if="props.item.state == 'running'">pausar</v-btn>
                 <v-btn small color="error" @click="changeState(props.item, 'cancel', 'cancel', 'cancelar', 'cancelado')" v-if="props.item.state != 'finished' && props.item.state != 'cancel'">cancelar</v-btn>
               </td>
@@ -194,10 +194,11 @@ export default {
           return !value && 'Escribe la contraseña'
         },
         showLoaderOnConfirm: true,
-        preConfirm: async (password) => {
-          console.log(item)
-          // await alert(item.uuid)
-          const res = await api(`block/${route}/${item.uuid}`, {}, 'put', this.authToken)
+        preConfirm: async () => {
+          moment.locale('es')
+          const data = text1 === 'iniciar' ? {startDate: moment().format('DD/MM/YY')} : {}
+          console.log(data)
+          const res = await api(`block/${route}/${item.uuid}`, data, 'put', this.authToken)
           if (res.status === 200) {
             item.state = newState
             const waitingAmount = item.amount - item.amountLeft
@@ -220,8 +221,6 @@ export default {
     }
   },
   created () {
-    moment.locale('es')
-    console.log(moment())
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
 }

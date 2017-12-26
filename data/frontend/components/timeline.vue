@@ -5,7 +5,7 @@
         <v-flex xs1 center>
           <v-layout align-center justify-center class="max-height">
             <v-card dark class="date">
-              {{data.start}}
+              {{startDate}}
             </v-card>
           </v-layout>
         </v-flex>
@@ -15,7 +15,7 @@
         <v-flex xs1 center>
           <v-layout align-center justify-center class="max-height">
             <v-card dark class="date">
-              {{data.start}}
+              {{finishDate}}
             </v-card>
           </v-layout>
         </v-flex>
@@ -24,20 +24,30 @@
   </div>
 </template>
 <script>
-  export default {
-    data () {
-      return {
-        show: false,
-        dialog: false
-      }
-    },
-    beforeMount () {
-      this.show = true
-    },
-    props: {
-      data: {type: Object, required: true}
+import moment from 'moment'
+export default {
+  data () {
+    return {
+      dialog: false,
+      startDate: '',
+      finishDate: ''
     }
+  },
+  created () {
+    moment.locale('es')
+    console.log(this)
+    this.startDate = this.data.startDate || 'Sin Iniciar'
+    if (!this.data.finishDate) {
+      const restDays = (this.data.weeks * 7) - this.data.runDays
+      this.finishDate = this.data.startDate ? moment().add(restDays, 'days').format('DD/MM/YY') : 'Sin Iniciar'
+    } else {
+      this.finishDate = this.data.finishDate
+    }
+  },
+  props: {
+    data: {type: Object, required: true}
   }
+}
 </script>
 <style lang="css" scoped>
 .max-height{

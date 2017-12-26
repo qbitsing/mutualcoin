@@ -15,9 +15,6 @@ export default {
   layout: 'dashboard',
   middleware: ['auth', 'blocks', 'userInversions'],
   computed: mapState(['blocks', 'userInversions']),
-  created () {
-    console.log(this.userInversions)
-  },
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Historial')
   }
