@@ -14,6 +14,7 @@
         {{'Pausado'}}
       </h2>
       <img :src="`/${data.coin}.png`">
+      <p>Bloque: {{data.name}}</p>
       <p>Plan de: {{data.amount}} {{data.coin}}</p>
       <p>Semanas: {{data.weeks}}</p>
       <p>Invertidos:

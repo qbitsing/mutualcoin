@@ -191,7 +191,7 @@ import swal from 'sweetalert2'
 import api from '~/plugins/axios'
 export default {
   layout: 'dashboard',
-  middleware: ['auth', 'blocks', 'coins'],
+  middleware: ['auth', 'blocks', 'coins', 'blocksUser'],
   data () {
     return {
       indexBlock: null,
@@ -279,10 +279,9 @@ export default {
           }
           const res = await api(`block/earnings/${this.$route.params.block}`, data, 'put', this.authToken)
           if (res.status === 200) {
-            res.data.daysInfo.forEach((ele, index) => {
-              this.$set(this.blocks[this.indexBlock].daysInfo, index, ele)
-            })
-            // this.$store.commit('SET_DAYSINFO', res.data.daysInfo, this.indexBlock)
+            let newBlocks = this.blocks
+            newBlocks[this.indexBlock].daysInfo = res.data.daysInfo
+            this.$store.commit('SET_DAYSINFO', newBlocks)
             this.gainItems = []
           }
         } catch (error) {
