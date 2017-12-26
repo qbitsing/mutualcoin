@@ -18,12 +18,11 @@ api.use('*', (req, res, next) => {
 })
 
 api.get('/all',
-  ensure({ secret: config.secret }),
   async (req, res, next) => {
     debug('a request has come to api/blockUser/all')
     let blocksUsers = []
     try {
-      blocksUsers = await blockUserModel.get()
+      blocksUsers = await blockUserModel.get(false, true)
     } catch (error) {
       return next(error)
     }

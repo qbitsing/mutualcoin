@@ -4,6 +4,7 @@ const debug = require('debug')('mutualcoin:api:routes')
 const express = require('express')
 const asyncify = require('express-asyncify')
 const config = require('../config')
+const { pays } = require('mutualcoin-utils')
 const api = asyncify(express.Router())
 const ensure = require('express-jwt')
 const secret = { secret: config.secret }
@@ -225,24 +226,24 @@ api.put('/earnings/:uuid',
   }
 )
 
-/* api.put('/pay/:uuid',
+api.put('/pay/:uuid/:to',
   ensure({ secret: config.secret }),
   async (req, res, next) => {
     debug('a request has come to api/block/earnings')
     if (!req.user.admin) {
       return next(new Error('Unauthorized'))
     }
-    const { uuid } = req.params
-    const { earnings } = req.body
+    const { uuid, to } = req.params
+    let investments = await req.db.blocUserkModel.getBy('block')(uuid, true)
     let result
     try {
-      result = await blockModel.setInfoDays(uuid, earnings)
+      result = pays(to, investments)
     } catch (error) {
       return next(error)
     }
     res.send(result)
   }
-) */
+)
 
 api.put('/amount/:uuid/:amount',
   ensure({ secret: config.secret }),
