@@ -17,7 +17,7 @@
         <v-btn 
           color="blue darken-1" 
           flat
-          @click.native="dialog.state = false">Cerrar</v-btn>
+          @click.native="dialog.state = false" @click="closeDialog">Cerrar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -26,6 +26,11 @@
   export default {
     props: {
       dialog: {type: Object, required: true}
+    },
+    methods: {
+      closeDialog () {
+        this.$emit('close')
+      }
     }
   }
 </script>
