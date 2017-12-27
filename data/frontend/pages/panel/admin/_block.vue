@@ -43,7 +43,7 @@
                 <v-card-text class="no-padding green--text" v-if="blocks[indexBlock].state === 'running'">En marcha</v-card-text>
                 <v-card-text class="no-padding yellow--text" v-if="blocks[indexBlock].state === 'waiting'">En espera</v-card-text>
                 <v-card-text class="no-padding red--text" v-if="blocks[indexBlock].state === 'paused'">pausado</v-card-text>
-                <v-card-actions  v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'">
+                <v-card-actions  v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused' || dayMax << blocks[indexBlock].runDays">
                   <v-btn color="primary mx-0" @click="dialogGain">Agregar ganancias</v-btn>
                 </v-card-actions>
               </v-card>
@@ -55,20 +55,20 @@
                     lazy-validation>
                     <v-layout wrap>
                       <v-flex xs12 sm12>
-                        <v-card-title primary class="title no-padding ">Dia Numero: {{dayGain}}</v-card-title>
+                        <v-card-title primary class="title no-padding">Dia Numero: {{dayGain}}</v-card-title>
                       </v-flex>
                       <v-flex xs12 sm4>
-                        <v-text-field type="Number" suffix="%" v-model="high" label="Alto" :rules="highRules" required/>
+                        <v-text-field type="Number" suffix="%" v-model="high" label="Alto" :rules="highRules" required :disabled="disableDays"/>
                       </v-flex>
                       <v-flex xs12 sm4>
-                        <v-text-field type="Number" suffix="%" v-model="medium" label="Medio" :rules="mediumRules" required/>
+                        <v-text-field type="Number" suffix="%" v-model="medium" label="Medio" :rules="mediumRules" required :disabled="disableDays"/>
                       </v-flex>
                       <v-flex xs12 sm4>
-                        <v-text-field type="Number" suffix="%" v-model="low" label="Bajo" :rules="lowRules" required/>
+                        <v-text-field type="Number" suffix="%" v-model="low" label="Bajo" :rules="lowRules" required :disabled="disableDays"/>
                       </v-flex>
                     </v-layout>
                     <v-btn color="primary" @click="addGain" :disabled="!valid"> {{btnGain}} </v-btn>
-                    <v-btn color="error" @click="cancelGain" > Cancelar </v-btn>
+                    <v-btn color="error" @click="cancelGain"  :disabled="disableDays"> Cancelar </v-btn>
                   </v-form>
                   <v-data-table :headers="gainHeader" :items="gainItems" class="elevation-1">
                     <template slot="items" scope="props">
@@ -105,34 +105,34 @@
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text class="text-xs-center">30%</v-card-text>
+                <v-card-text class="text-xs-center">{{percentHigh}} %</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text class="text-xs-center">30%</v-card-text>
+                <v-card-text class="text-xs-center">{{percentMedium}} %</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text class="text-xs-center">30%</v-card-text>
+              <v-card-text class="text-xs-center">{{percentLow}} %</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text class="text-xs-center">3 {{blocks[indexBlock]._coin.name}}</v-card-text>
+                <v-card-text class="text-xs-center">{{highTotal}} - {{blocks[indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text class="text-xs-center">3 {{blocks[indexBlock]._coin.name}}</v-card-text>
+                <v-card-text class="text-xs-center">{{mediumTotal}} - {{blocks[indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text class="text-xs-center">4 {{blocks[indexBlock]._coin.name}}</v-card-text>
+              <v-card-text class="text-xs-center">{{lowTotal}} - {{blocks[indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
@@ -144,6 +144,11 @@
                 <td class="text-xs-center">{{ props.item.high }}</td>
                 <td class="text-xs-center">{{ props.item.medium }}</td>
                 <td class="text-xs-center">{{ props.item.low }}</td>
+              </template>
+              <template slot="no-data">
+                <v-alert :value="true" color="error" icon="warning">
+                  aun no as ingresado ganancias :(
+                </v-alert>
               </template>
             </v-data-table>
           </v-flex>
@@ -159,17 +164,16 @@
           <v-layout row wrap>
             <v-data-table
             :headers="userHeader"
-            :items="userItems"
-            hide-actions
+            :items="blocksUser"
             class="elevation-1">
             <template 
               slot="items"
               scope="props">
-              <td>{{ props.item._user.email }}</td>
+              <td>{{ props.item._user.nickname }}</td>
               <td class="text-xs-right">{{ props.item.amount }}</td>
-              <td class="text-xs-right">{{ props.item.high }}</td>
-              <td class="text-xs-right">{{ props.item.medium }}</td>
-              <td class="text-xs-right">{{ props.item.low }}</td>
+              <td class="text-xs-right">{{ props.item.high }}%</td>
+              <td class="text-xs-right">{{ props.item.medium }}%</td>
+              <td class="text-xs-right">{{ props.item.low }}%</td>
             </template>
             <template slot="no-data">
               <v-alert :value="true" color="error" icon="warning">
@@ -189,12 +193,14 @@ import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
+import decimal from 'decimal'
 export default {
   layout: 'dashboard',
   middleware: ['auth', 'blocks', 'coins', 'blocksUser'],
   data () {
     return {
       indexBlock: null,
+      disableDays: false,
       userHeader: [
         {text: 'Usuario', value: 'user'},
         {text: 'Inversión', value: 'amount'},
@@ -215,11 +221,17 @@ export default {
         {text: 'Bajo', value: 'low', sortable: false, align: 'center'},
         {text: 'Opciones', sortable: false, align: 'center'}
       ],
-      btnGain: 'Agregar',
-      dayMax: 0,
       high: 0,
       medium: 0,
       low: 0,
+      btnGain: 'Agregar',
+      dayMax: 0,
+      highTotal: 0,
+      percentHigh: 0,
+      mediumTotal: 0,
+      percentMedium: 0,
+      lowTotal: 0,
+      percentLow: 0,
       dayGain: 1,
       lastDay: null,
       gainItems: [],
@@ -238,17 +250,26 @@ export default {
     }
   },
   components: {MutualDialog},
-  computed: mapState(['blocks', 'coins', 'authToken']),
+  computed: mapState(['blocks', 'coins', 'authToken', 'blocksUser']),
   methods: {
     dialogGain () {
       this.propsDialog = {state: true, title: 'Registro de ganancias'}
       this.dayMaximum()
-      this.dayGain = this.dayMax + 1
+      this.dayGain = this.dayMax
+      if (this.dayGain === this.blocks[this.indexBlock].runDays) {
+        this.disableDays = true
+      } else {
+        this.dayGain += 1
+      }
     },
     addGain () {
       if (this.btnGain === 'Agregar') {
         this.gainItems.push({day: this.dayGain, high: this.high, medium: this.medium, low: this.low})
-        this.dayGain += 1
+        if (this.dayGain === this.blocks[this.indexBlock].runDays) {
+          this.disableDays = true
+        } else {
+          this.dayGain += 1
+        }
       } else {
         let index = this.gainItems.findIndex(ele => ele.day === this.dayGain)
         this.gainItems.splice(index, 1, {day: this.dayGain, high: this.high, medium: this.medium, low: this.low})
@@ -302,6 +323,15 @@ export default {
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
     this.indexBlock = this.blocks.findIndex(block => block.uuid === this.$route.params.block)
+    this.blocksUser.forEach((ele) => {
+      this.highTotal += decimal.mul(ele.amount.toString(), decimal.div(ele.high, 100)).toNumber()
+      this.mediumTotal += decimal.mul(ele.amount.toString(), decimal.div(ele.medium, 100)).toNumber()
+      this.lowTotal += decimal.mul(ele.amount.toString(), decimal.div(ele.low, 100)).toNumber()
+    })
+    let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
+    this.percentHigh = decimal.div(decimal.mul(this.highTotal.toString(), 100), totalInve.toString()).toNumber()
+    this.percentMedium = decimal.div(decimal.mul(this.mediumTotal.toString(), 100), totalInve.toString()).toNumber()
+    this.percentLow = decimal.div(decimal.mul(this.lowTotal.toString(), 100), totalInve.toString()).toNumber()
     // this.dayGainItems = this.blocks[this.indexBlock].daysInfo
   }
 }

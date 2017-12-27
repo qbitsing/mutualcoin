@@ -80,6 +80,7 @@ export default {
             this.$router.push('panel/user/home')
           }
         } catch (e) {
+          this.password = ''
           swal('Ooops...', e.message, 'error')
         }
         this[l] = false
