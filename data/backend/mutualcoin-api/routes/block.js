@@ -227,20 +227,22 @@ api.put('/earnings/:uuid',
 )
 
 api.put('/pay/:uuid/:to',
-  //ensure({ secret: config.secret }),
+  ensure({ secret: config.secret }),
   async (req, res, next) => {
     debug('a request has come to api/block/earnings')
-    //if (!req.user.admin) {
-      //return next(new Error('Unauthorized'))
-   // }
+    if (!req.user.admin) {
+      return next(new Error('Unauthorized'))
+    }
     const { uuid, to } = req.params
-    let investments = await req.db.blockUser.getBy('block')(uuid, true)
+    let investments
     let result
     try {
+      investments = await req.db.blockUser.getBy('block')(uuid, true)
       result = pays(to, investments)
     } catch (error) {
       return next(error)
     }
+
     res.send(result)
   }
 )

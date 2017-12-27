@@ -94,7 +94,7 @@ async function create(blockUser) {
   const block = await validateBlock(blockUser)
   const user = await validateUser(blockUser)
   validateConfig(blockUser)
-  validateAmount(blockUser)
+  validateAmount(blockUser, block)
   let amountLeft = parseFloat((block.amountLeft - blockUser.amount).toFixed(8))
   if (amountLeft === 0) {
     await BlockModel.findByIdAndUpdate(block._id, { amountLeft, state: 'waiting' })
