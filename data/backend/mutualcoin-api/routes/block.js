@@ -8,6 +8,7 @@ const { pays } = require('mutualcoin-utils')
 const api = asyncify(express.Router())
 const ensure = require('express-jwt')
 const secret = { secret: config.secret }
+const paysMap = new Map()
 let blockModel
 
 function setConds (query) {
@@ -242,8 +243,34 @@ api.put('/pay/:uuid/:to',
     } catch (error) {
       return next(error)
     }
+    paysMap.set(uuid, result)
 
-    res.send(result)
+    res.send(result.pays)
+  }
+)
+
+api.put('/makePay/:uuid',
+  ensure({ secret: config.secret }),
+  async (req, res, next) => {
+    debug('a request has come to api/block/earnings')
+    if (!req.user.admin) {
+      return next(new Error('Unauthorized'))
+    }
+    const { uuid } = req.params
+    let result = paysMap.get(uuid)
+
+    if (!result) { 
+      return next(new Error('bad request: there is no payment generated with the indicated uuid'))
+    }
+
+    let { investments } = result 
+    let promises = investments.map(investment => req.db.blockUser.updatePays(investment._id, investment.pays, investment.last_pay))
+    try {
+      await Promise.all(promises)
+    } catch (error) {
+      return next(error)
+    }
+    res.send({ result: true })
   }
 )
 

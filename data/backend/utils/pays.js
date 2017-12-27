@@ -59,5 +59,5 @@ module.exports = function (hasta, investments) {
     return investment
   })
 
-  return pays
+  return { pays, investments }
 }

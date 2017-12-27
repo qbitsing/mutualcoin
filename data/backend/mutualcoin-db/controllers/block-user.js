@@ -114,6 +114,10 @@ async function create(blockUser) {
 
   return await blockUserToCreate.save()
 }
+
+function updatePays(id, pays, last_pay) { 
+  return BlockUserModel.findByIdAndUpdate(id, { pays, last_pay })
+}
 module.exports = function (db) {
   BlockModel = db.model('block', blockSchema)
   UserModel = db.model('user', userSchema)
@@ -123,6 +127,7 @@ module.exports = function (db) {
   methods.get = get
   methods.getBy = getBy
   methods.create = create
+  methods.updatePays = updatePays
   return methods
 }
 
