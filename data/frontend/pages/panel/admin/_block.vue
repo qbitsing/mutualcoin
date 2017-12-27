@@ -43,11 +43,14 @@
                 <v-card-text class="no-padding green--text" v-if="blocks[indexBlock].state === 'running'">En marcha</v-card-text>
                 <v-card-text class="no-padding yellow--text" v-if="blocks[indexBlock].state === 'waiting'">En espera</v-card-text>
                 <v-card-text class="no-padding red--text" v-if="blocks[indexBlock].state === 'paused'">pausado</v-card-text>
-                <v-card-actions  v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused' || dayMax << blocks[indexBlock].runDays">
-                  <v-btn color="primary mx-0" @click="dialogGain">Agregar ganancias</v-btn>
+                <v-card-actions v-if="(blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused') && dayMax < blocks[indexBlock].runDays">
+                  <v-btn block  color="primary mx-0" @click="dialogGain">Agregar ganancias</v-btn>
+                </v-card-actions>
+                <v-card-actions v-if="(blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused') && dayMax > 0">
+                  <v-btn block  color="success mx-0" @click="dialogPay">Generación de pagos</v-btn>
                 </v-card-actions>
               </v-card>
-              <mutual-dialog :dialog="propsDialog">
+              <mutual-dialog :dialog="propsDialogGain" @close="closeDialogGain">
                 <section slot="contenDialog">
                   <v-form 
                     v-model="valid" 
@@ -80,6 +83,29 @@
                     </template>
                   </v-data-table>
                   <v-btn color="primary" :disabled="gainItems === null" @click="submitGain"> Guardar </v-btn>
+                </section>
+              </mutual-dialog>
+              <mutual-dialog :dialog="propsDialogPay" @close="closeDialogPay">
+                <section slot="contenDialog">
+                  <v-form v-model="valid" ref="formPay" lazy-validation>
+                    <v-layout wrap>
+                      <v-flex xs6>
+                        <v-select
+                          :items="itemsDay"
+                          v-model="selectDay"
+                          label="Hasta que dia"
+                          item-text="text"
+                          :rules="inputRules"
+                          single-line
+                          bottom
+                          >
+                          </v-select>
+                      </v-flex>
+                      <v-flex xs6>
+                        <v-btn block color="primary" @click="submitPay" :disabled="!valid">Generar pago</v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-form>
                 </section>
               </mutual-dialog>
             </v-flex>
@@ -138,19 +164,24 @@
         </v-layout>
         <v-layout row v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'">
           <v-flex xs12 class="no-padding my-2">
-            <v-data-table :headers="dayGainHeader" :items="blocks[indexBlock].daysInfo" class="elevation-1">
-              <template slot="items" scope="props">
-                <td class="text-xs-center">{{ props.item.day }}</td>
-                <td class="text-xs-center">{{ props.item.high }}</td>
-                <td class="text-xs-center">{{ props.item.medium }}</td>
-                <td class="text-xs-center">{{ props.item.low }}</td>
-              </template>
-              <template slot="no-data">
-                <v-alert :value="true" color="error" icon="warning">
-                  aun no as ingresado ganancias :(
-                </v-alert>
-              </template>
-            </v-data-table>
+            <v-card class="elevation-9">
+              <v-card-title>
+                Ganancias Guardas
+              </v-card-title>
+                <v-data-table :headers="dayGainHeader" :items="blocks[indexBlock].daysInfo" >
+                  <template slot="items" scope="props">
+                    <td class="text-xs-center">{{ props.item.day }}</td>
+                    <td class="text-xs-center">{{ props.item.high }}</td>
+                    <td class="text-xs-center">{{ props.item.medium }}</td>
+                    <td class="text-xs-center">{{ props.item.low }}</td>
+                  </template>
+                  <template slot="no-data">
+                    <v-alert :value="true" color="error" icon="warning">
+                      aun no as ingresado ganancias :(
+                    </v-alert>
+                  </template>
+              </v-data-table>
+            </v-card>
           </v-flex>
         </v-layout>
       </v-card-text>
@@ -161,26 +192,32 @@
       </v-card-title>
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
-          <v-layout row wrap>
-            <v-data-table
-            :headers="userHeader"
-            :items="blocksUser"
-            class="elevation-1">
-            <template 
-              slot="items"
-              scope="props">
-              <td>{{ props.item._user.nickname }}</td>
-              <td class="text-xs-right">{{ props.item.amount }}</td>
-              <td class="text-xs-right">{{ props.item.high }}%</td>
-              <td class="text-xs-right">{{ props.item.medium }}%</td>
-              <td class="text-xs-right">{{ props.item.low }}%</td>
-            </template>
-            <template slot="no-data">
-              <v-alert :value="true" color="error" icon="warning">
-                Aun no se a invertido :(
-              </v-alert>
-            </template>
-          </v-data-table>
+          <v-layout row>
+            <v-flex xs12 class="no-padding my-2">
+              <v-card class="elevation-9">
+                <v-card-title>
+                  Usuarios inversores
+                </v-card-title>
+                <v-data-table
+                  :headers="userHeader"
+                  :items="blocksUser">
+                  <template 
+                    slot="items"
+                    scope="props">
+                    <td>{{ props.item._user.nickname }}</td>
+                    <td class="text-xs-right">{{ props.item.amount }}</td>
+                    <td class="text-xs-right">{{ props.item.high }}%</td>
+                    <td class="text-xs-right">{{ props.item.medium }}%</td>
+                    <td class="text-xs-right">{{ props.item.low }}%</td>
+                  </template>
+                  <template slot="no-data">
+                    <v-alert :value="true" color="error" icon="warning">
+                      Aun no se a invertido :(
+                    </v-alert>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </v-flex>
           </v-layout>
         </v-container>
       </v-card-text>
@@ -201,6 +238,8 @@ export default {
     return {
       indexBlock: null,
       disableDays: false,
+      selectDay: null,
+      itemsDay: [],
       userHeader: [
         {text: 'Usuario', value: 'user'},
         {text: 'Inversión', value: 'amount'},
@@ -236,16 +275,20 @@ export default {
       lastDay: null,
       gainItems: [],
       userItems: [],
-      propsDialog: {state: false, title: ''},
+      propsDialogGain: {state: false, title: ''},
+      propsDialogPay: {state: false, title: ''},
       valid: false,
+      inputRules: [
+        (v) => !!v || 'Campo requerido.'
+      ],
       highRules: [
-        (v) => !!v || 'Nombre es requerido'
+        (v) => !!v || 'valor es requerido'
       ],
       mediumRules: [
-        (v) => !!v || 'Nombre es requerido'
+        (v) => !!v || 'valor es requerido'
       ],
       lowRules: [
-        (v) => !!v || 'Nombre es requerido'
+        (v) => !!v || 'valor es requerido'
       ]
     }
   },
@@ -253,7 +296,7 @@ export default {
   computed: mapState(['blocks', 'coins', 'authToken', 'blocksUser']),
   methods: {
     dialogGain () {
-      this.propsDialog = {state: true, title: 'Registro de ganancias'}
+      this.propsDialogGain = {state: true, title: 'Registro de ganancias'}
       this.dayMaximum()
       this.dayGain = this.dayMax
       if (this.dayGain === this.blocks[this.indexBlock].runDays) {
@@ -282,7 +325,9 @@ export default {
       this.$refs.formGain.reset()
     },
     cancelGain () {
-      this.$refs.formGain.reset()
+      this.high = 0
+      this.medium = 0
+      this.low = 0
     },
     editGain (ele) {
       this.lastDay = this.dayGain
@@ -304,6 +349,7 @@ export default {
             newBlocks[this.indexBlock].daysInfo = res.data.daysInfo
             this.$store.commit('SET_DAYSINFO', newBlocks)
             this.gainItems = []
+            this.propsDialogGain = {state: false, title: ''}
           }
         } catch (error) {
 
@@ -311,6 +357,30 @@ export default {
       } else {
         swal('Error...', 'No tienes ganancias agregadas', 'error')
       }
+    },
+    dialogPay () {
+      this.propsDialogPay = {state: true, title: 'Realizar Pago'}
+      this.dayMaximum()
+      this.itemsDay = []
+      for (let i = 0; i < this.dayMax; i++) {
+        this.itemsDay.push({text: `dia ${i + 1}`, day: i + 1})
+      }
+    },
+    async submitPay () {
+      const res = await api(`block/pay/${this.$route.params.block}/${this.selectDay.day}`, {}, 'put', this.authToken)
+      if (res.status === 200) {
+        console.log(res.data)
+      }
+    },
+    closeDialogGain () {
+      this.gainItems = []
+      this.$refs.formGain.reset()
+      this.high = 0
+      this.medium = 0
+      this.low = 0
+    },
+    closeDialogPay () {
+      console.log('close dialog pay')
     },
     dayMaximum () {
       this.blocks[this.indexBlock].daysInfo.forEach((ele) => {
@@ -332,7 +402,7 @@ export default {
     this.percentHigh = decimal.div(decimal.mul(this.highTotal.toString(), 100), totalInve.toString()).toNumber()
     this.percentMedium = decimal.div(decimal.mul(this.mediumTotal.toString(), 100), totalInve.toString()).toNumber()
     this.percentLow = decimal.div(decimal.mul(this.lowTotal.toString(), 100), totalInve.toString()).toNumber()
-    // this.dayGainItems = this.blocks[this.indexBlock].daysInfo
+    this.dayMaximum()
   }
 }
 </script>
