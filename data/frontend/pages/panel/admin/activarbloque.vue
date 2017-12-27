@@ -1,5 +1,6 @@
 <template>
   <section>
+    <mutual-loader v-show="loading"></mutual-loader>
     <v-card>
       <v-card-title class="mutual-title">
         <h2>Registro de Bloque</h2>
@@ -99,6 +100,7 @@
               <td class="text-xs-center">{{ props.item.name}}</td>
               <td class="text-xs-center">{{ props.item._coin.name }}</td>
               <td class="text-xs-center">{{ props.item.amount }}</td>
+              <td class="text-xs-center">{{ props.item.inverted }}</td>
               <td class="text-xs-center">{{ props.item.weeks }}</td>
               <td class="text-xs-center">{{ props.item.state }}</td>
               <td class="text-xs-right">
@@ -118,15 +120,18 @@
 <script>
 
 import api from '~/plugins/axios'
+import MutualLoader from '~/components/loader.vue'
 import swal from 'sweetalert2'
 import {mapState} from 'vuex'
 import moment from 'moment'
 export default {
   layout: 'dashboard',
   middleware: ['auth', 'blocks', 'coins'],
+  components: {MutualLoader},
   data () {
     return {
       valid: false,
+      loading: false,
       coin: null,
       weeks: null,
       amount: null,
@@ -137,6 +142,7 @@ export default {
         {text: 'Identificador', align: 'center', value: 'id'},
         {text: 'Moneda', align: 'center', value: '_coin.name'},
         {text: 'Monto', align: 'center', value: 'amount'},
+        {text: 'Invertidos', align: 'center', value: 'inverted'},
         {text: 'Semanas', align: 'center', value: 'weeks'},
         {text: 'Estado', align: 'center', value: 'state'},
         {text: 'Acciones', align: 'center', value: 'state'}
@@ -154,6 +160,7 @@ export default {
   methods: {
     async submit () {
       if (this.$refs.activarBloque.validate()) {
+        this.loading = true
         const self = this
         const data = {
           blockToCreate: {
@@ -173,6 +180,7 @@ export default {
         } else {
           swal('Ooops...', 'Error al crear el bloque', 'error')
         }
+        this.loading = false
       }
     },
     preventLetters (ev) {
@@ -190,6 +198,7 @@ export default {
         input: 'password',
         inputPlaceholder: 'Ingrese su contraseña',
         showCancelButton: true,
+        allowOutsideClick: false,
         inputValidator: (value) => {
           return !value && 'Escribe la contraseña'
         },
@@ -221,15 +230,19 @@ export default {
     }
   },
   created () {
+    this.blocks = this.blocks.map(e => {
+      e.inverted = e.amount - e.amountLeft
+      return e
+    })
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
 }
 </script>
-<style lang="css" scoped>
+<style>
   .user-layout{
     height: 100%;
   }
-  .user-check > .input-group__details{
+  .user-check .input-group__details{
     display: none !important;
   }
   .no-padding-top{

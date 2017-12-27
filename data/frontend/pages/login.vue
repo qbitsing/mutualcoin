@@ -62,7 +62,7 @@ export default {
   }),
   methods: {
     async login () {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate() && !this.loading) {
         this.loader = 'loading'
         const l = this.loader
         this[l] = !this[l]

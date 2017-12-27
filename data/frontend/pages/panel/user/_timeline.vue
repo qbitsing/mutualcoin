@@ -84,7 +84,7 @@
         <mutual-timeline :data="inversion.objBlock"></mutual-timeline>
         <v-container grid-list-md text-xs-center>
           <v-layout row>
-            <v-flex xs10 offset-xs1>
+            <v-flex xs12 offset-md1 md10>
               <div class="wp">
                 <v-btn
                 v-for="n in inversion.objBlock.weeks"
@@ -100,7 +100,7 @@
             </v-flex>
           </v-layout>
           <v-layout row>
-            <v-flex xs12>
+            <v-flex xs12 offset-md1 md10>
               <v-data-table
                 v-if="weeks.length"
                 :headers="headers"
@@ -125,68 +125,71 @@
   </v-layout>
 </template>
 <script>
-  import MutualTimeline from '~/components/timeline.vue'
-  import MutualTable from '~/components/table.vue'
-  import {mapState} from 'vuex'
-  export default {
-    middleware: ['auth', 'isInversion'],
-    layout: 'dashboard',
-    computed: mapState(['inversion']),
-    data () {
-      return {
-        weeks: [],
-        week: 1,
-        headers: [
-          { text: 'Día', value: 'day' },
-          { text: 'Alto%', value: 'high' },
-          { text: `Alto Coins`, value: 'highCoin' },
-          { text: 'Medio%', value: 'medium' },
-          { text: `Medio Coins`, value: 'mediumCoin' },
-          { text: 'Bajo%', value: 'low' },
-          { text: `Bajo Coins`, value: 'lowCoin' }
-        ]
-      }
-    },
-    methods: {
-      dividirArray (arr) {
-        let result = []
-        for (let index = 1; index <= Math.ceil(arr.length / 7); index++) {
-          let start = (index * 7) - 7
-          let finish = index * 7
-          let week = []
-          if (arr.length < finish) {
-            for (let i = start; i < arr.length; i++) {
-              week.push(arr[i])
-            }
-          } else {
-            for (let i = start; i <= finish - 1; i++) {
-              week.push(arr[i])
-            }
-          }
-          result.push(week)
-        }
-        return result
-      },
-      formatearArray (arr) {
-        for (let i = 0; i < arr.length; i++) {
-          for (let i2 = 0; i2 < arr[i].length; i2++) {
-            arr[i][i2].highCoin = ((this.inversion.amount * this.inversion.high / 100) * arr[i][i2].high) / 100
-            arr[i][i2].mediumCoin = ((this.inversion.amount * this.inversion.medium / 100) * arr[i][i2].medium) / 100
-            arr[i][i2].lowCoin = ((this.inversion.amount * this.inversion.low / 100) * arr[i][i2].low) / 100
-          }
-        }
-        return arr
-      }
-    },
-    components: { MutualTimeline, MutualTable },
-    created () {
-      this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
-      const weeks = this.dividirArray(this.inversion.objBlock.daysInfo)
-      this.weeks = this.formatearArray(weeks)
-      console.log(this.weeks)
-      this.week = this.weeks.length
+import decimal from 'decimal'
+import MutualTimeline from '~/components/timeline.vue'
+import MutualTable from '~/components/table.vue'
+import {mapState} from 'vuex'
+export default {
+  middleware: ['auth', 'isInversion'],
+  layout: 'dashboard',
+  computed: mapState(['inversion']),
+  data () {
+    return {
+      weeks: [],
+      week: 1,
+      headers: [
+        { text: 'Día', value: 'day' },
+        { text: 'Alto%', value: 'high' },
+        { text: `Alto Coins`, value: 'highCoin' },
+        { text: 'Medio%', value: 'medium' },
+        { text: `Medio Coins`, value: 'mediumCoin' },
+        { text: 'Bajo%', value: 'low' },
+        { text: `Bajo Coins`, value: 'lowCoin' }
+      ]
     }
+  },
+  methods: {
+    dividirArray (arr) {
+      let result = []
+      for (let index = 1; index <= Math.ceil(arr.length / 7); index++) {
+        let start = (index * 7) - 7
+        let finish = index * 7
+        let week = []
+        if (arr.length < finish) {
+          for (let i = start; i < arr.length; i++) {
+            week.push(arr[i])
+          }
+        } else {
+          for (let i = start; i <= finish - 1; i++) {
+            week.push(arr[i])
+          }
+        }
+        result.push(week)
+      }
+      return result
+    },
+    formatearArray (arr) {
+      let total = 0
+      for (let i = 0; i < arr.length; i++) {
+        for (let i2 = 0; i2 < arr[i].length; i2++) {
+          arr[i][i2].highCoin = decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(arr[i][i2].high).toNumber()
+          arr[i][i2].mediumCoin = decimal.mul(this.inversion.amount, this.inversion.medium).div(10000).mul(arr[i][i2].medium).toNumber()
+          arr[i][i2].lowCoin = decimal.mul(this.inversion.amount, this.inversion.low).div(10000).mul(arr[i][i2].low).toNumber()
+          total += decimal.add(arr[i][i2].highCoin, arr[i][i2].mediumCoin).add(arr[i][i2].lowCoin).toNumber()
+        }
+      }
+      console.log(total)
+      return arr
+    }
+  },
+  components: { MutualTimeline, MutualTable },
+  created () {
+    this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
+    const weeks = this.dividirArray(this.inversion.objBlock.daysInfo)
+    this.weeks = this.formatearArray(weeks)
+    this.week = this.weeks.length
   }
+}
 </script>
 <style scoped>
 .wp {
