@@ -259,11 +259,11 @@ api.put('/makePay/:uuid',
     const { uuid } = req.params
     let result = paysMap.get(uuid)
 
-    if (!result) { 
+    if (!result) {
       return next(new Error('bad request: there is no payment generated with the indicated uuid'))
     }
 
-    let { investments } = result 
+    let { investments } = result
     let promises = investments.map(investment => req.db.blockUser.updatePays(investment._id, investment.pays, investment.last_pay))
     try {
       await Promise.all(promises)

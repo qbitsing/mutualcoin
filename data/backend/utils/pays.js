@@ -31,6 +31,9 @@ module.exports = function (hasta, investments) {
     let _high = decimal(''+amount).mul(''+high).div('100')
     
     daysInfo = daysInfo.filter(i => i.day > last_pay && i.day <= hasta)
+    if (daysInfo.length <= 0) { 
+      throw new Error('bad request:')
+    }
     let { $low, $medium, $high } = calculatePercentages(daysInfo, 0, { $low: 0, $medium: 0, $high: 0 })
     
     let $$low = decimal(''+_low).mul(''+$low).div('100').toNumber()
