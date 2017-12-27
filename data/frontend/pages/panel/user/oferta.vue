@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap>
-      <v-flex xs6 sm4 lg3 v-for="block in blocksActive" :key="block.uuid" class="pt-2">
+      <v-flex xs6 sm4 lg3 v-for="block in blocksActive" :key="block.uuid" v-if="block.amountLeft>0" class="pt-2">
         <mutual-bloque :data="block"></mutual-bloque>
       </v-flex>
     </v-layout>

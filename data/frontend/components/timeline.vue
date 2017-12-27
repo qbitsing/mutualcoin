@@ -35,7 +35,6 @@ export default {
   },
   created () {
     moment.locale('es')
-    console.log(this)
     this.startDate = this.data.startDate || 'Sin Iniciar'
     if (!this.data.finishDate) {
       const restDays = (this.data.weeks * 7) - this.data.runDays
