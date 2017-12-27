@@ -21,7 +21,7 @@ module.exports = function (hasta, investments) {
   const pays = [], users = []
   hasta = parseInt(hasta)
 
-  for (let investment of investments) { 
+  investments = investments.map(investment => { 
     let { _block, last_pay, low, medium, high, amount, _user } = investment
     let { daysInfo } = _block, pay
     last_pay = last_pay || 0
@@ -46,16 +46,18 @@ module.exports = function (hasta, investments) {
       from: daysInfo[0].day,
       to: hasta,
       nickname: _user.nickname,
-      _id: investment._id,
       amount
     }
 
     if ($$pay > 0) { 
       pay.pay = true
+      investment.pays.push(pay)
+      investment.last_pay = hasta
     }
 
     pays.push(pay)
-  }
+    return investment
+  })
 
   return pays
 }
