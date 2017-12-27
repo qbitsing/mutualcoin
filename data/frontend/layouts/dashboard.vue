@@ -221,7 +221,7 @@ export default {
       this.items = [
         { icon: 'apps', title: 'Home', to: '/panel/user/home' },
         { icon: 'apps', title: 'Historial', to: '/panel/user/historial' },
-        { icon: 'bubble_chart', title: 'Activar Bloque', to: '/panel/user/oferta' },
+        { icon: 'bubble_chart', title: 'Oferta', to: '/panel/user/oferta' },
         { icon: 'bubble_chart', title: 'Usuarios', to: '/panel/user/usuarios' },
         { icon: 'apps', title: 'Transaciones', to: '/panel/user/transaciones' },
         { icon: 'apps', title: 'Estructura', to: '/panel/user/estrutura' },

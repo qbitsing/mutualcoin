@@ -18,11 +18,11 @@ function calculatePercentages(daysInfo, i, obj) {
   return obj
 }
 module.exports = function (hasta, investments) { 
-  const pays = []
+  const pays = [], users = []
   hasta = parseInt(hasta)
 
-  for (let investment of investments) { 
-    let { _block, last_pay, low, medium, high, amount } = investment
+  investments = investments.map(investment => { 
+    let { _block, last_pay, low, medium, high, amount, _user } = investment
     let { daysInfo } = _block, pay
     last_pay = last_pay || 0
 
@@ -31,6 +31,9 @@ module.exports = function (hasta, investments) {
     let _high = decimal(''+amount).mul(''+high).div('100')
     
     daysInfo = daysInfo.filter(i => i.day > last_pay && i.day <= hasta)
+    if (daysInfo.length <= 0) { 
+      throw new Error('bad request:')
+    }
     let { $low, $medium, $high } = calculatePercentages(daysInfo, 0, { $low: 0, $medium: 0, $high: 0 })
     
     let $$low = decimal(''+_low).mul(''+$low).div('100').toNumber()
@@ -43,18 +46,21 @@ module.exports = function (hasta, investments) {
       app: decimal(''+$$pay).mul(''+$app).div('100').toNumber(),
       red: decimal(''+$$pay).mul(''+$red).div('100').toNumber(),
       trader: decimal(''+$$pay).mul(''+$trader).div('100').toNumber(),
-      amount,
-      low,
-      medium,
-      high
+      from: daysInfo[0].day,
+      to: hasta,
+      nickname: _user.nickname,
+      amount
     }
 
     if ($$pay > 0) { 
       pay.pay = true
+      investment.pays.push(pay)
+      investment.last_pay = hasta
     }
 
     pays.push(pay)
-  }
+    return investment
+  })
 
-  return pays
+  return { pays, investments }
 }

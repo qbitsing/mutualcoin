@@ -47,21 +47,23 @@ h2 {
   text-align: center;
   color: #fff;
 }
-  h2.active {
-    background: #0F4AB2;
+   h2.paused {
+    background: #B71C1C;
+  }
+  h2.waiting {
+    background: #ffb300;
   }
   h2.running {
     background: #2E7D32;
-
+  }
+  h2.active {
+    background: #2A77FF;
   }
   h2.finished {
     background: #B27900;
   }
   h2.cancel {
     background: #B71C1C;
-  }
-  h2.finished {
-    background: #424242;
   }
   img{
     box-sizing: border-box;

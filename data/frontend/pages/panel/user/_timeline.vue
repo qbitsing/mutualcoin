@@ -15,7 +15,11 @@
             <v-flex d-flex>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Estado</v-card-title>
-                <v-card-text class="no-padding" v-text="inversion.objBlock.state"></v-card-text>
+                <v-card-text class="no-padding blue--text" v-if="inversion.objBlock.state === 'active'">Activo</v-card-text>
+                <v-card-text class="no-padding green--text" v-if="inversion.objBlock.state === 'running'">En marcha</v-card-text>
+                <v-card-text class="no-padding yellow--text" v-if="inversion.objBlock.state === 'waiting'">En espera</v-card-text>
+                <v-card-text class="no-padding red--text" v-if="inversion.objBlock.state === 'paused'">Pausado</v-card-text>
+                <v-card-text class="no-padding red--text" v-if="inversion.objBlock.state === 'cancel'">Cancelado</v-card-text>
               </v-card>
             </v-flex>
             <v-flex d-flex xs12>
@@ -80,21 +84,40 @@
         <mutual-timeline :data="inversion.objBlock"></mutual-timeline>
         <v-container grid-list-md text-xs-center>
           <v-layout row>
-            <v-flex xs10 offset-xs1>
+            <v-flex xs12 offset-md1 md10>
               <div class="wp">
                 <v-btn
-                v-for="n in data.nWeeks"
-                :flat="tableData.week == n ? true : false"
+                v-for="n in inversion.objBlock.weeks"
+                :flat="week == n"
                 :key="n"
                 class="wel"
-                :color="n % 4 == 0 ? 'error' : 'primary'"
-                @click="selectWeek(n)"
-                :disabled="n>tableData.weeks.length">
+                @click="week = n"
+                :color="'primary'"
+                :disabled="n > weeks.length">
                   {{n}}
                 </v-btn>
               </div>
-              <mutual-table :data="tableData"></mutual-table>
-              <mutual-table v-show="tableData.week % 4 == 0" :data="payData"></mutual-table>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs12 offset-md1 md10>
+              <v-data-table
+                v-if="weeks.length"
+                :headers="headers"
+                hide-actions
+                :items="weeks[week-1]"
+                class="elevation-1"
+              >
+                <template slot="items" scope="props">
+                  <td>{{ props.item.day }}</td>
+                  <td class="text-xs-right">{{ props.item.high}}</td>
+                  <td class="text-xs-right">{{ props.item.highCoin }}</td>
+                  <td class="text-xs-right">{{ props.item.medium }}</td>
+                  <td class="text-xs-right">{{ props.item.mediumCoin }}</td>
+                  <td class="text-xs-right">{{ props.item.low }}</td>
+                  <td class="text-xs-right">{{ props.item.lowCoin }}</td>
+                </template>
+              </v-data-table>
             </v-flex>
           </v-layout>
         </v-container>
@@ -102,147 +125,71 @@
   </v-layout>
 </template>
 <script>
-  import MutualTimeline from '~/components/timeline.vue'
-  import MutualTable from '~/components/table.vue'
-  import {mapState} from 'vuex'
-  export default {
-    middleware: ['auth', 'isInversion'],
-    layout: 'dashboard',
-    computed: mapState(['inversion']),
-    data () {
-      return {
-        tableData: {
-          e1: 3,
-          moneda: 'BTC',
-          weeks: [{
-            altoP: 5,
-            altoM: 0.3,
-            medioP: 5,
-            medioM: 0.3,
-            bajoP: 5,
-            bajoM: 0.3
-          }, {
-            altoP: 4,
-            altoM: 0.3,
-            medioP: 3,
-            medioM: 0.15,
-            bajoP: 1,
-            bajoM: 0.1
-          }, {
-            altoP: 4,
-            altoM: 0.3,
-            medioP: 3,
-            medioM: 0.15,
-            bajoP: 1,
-            bajoM: 0.1
-          }, {
-            pay: true,
-            altoP: 4,
-            altoM: 0.3,
-            medioP: 3,
-            medioM: 0.15,
-            bajoP: 1,
-            bajoM: 0.1
-          },
-          {
-            altoP: 5,
-            altoM: 0.3,
-            medioP: 5,
-            medioM: 0.3,
-            bajoP: 5,
-            bajoM: 0.3
-          }, {
-            altoP: 4,
-            altoM: 0.3,
-            medioP: 3,
-            medioM: 0.15,
-            bajoP: 1,
-            bajoM: 0.1
-          }, {
-            altoP: 4,
-            altoM: 0.3,
-            medioP: 3,
-            medioM: 0.15,
-            bajoP: 1,
-            bajoM: 0.1
-          }, {
-            pay: true,
-            altoP: 4,
-            altoM: 0.3,
-            medioP: 3,
-            medioM: 0.15,
-            bajoP: 0,
-            bajoM: 0
-          }],
-          week: 1
-        },
-        data: {
-          dPass: 58,
-          nWeeks: 16,
-          start: '25/03/2017',
-          finish: '17/06/2017',
-          inverted: 2,
-          amount: 10
-        },
-        state: 'Activo',
-        pausedDays: 12,
-        payData: {
-          moneda: 'ETH',
-          pay: true,
-          weeks: [{
-            altoM: 0,
-            altoP: 0,
-            bajoP: 0,
-            bajoM: 0,
-            medioM: 0,
-            medioP: 0
-          }],
-          week: 1
-        }
-      }
-    },
-    methods: {
-      selectWeek (n) {
-        this.tableData.week = n
-        this.payData.week = 1
-        if (n % 4 === 0) {
-          this.payData.week = (n / 4) + 1
-        }
-      }
-    },
-    components: { MutualTimeline, MutualTable },
-    beforeMount () {
-      this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
-      this.tableData.week = this.tableData.weeks.length
-      if (this.tableData.week % 4 === 0) {
-        this.payData.week = (this.tableData.week / 4) + 1
-      }
-      this.payData.moneda = this.inversion.objBlock._coin.name
-      for (let index = 0; index < this.tableData.week; index++) {
-        let i = index + 1
-        if (i % 4 === 0) {
-          i = index - 3
-          let block = {
-            altoM: 0,
-            altoP: 0,
-            bajoP: 0,
-            bajoM: 0,
-            medioM: 0,
-            medioP: 0
-          }
-          for (i; i <= index; i++) {
-            block.altoM += this.tableData.weeks[i].altoM
-            block.altoP += this.tableData.weeks[i].altoP
-            block.medioM += this.tableData.weeks[i].medioM
-            block.medioP += this.tableData.weeks[i].medioP
-            block.bajoM += this.tableData.weeks[i].bajoM
-            block.bajoP += this.tableData.weeks[i].bajoP
-          }
-          this.payData.weeks.push(block)
-        }
-      }
+import decimal from 'decimal'
+import MutualTimeline from '~/components/timeline.vue'
+import MutualTable from '~/components/table.vue'
+import {mapState} from 'vuex'
+export default {
+  middleware: ['auth', 'isInversion'],
+  layout: 'dashboard',
+  computed: mapState(['inversion']),
+  data () {
+    return {
+      weeks: [],
+      week: 1,
+      headers: [
+        { text: 'Día', value: 'day' },
+        { text: 'Alto%', value: 'high' },
+        { text: `Alto Coins`, value: 'highCoin' },
+        { text: 'Medio%', value: 'medium' },
+        { text: `Medio Coins`, value: 'mediumCoin' },
+        { text: 'Bajo%', value: 'low' },
+        { text: `Bajo Coins`, value: 'lowCoin' }
+      ]
     }
+  },
+  methods: {
+    dividirArray (arr) {
+      let result = []
+      for (let index = 1; index <= Math.ceil(arr.length / 7); index++) {
+        let start = (index * 7) - 7
+        let finish = index * 7
+        let week = []
+        if (arr.length < finish) {
+          for (let i = start; i < arr.length; i++) {
+            week.push(arr[i])
+          }
+        } else {
+          for (let i = start; i <= finish - 1; i++) {
+            week.push(arr[i])
+          }
+        }
+        result.push(week)
+      }
+      return result
+    },
+    formatearArray (arr) {
+      let total = 0
+      for (let i = 0; i < arr.length; i++) {
+        for (let i2 = 0; i2 < arr[i].length; i2++) {
+          arr[i][i2].highCoin = decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(arr[i][i2].high).toNumber()
+          arr[i][i2].mediumCoin = decimal.mul(this.inversion.amount, this.inversion.medium).div(10000).mul(arr[i][i2].medium).toNumber()
+          arr[i][i2].lowCoin = decimal.mul(this.inversion.amount, this.inversion.low).div(10000).mul(arr[i][i2].low).toNumber()
+          total += decimal.add(arr[i][i2].highCoin, arr[i][i2].mediumCoin).add(arr[i][i2].lowCoin).toNumber()
+        }
+      }
+      console.log(total)
+      return arr
+    }
+  },
+  components: { MutualTimeline, MutualTable },
+  created () {
+    this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
+    const weeks = this.dividirArray(this.inversion.objBlock.daysInfo)
+    this.weeks = this.formatearArray(weeks)
+    this.week = this.weeks.length
   }
+}
 </script>
 <style scoped>
 .wp {
