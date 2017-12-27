@@ -11,7 +11,7 @@
       </v-card-actions>
       <mutual-dialog :dialog="propsDialog">
         <section slot="contenDialog">
-            <v-form ref ="inversion">
+            <v-form ref ="inversion" lazy-validation>
               <v-card flat class="no-padding-bottom">
                 <v-card-text class="no-padding-bottom">
                   <v-layout wrap>
@@ -43,9 +43,10 @@
                       <v-text-field
                       type="Number"
                       label="Alto"
-                      min="0"
+                      suffix="%"
                       :rules="precentRules"
                       v-model="high"
+                      @keyup="validation"
                       @keypress="preventAll">
                       </v-text-field>
                     </v-flex>
@@ -53,9 +54,10 @@
                       <v-text-field
                       type="Number"
                       label="Medio"
-                      min="0"
+                      suffix="%"
                       :rules="precentRules"
                       v-model="medium"
+                      @keyup="validation"
                       @keypress="preventAll">
                       </v-text-field>
                     </v-flex>
@@ -63,16 +65,17 @@
                       <v-text-field
                       type="Number"
                       label="Bajo"
-                      min="0"
+                      suffix="%"
                       :rules="precentRules"
                       v-model="bottom"
+                      @keyup="validation"
                       @keypress="preventAll">
                       </v-text-field>
                     </v-flex>
                   </v-layout>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary" @click="submit">invertir</v-btn>
+                  <v-btn color="primary" @click="submit" :loading="loading">invertir</v-btn>
                   <v-btn color="error" @click="clear">cancelar</v-btn>
                 </v-card-actions>
               </v-card>
@@ -91,11 +94,11 @@ import {mapState} from 'vuex'
 export default {
   data () {
     return {
-      valid: false,
+      loading: false,
       amount: '',
-      high: null,
-      medium: null,
-      bottom: null,
+      high: 0,
+      medium: 0,
+      bottom: 0,
       wallet: null,
       wallets: [{name: '1'}],
       propsDialog: { state: false, title: `Invertir en bloque ${this.data.name}` },
@@ -113,8 +116,12 @@ export default {
     }
   },
   methods: {
+    validation () {
+      this.$refs.inversion.validate()
+    },
     async submit () {
       if (this.$refs.inversion.validate()) {
+        this.loading = true
         const data = {
           blockUserToCreate: {
             block: this.data.uuid,
@@ -137,6 +144,7 @@ export default {
         } else {
           swal('Ooops...', 'Error al invertir', 'error')
         }
+        this.loading = false
       }
     },
     preventLetters (ev) {
