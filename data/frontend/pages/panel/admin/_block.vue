@@ -391,7 +391,7 @@ export default {
       this.propsDialogPay = {state: true, title: 'Realizar Pago'}
       this.dayMaximum()
       this.itemsDay = []
-      for (let i = this.blocks; i < this.dayMax; i++) {
+      for (let i = this.blocks[this.indexBlock].last_pay; i < this.dayMax; i++) {
         this.itemsDay.push({text: `dia ${i + 1}`, day: i + 1})
       }
     },
