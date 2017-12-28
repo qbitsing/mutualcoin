@@ -95,6 +95,7 @@ async function create(block) {
   blockToCreate.user = block.user
 
   blockToCreate.uuid = block.uuid
+  blockToCreate.last_pay = 0
 
   let x = await blockToCreate.save()
 
@@ -139,7 +140,7 @@ async function run(uuid, startDate) {
   if (block.state !== 'waiting' && block.state !== 'paused') {
     throw new Error(`bad request: the block cannot be runnig because the state is: ${block.state}`)
   }
-  if (block.state === 'paused') { 
+  if (block.state === 'waiting') { 
     up.startDate = startDate
   }
   up.state = 'running' 
