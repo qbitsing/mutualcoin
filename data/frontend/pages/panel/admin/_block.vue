@@ -102,13 +102,14 @@
                     <template slot="items" scope="props">
                       <td class="text-xs-center">{{ props.item.nickname }}</td>
                       <td class="text-xs-center">{{ props.item.amount }}</td>
+                      <td class="text-xs-center">{{ props.item.from }} - {{ props.item.to }}</td>
                       <td class="text-xs-center">{{ props.item.user }}</td>
                       <td class="text-xs-center">{{ props.item.red }}</td>
                       <td class="text-xs-center">{{ props.item.trader }}</td>
                       <td class="text-xs-center">{{ props.item.app }}</td>
                     </template>
                   </v-data-table>
-                  <v-btn color="primary" :disabled="gainItems === null" @click="submitGain"> Guardar </v-btn>
+                  <v-btn color="primary" :disabled="gainItems === null" @click="submitPay"> Pagar </v-btn>
                 </section>
               </mutual-dialog>
             </v-flex>
@@ -261,6 +262,7 @@ export default {
       payGeneratedHeader: [
         {text: 'Usuario', value: 'nickname'},
         {text: 'Invertido', value: 'amount'},
+        {text: 'Desde - hasta', value: 'to'},
         {text: 'Pago usuario', value: 'user'},
         {text: 'Pago estructura', value: 'red'},
         {text: 'Pago trader', value: 'trader'},
@@ -389,7 +391,7 @@ export default {
       this.propsDialogPay = {state: true, title: 'Realizar Pago'}
       this.dayMaximum()
       this.itemsDay = []
-      for (let i = 0; i < this.dayMax; i++) {
+      for (let i = this.blocks; i < this.dayMax; i++) {
         this.itemsDay.push({text: `dia ${i + 1}`, day: i + 1})
       }
     },
@@ -398,6 +400,12 @@ export default {
       if (res.status === 200) {
         console.log(res.data)
         this.payGeneratedItems = res.data
+      }
+    },
+    async submitPay () {
+      const res = await api(`block/makePay/${this.$route.params.block}`, {}, 'put', this.authToken)
+      if (res.status === 200) {
+        console.log(res.data)
       }
     },
     closeDialogGain () {
