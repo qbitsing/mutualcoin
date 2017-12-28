@@ -272,6 +272,7 @@ api.put('/makePay/:uuid',
     } catch (error) {
       return next(error)
     }
+    paysMap.delete(uuid)
     res.send({ result: true })
   }
 )

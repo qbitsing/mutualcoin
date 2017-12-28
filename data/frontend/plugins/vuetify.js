@@ -21,7 +21,8 @@ import {
   VTooltip,
   VAlert,
   VCheckbox,
-  VDataTable
+  VDataTable,
+  VTabs
 } from 'vuetify'
 
 Vue.use(Vuetify, {
@@ -55,6 +56,7 @@ Vue.use(Vuetify, {
     VTooltip,
     VAlert,
     VCheckbox,
-    VDataTable
+    VDataTable,
+    VTabs
   }
 })
