@@ -3,6 +3,7 @@
 const blockUserSchema = require('../models/block-user')
 const blockSchema = require('../models/blocks')
 const userSchema = require('../models/users')
+const { v4 } = require('uuid')
 
 let BlockModel, UserModel, BlockUserModel
 
@@ -93,9 +94,23 @@ function getBy(propertie) {
     return BlockUserModel.find(search).populate('_user').exec()
   }
 }
+
+async function generateUuid() { 
+  let uuid = v4()
+
+  let valid = await BlockUserModel.findOne({ uuid })
+
+  while (valid) { 
+    uuid = v4()
+    valid = await BlockUserModel.findOne({ uuid })
+  }
+
+  return uuid
+}
 async function create(blockUser) {
   const block = await validateBlock(blockUser)
   const user = await validateUser(blockUser)
+  const uuid = await generateUuid()
   validateConfig(blockUser)
   validateAmount(blockUser, block)
   let amountLeft = parseFloat((block.amountLeft - blockUser.amount).toFixed(8))
@@ -106,6 +121,7 @@ async function create(blockUser) {
   }
   const blockUserToCreate = new BlockUserModel()
 
+  blockUserToCreate.uuid = uuid
   blockUserToCreate.amount = blockUser.amount
   blockUserToCreate.block = blockUser.block
   blockUserToCreate._block = block._id
