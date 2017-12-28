@@ -90,22 +90,25 @@
                   <v-form v-model="valid" ref="formPay" lazy-validation>
                     <v-layout wrap>
                       <v-flex xs6>
-                        <v-select
-                          :items="itemsDay"
-                          v-model="selectDay"
-                          label="Hasta que dia"
-                          item-text="text"
-                          :rules="inputRules"
-                          single-line
-                          bottom
-                          >
-                          </v-select>
+                        <v-select :items="itemsDay" v-model="selectDay" label="Hasta que dia" item-text="text" :rules="inputRules" single-line bottom >
+                        </v-select>
                       </v-flex>
                       <v-flex xs6>
-                        <v-btn block color="primary" @click="submitPay" :disabled="!valid">Generar pago</v-btn>
+                        <v-btn block color="primary" @click="submitPayGenerated" :disabled="!valid">Generar pago</v-btn>
                       </v-flex>
                     </v-layout>
                   </v-form>
+                  <v-data-table :headers="payGeneratedHeader" :items="payGeneratedItems" class="elevation-1">
+                    <template slot="items" scope="props">
+                      <td class="text-xs-center">{{ props.item.nickname }}</td>
+                      <td class="text-xs-center">{{ props.item.amount }}</td>
+                      <td class="text-xs-center">{{ props.item.user }}</td>
+                      <td class="text-xs-center">{{ props.item.red }}</td>
+                      <td class="text-xs-center">{{ props.item.trader }}</td>
+                      <td class="text-xs-center">{{ props.item.app }}</td>
+                    </template>
+                  </v-data-table>
+                  <v-btn color="primary" :disabled="gainItems === null" @click="submitGain"> Guardar </v-btn>
                 </section>
               </mutual-dialog>
             </v-flex>
@@ -162,28 +165,41 @@
             </v-card>
           </v-flex>
         </v-layout>
-        <v-layout row v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'">
-          <v-flex xs12 class="no-padding my-2">
-            <v-card class="elevation-9">
-              <v-card-title>
-                Ganancias Guardas
-              </v-card-title>
-                <v-data-table :headers="dayGainHeader" :items="blocks[indexBlock].daysInfo" >
-                  <template slot="items" scope="props">
-                    <td class="text-xs-center">{{ props.item.day }}</td>
-                    <td class="text-xs-center">{{ props.item.high }}</td>
-                    <td class="text-xs-center">{{ props.item.medium }}</td>
-                    <td class="text-xs-center">{{ props.item.low }}</td>
-                  </template>
-                  <template slot="no-data">
-                    <v-alert :value="true" color="error" icon="warning">
-                      aun no as ingresado ganancias :(
-                    </v-alert>
-                  </template>
-              </v-data-table>
-            </v-card>
-          </v-flex>
-        </v-layout>
+        <v-tabs v-model="active" class="elevation-9 mt-2">
+          <v-tabs-bar class="blue" dark>
+            <v-tabs-item v-for="tab in tabs" :key="tab" :href="'#' + tab" ripple>
+              {{ tab }}
+            </v-tabs-item>
+            <v-tabs-slider color="yellow"></v-tabs-slider>
+          </v-tabs-bar>
+          <v-tabs-items>
+            <v-tabs-content :key="tabs[0]" :id="tabs[0]" >
+              <v-layout row v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'" class="ma-2">
+                <v-flex xs12 v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'">
+                  <v-card class="elevation-9">
+                    <v-data-table :headers="dayGainHeader" :items="blocks[indexBlock].daysInfo" >
+                      <template slot="items" scope="props">
+                        <td class="text-xs-center">{{ props.item.day }}</td>
+                        <td class="text-xs-center">{{ props.item.high }}</td>
+                        <td class="text-xs-center">{{ props.item.medium }}</td>
+                        <td class="text-xs-center">{{ props.item.low }}</td>
+                      </template>
+                      <template slot="no-data">
+                        <v-alert :value="true" color="error" icon="warning">
+                          aun no as ingresado ganancias :(
+                        </v-alert>
+                      </template>
+                    </v-data-table>
+                  </v-card>
+                </v-flex>
+              </v-layout>
+            </v-tabs-content>
+          </v-tabs-items>
+          <v-tabs-items>
+            <v-tabs-content :key="tabs[1]" :id="tabs[1]" >
+            </v-tabs-content>
+          </v-tabs-items>
+        </v-tabs>
       </v-card-text>
     </v-card>
     <v-card>
@@ -236,10 +252,21 @@ export default {
   middleware: ['auth', 'blocks', 'coins', 'blocksUser'],
   data () {
     return {
+      tabs: ['ganancias', 'pagos'],
+      active: null,
       indexBlock: null,
       disableDays: false,
       selectDay: null,
       itemsDay: [],
+      payGeneratedHeader: [
+        {text: 'Usuario', value: 'nickname'},
+        {text: 'Invertido', value: 'amount'},
+        {text: 'Pago usuario', value: 'user'},
+        {text: 'Pago estructura', value: 'red'},
+        {text: 'Pago trader', value: 'trader'},
+        {text: 'Pago aplicación', value: 'app'}
+      ],
+      payGeneratedItems: [],
       userHeader: [
         {text: 'Usuario', value: 'user'},
         {text: 'Inversión', value: 'amount'},
@@ -366,10 +393,11 @@ export default {
         this.itemsDay.push({text: `dia ${i + 1}`, day: i + 1})
       }
     },
-    async submitPay () {
+    async submitPayGenerated () {
       const res = await api(`block/pay/${this.$route.params.block}/${this.selectDay.day}`, {}, 'put', this.authToken)
       if (res.status === 200) {
         console.log(res.data)
+        this.payGeneratedItems = res.data
       }
     },
     closeDialogGain () {
