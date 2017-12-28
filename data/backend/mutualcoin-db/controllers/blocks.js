@@ -95,6 +95,7 @@ async function create(block) {
   blockToCreate.user = block.user
 
   blockToCreate.uuid = block.uuid
+  blockToCreate.last_pay = 0
 
   let x = await blockToCreate.save()
 
