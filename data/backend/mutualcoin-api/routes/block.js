@@ -265,15 +265,17 @@ api.put('/makePay/:uuid',
     }
 
     let { investments } = result
+    let newInvestments = null
     let promises = investments.map(investment => req.db.blockUser.updatePays(investment._id, investment.pays, investment.last_pay))
     try {
       await Promise.all(promises)
       await blockModel.updateLatsPay(uuid, result.to)
+      newInvestments = await req.db.blockUser.getBy('block')(uuid)
     } catch (error) {
       return next(error)
     }
     paysMap.delete(uuid)
-    res.send({ result: true })
+    res.send({ result: true, investments: newInvestments })
   }
 )
 
