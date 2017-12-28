@@ -144,9 +144,10 @@ api.put('/run/:uuid',
       return next(new Error('Unauthorized'))
     }
     const { uuid } = req.params
+    const { startDate } = req.body
     let result
     try {
-      result = await blockModel.run(uuid)
+      result = await blockModel.run(uuid, startDate)
     } catch (error) {
       return next(error)
     }
@@ -267,6 +268,7 @@ api.put('/makePay/:uuid',
     let promises = investments.map(investment => req.db.blockUser.updatePays(investment._id, investment.pays, investment.last_pay))
     try {
       await Promise.all(promises)
+      await blockModel.updateLatsPay(uuid, result.to)
     } catch (error) {
       return next(error)
     }

@@ -28,7 +28,8 @@ const blockSchema = new Schema({
     default: 'inactive'
   },
   runDays: Number,
-  daysInfo: []
+  daysInfo: [],
+  last_pay: Number
 })
 
 blockSchema.plugin(increment, { field: 'name' })

@@ -133,14 +133,18 @@ async function waiting(uuid) {
   return { result: true }
 }
 
-async function run(uuid) {
+async function run(uuid, startDate) {
   const block = await validateBlock(uuid)
-
+  const up = {}
   if (block.state !== 'waiting' && block.state !== 'paused') {
     throw new Error(`bad request: the block cannot be runnig because the state is: ${block.state}`)
   }
+  if (block.state === 'paused') { 
+    up.startDate = startDate
+  }
+  up.state = 'running' 
 
-  await BlockModel.findByIdAndUpdate(block._id, { state: 'running' })
+  await BlockModel.findByIdAndUpdate(block._id, up)
 
   return { result: true }
 }
@@ -229,6 +233,12 @@ function validateInfo(info, length) {
   }
 }
 
+async function updateLatsPay(uuid, to) { 
+  const block = await validateBlock(uuid)
+
+  return BlockModel.findByIdAndUpdate(block._id, { last_pay: to })
+}
+
 module.exports = function (db) {
   BlockModel = db.model('block', blockSchema)
   CoinModel = db.model('coin', coinSchema)
@@ -246,6 +256,7 @@ module.exports = function (db) {
   blockMethods.finish = finish
   blockMethods.updateAmount = updateAmount
   blockMethods.setInfoDays = setInfoDays
+  blockMethods.updateLatsPay = updateLatsPay
 
   return blockMethods
 }

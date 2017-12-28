@@ -84,8 +84,11 @@ function getBy(propertie) {
 
   return function (value, block) {
     search[propertie] = value
-    if (propertie === 'user' || block) { 
+    if (propertie === 'user') { 
       return BlockUserModel.find(search).populate('_block').exec()
+    }
+    if (block) { 
+      return BlockUserModel.find(search).populate('_block').populate('_user').exec()
     }
     return BlockUserModel.find(search).populate('_user').exec()
   }
