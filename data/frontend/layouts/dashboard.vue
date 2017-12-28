@@ -240,6 +240,8 @@ export default {
       if (el === this.itemPerfil[2].title) {
         await this.$store.dispatch('logout')
         this.$router.push('/login')
+      } else if (el === this.itemPerfil[0].title) {
+        this.$router.push('perfil')
       }
     },
     config (el) {

@@ -37,14 +37,7 @@
           </v-layout>
         </v-flex>
         <v-flex offset-xs1 offset-sm0 xs10 sm5>
-        <v-layout row>
-          <v-flex xs12 class="no-padding">
-            <v-card dark tile flat color="blue-grey darken-3">
-              <v-card-text><h4>Porcentajes Invertidos</h4></v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-layout row>
+        <v-layout row text-xs-center headline>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
                 <v-card-text>Alto</v-card-text>
@@ -61,20 +54,37 @@
             </v-card>
           </v-flex>
         </v-layout>
-        <v-layout row>
+        <v-layout row text-xs-center>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text>{{inversion.high}}</v-card-text>
+                <v-card-text>{{inversion.high}} %</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text>{{inversion.medium}}</v-card-text>
+                <v-card-text>{{inversion.medium}} %</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text>{{inversion.low}}</v-card-text>
+              <v-card-text>{{inversion.low}} %</v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+        <v-layout row text-xs-center>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-2">
+                <v-card-text>{{inversion.high * inversion.amount / 100}} {{inversion.objBlock._coin.name}}</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-3">
+                <v-card-text>{{inversion.medium * inversion.amount / 100}} {{inversion.objBlock._coin.name}}</v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs4 class="no-padding">
+            <v-card dark tile flat color="light-blue darken-4">
+              <v-card-text>{{inversion.low * inversion.amount / 100}} {{inversion.objBlock._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>

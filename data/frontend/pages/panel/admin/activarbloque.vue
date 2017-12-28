@@ -100,9 +100,9 @@
               <td class="text-xs-center">{{ props.item.name}}</td>
               <td class="text-xs-center">{{ props.item._coin.name }}</td>
               <td class="text-xs-center">{{ props.item.amount }}</td>
-              <td class="text-xs-center">{{ props.item.inverted }}</td>
+              <td class="text-xs-center">{{ props.item.inverted}}</td>
               <td class="text-xs-center">{{ props.item.weeks }}</td>
-              <td class="text-xs-center">{{ props.item.state }}</td>
+              <td class="text-xs-center">{{ props.item.spanishState }}</td>
               <td class="text-xs-right">
                 <v-btn small color="primary" @click="changeState(props.item, 'activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
                 <v-btn small color="primary" @click="changeState(props.item, 'waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
@@ -137,6 +137,7 @@ export default {
       amount: null,
       search: '',
       user: null,
+      blocksToShow: [],
       userCheck: false,
       blockHeader: [
         {text: 'Identificador', align: 'center', value: 'id'},
@@ -206,7 +207,6 @@ export default {
         preConfirm: async () => {
           moment.locale('es')
           const data = text1 === 'iniciar' ? {startDate: moment().format('DD/MM/YY')} : {}
-          console.log(data)
           const res = await api(`block/${route}/${item.uuid}`, data, 'put', this.authToken)
           if (res.status === 200) {
             item.state = newState
@@ -219,7 +219,7 @@ export default {
       })
     },
     spanishText (text) {
-      if (text === 'running') return 'Corriendo'
+      if (text === 'running') return 'En Marcha'
       if (text === 'inactive') return 'Inactivo'
       else if (text === 'active') return 'Activo'
       else if (text === 'cancel') return 'Cancelado'
@@ -230,15 +230,15 @@ export default {
     }
   },
   created () {
-    this.blocks = this.blocks.map(e => {
+    this.blocks.map(e => {
+      e.spanishState = this.spanishText(e.state)
       e.inverted = e.amount - e.amountLeft
-      return e
     })
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
 }
 </script>
-<style>
+<style scoped>
   .user-layout{
     height: 100%;
   }
