@@ -98,17 +98,23 @@
                       </v-flex>
                     </v-layout>
                   </v-form>
-                  <v-data-table :headers="payGeneratedHeader" :items="payGeneratedItems" class="elevation-1">
-                    <template slot="items" scope="props">
-                      <td class="text-xs-center">{{ props.item.nickname }}</td>
-                      <td class="text-xs-center">{{ props.item.amount }}</td>
-                      <td class="text-xs-center">{{ props.item.from }} - {{ props.item.to }}</td>
-                      <td class="text-xs-center">{{ props.item.user }}</td>
-                      <td class="text-xs-center">{{ props.item.red }}</td>
-                      <td class="text-xs-center">{{ props.item.trader }}</td>
-                      <td class="text-xs-center">{{ props.item.app }}</td>
-                    </template>
-                  </v-data-table>
+                  <v-layout row>
+                    <v-flex xs12>
+                      <v-card class="elevation-9">
+                        <v-data-table :headers="payGeneratedHeader" :items="payGeneratedItems" class="elevation-1">
+                          <template slot="items" scope="props">
+                            <td class="text-xs-center">{{ props.item.nickname }}</td>
+                            <td class="text-xs-center">{{ props.item.amount }}</td>
+                            <td class="text-xs-center">{{ props.item.from }} - {{ props.item.to }}</td>
+                            <td class="text-xs-center">{{ props.item.user }}</td>
+                            <td class="text-xs-center">{{ props.item.red }}</td>
+                            <td class="text-xs-center">{{ props.item.trader }}</td>
+                            <td class="text-xs-center">{{ props.item.app }}</td>
+                          </template>
+                        </v-data-table>
+                      </v-card>
+                    </v-flex>
+                  </v-layout>
                   <v-btn color="primary" :disabled="gainItems === null" @click="submitPay"> Pagar </v-btn>
                 </section>
               </mutual-dialog>
@@ -166,7 +172,7 @@
             </v-card>
           </v-flex>
         </v-layout>
-        <v-tabs v-model="active" class="elevation-9 mt-2">
+        <v-tabs v-model="active" v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'" class="elevation-9 mt-2">
           <v-tabs-bar class="blue" dark>
             <v-tabs-item v-for="tab in tabs" :key="tab" :href="'#' + tab" ripple>
               {{ tab }}
@@ -175,8 +181,8 @@
           </v-tabs-bar>
           <v-tabs-items>
             <v-tabs-content :key="tabs[0]" :id="tabs[0]" >
-              <v-layout row v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'" class="ma-2">
-                <v-flex xs12 v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'">
+              <v-layout row class="ma-2">
+                <v-flex xs12>
                   <v-card class="elevation-9">
                     <v-data-table :headers="dayGainHeader" :items="blocks[indexBlock].daysInfo" >
                       <template slot="items" scope="props">
@@ -198,6 +204,28 @@
           </v-tabs-items>
           <v-tabs-items>
             <v-tabs-content :key="tabs[1]" :id="tabs[1]" >
+              <v-layout row class="ma-2">
+                <v-flex xs12>
+                  <v-card class="elevation-9">
+                    <v-data-table :headers="payHeader" :items="payItems" >
+                      <template slot="items" scope="props">
+                        <td class="text-xs-center">{{ props.item.nickname }}</td>
+                        <td class="text-xs-center">{{ props.item.amount }}</td>
+                        <td class="text-xs-center">{{ props.item.from }} - {{ props.item.to }}</td>
+                        <td class="text-xs-center">{{ props.item.user }}</td>
+                        <td class="text-xs-center">{{ props.item.red }}</td>
+                        <td class="text-xs-center">{{ props.item.trader }}</td>
+                        <td class="text-xs-center">{{ props.item.app }}</td>
+                      </template>
+                      <template slot="no-data">
+                        <v-alert :value="true" color="error" icon="warning">
+                          aun no as ingresado ganancias :(
+                        </v-alert>
+                      </template>
+                    </v-data-table>
+                  </v-card>
+                </v-flex>
+              </v-layout>
             </v-tabs-content>
           </v-tabs-items>
         </v-tabs>
@@ -259,6 +287,16 @@ export default {
       disableDays: false,
       selectDay: null,
       itemsDay: [],
+      payHeader: [
+        {text: 'Usuario', value: 'nickname'},
+        {text: 'Invertido', value: 'amount'},
+        {text: 'Desde - hasta', value: 'to'},
+        {text: 'Pago usuario', value: 'user'},
+        {text: 'Pago estructura', value: 'red'},
+        {text: 'Pago trader', value: 'trader'},
+        {text: 'Pago aplicación', value: 'app'}
+      ],
+      payItems: [],
       payGeneratedHeader: [
         {text: 'Usuario', value: 'nickname'},
         {text: 'Invertido', value: 'amount'},
@@ -439,10 +477,18 @@ export default {
     this.percentMedium = decimal.div(decimal.mul(this.mediumTotal.toString(), 100), totalInve.toString()).toNumber()
     this.percentLow = decimal.div(decimal.mul(this.lowTotal.toString(), 100), totalInve.toString()).toNumber()
     this.dayMaximum()
+    this.blocksUser.map((ele) => {
+      ele.pays.map((ele) => {
+        this.payItems.push(ele)
+      })
+    })
   }
 }
 </script>
 <style scoped>
+table {
+  overflow-y: scroll;
+}
 .wp {
   box-sizing: border-box;
   width: 100%;
