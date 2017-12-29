@@ -46,7 +46,7 @@
                 <v-card-actions v-if="(blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused') && dayMax < blocks[indexBlock].runDays">
                   <v-btn block  color="primary mx-0" @click="dialogGain">Agregar ganancias</v-btn>
                 </v-card-actions>
-                <v-card-actions v-if="(blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused') && dayMax > 0">
+                <v-card-actions v-if="(blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused') && dayMax > 0 && blocks[indexBlock].last_pay < dayMax">
                   <v-btn block  color="success mx-0" @click="dialogPay">Generación de pagos</v-btn>
                 </v-card-actions>
               </v-card>
@@ -417,6 +417,7 @@ export default {
             this.$store.commit('SET_DAYSINFO', newBlocks)
             this.gainItems = []
             this.propsDialogGain = {state: false, title: ''}
+            this.dayMaximum()
           }
         } catch (error) {
 
@@ -443,7 +444,13 @@ export default {
     async submitPay () {
       const res = await api(`block/makePay/${this.$route.params.block}`, {}, 'put', this.authToken)
       if (res.status === 200) {
-        console.log(res.data)
+        let newBlocks = this.blocks
+        newBlocks[this.indexBlock].last_pay = this.payGeneratedItems[0].to
+        this.$store.commit('SET_BLOCK', newBlocks)
+        this.payGeneratedItems = []
+        this.$store.commit('SET_BLOCKSUSER', res.data.investments)
+        this.addItemsPay()
+        this.propsDialogPay = {state: false, title: ''}
       }
     },
     closeDialogGain () {
@@ -462,6 +469,14 @@ export default {
           this.dayMax = ele.day
         }
       })
+    },
+    addItemsPay () {
+      this.payItems = []
+      this.blocksUser.map((ele) => {
+        ele.pays.map((ele) => {
+          this.payItems.push(ele)
+        })
+      })
     }
   },
   created () {
@@ -477,11 +492,7 @@ export default {
     this.percentMedium = decimal.div(decimal.mul(this.mediumTotal.toString(), 100), totalInve.toString()).toNumber()
     this.percentLow = decimal.div(decimal.mul(this.lowTotal.toString(), 100), totalInve.toString()).toNumber()
     this.dayMaximum()
-    this.blocksUser.map((ele) => {
-      ele.pays.map((ele) => {
-        this.payItems.push(ele)
-      })
-    })
+    this.addItemsPay()
   }
 }
 </script>
