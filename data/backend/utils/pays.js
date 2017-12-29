@@ -62,5 +62,5 @@ module.exports = function (hasta, investments) {
     return investment
   })
 
-  return { pays, investments }
+  return { pays, investments, to: hasta }
 }

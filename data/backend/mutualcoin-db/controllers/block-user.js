@@ -44,15 +44,15 @@ async function validateUser(blockUser) {
 }
 
 function validateConfig(blockUser) {
-  if (!blockUser.high || isNaN(blockUser.high) || blockUser.high < 0) {
+  if (!blockUser.hasOwnProperty('high') || isNaN(blockUser.high) || blockUser.high < 0) {
     throw new Error('bad request: high is not valid')
   }
 
-  if (!blockUser.medium || isNaN(blockUser.medium) || blockUser.medium < 0) {
+  if (!blockUser.hasOwnProperty('medium') || isNaN(blockUser.medium) || blockUser.medium < 0) {
     throw new Error('bad request: medium is not valid')
   }
 
-  if (!blockUser.low || isNaN(blockUser.low) || blockUser.low < 0) {
+  if (!blockUser.hasOwnProperty('low') || isNaN(blockUser.low) || blockUser.low < 0) {
     throw new Error('bad request: low is not valid')
   }
 
