@@ -137,7 +137,6 @@ export default {
       amount: null,
       search: '',
       user: null,
-      blocksToShow: [],
       userCheck: false,
       blockHeader: [
         {text: 'Identificador', align: 'center', value: 'id'},
@@ -173,8 +172,10 @@ export default {
         if (this.userCheck) {
           data.user = this.user
         }
-        const res = await api('block/create', data, 'post', this.authToken)
+        let res = await api('block/create', data, 'post', this.authToken)
         if (res.status === 200) {
+          res.data.blockCreated.spanishState = this.spanishText(res.data.blockCreated.state)
+          res.data.blockCreated.inverted = res.data.blockCreated.amount - res.data.blockCreated.amountLeft
           this.blocks.push(res.data.blockCreated)
           this.clear()
           swal('Excelente', 'Bloque creado correctamente', 'success')
@@ -210,6 +211,10 @@ export default {
           const res = await api(`block/${route}/${item.uuid}`, data, 'put', this.authToken)
           if (res.status === 200) {
             item.state = newState
+            item.spanishState = this.spanishText(newState)
+            if (data.startDate) {
+              item.startDate = data.startDate
+            }
             const waitingAmount = item.amount - item.amountLeft
             item.amount = newState === 'waiting' ? waitingAmount : item.amount
             this.$store.commit('SET_BLOCKS', this.blocks)

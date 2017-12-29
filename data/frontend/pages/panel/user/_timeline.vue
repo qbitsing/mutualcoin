@@ -130,6 +130,25 @@
               </v-data-table>
             </v-flex>
           </v-layout>
+          <v-layout row v-show="inversion.pays.filter(e => e.week == week) != []">
+            <v-flex xs12 offset-md1 md10>
+              <h2>Pagos</h2>
+              <v-data-table
+                v-if="weeks.length"
+                :headers="payHeaders"
+                hide-actions
+                :items="[]"
+                class="elevation-1"
+              >
+                <template slot="items" scope="props">
+                  <td>{{ props.item.day }}</td>
+                  <td class="text-xs-right">{{ props.item.high}}</td>
+                  <td class="text-xs-right">{{ props.item.highCoin }}</td>
+                  <td class="text-xs-right">{{ props.item.medium }}</td>
+                </template>
+              </v-data-table>
+            </v-flex>
+          </v-layout>
         </v-container>
     </v-card>
   </v-layout>
@@ -140,13 +159,19 @@ import MutualTimeline from '~/components/timeline.vue'
 import MutualTable from '~/components/table.vue'
 import {mapState} from 'vuex'
 export default {
-  middleware: ['auth', 'isInversion'],
+  middleware: ['auth', 'blocks', 'userInversions', 'setInversion'],
   layout: 'dashboard',
   computed: mapState(['inversion']),
   data () {
     return {
+      percentToUser: 0.4,
       weeks: [],
       week: 1,
+      payHeaders: [
+        {text: 'Rango de días', value: 'to'},
+        {text: 'Valor', value: 'user'},
+        {text: 'Fecha', value: 'date'}
+      ],
       headers: [
         { text: 'Día', value: 'day' },
         { text: 'Alto%', value: 'high' },
@@ -182,9 +207,10 @@ export default {
       let total = 0
       for (let i = 0; i < arr.length; i++) {
         for (let i2 = 0; i2 < arr[i].length; i2++) {
-          arr[i][i2].highCoin = decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(arr[i][i2].high).toNumber()
-          arr[i][i2].mediumCoin = decimal.mul(this.inversion.amount, this.inversion.medium).div(10000).mul(arr[i][i2].medium).toNumber()
-          arr[i][i2].lowCoin = decimal.mul(this.inversion.amount, this.inversion.low).div(10000).mul(arr[i][i2].low).toNumber()
+          console.log(decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(arr[i][i2].high))
+          arr[i][i2].highCoin = decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(arr[i][i2].high).mul(this.percentToUser).toNumber()
+          arr[i][i2].mediumCoin = decimal.mul(this.inversion.amount, this.inversion.medium).div(10000).mul(arr[i][i2].medium).mul(this.percentToUser).toNumber()
+          arr[i][i2].lowCoin = decimal.mul(this.inversion.amount, this.inversion.low).div(10000).mul(arr[i][i2].low).mul(this.percentToUser).toNumber()
           total += decimal.add(arr[i][i2].highCoin, arr[i][i2].mediumCoin).add(arr[i][i2].lowCoin).toNumber()
         }
       }
@@ -198,6 +224,11 @@ export default {
     const weeks = this.dividirArray(this.inversion.objBlock.daysInfo)
     this.weeks = this.formatearArray(weeks)
     this.week = this.weeks.length
+    this.inversion.pays.forEach(e => {
+      e.week = Math.ceil(e.to / 7)
+    })
+    console.log()
+    console.log(this.inversion.pays.findIndex(e => e.week === 1))
   }
 }
 </script>

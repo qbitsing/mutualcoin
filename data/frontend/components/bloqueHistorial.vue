@@ -19,22 +19,16 @@
       </div>
       <p>Mi inversión: {{data.amount}} {{data.objBlock._coin.name}}</p>
       <v-card-actions>
-        <v-btn @click="goTimeline()" color="secondary">Info</v-btn>
+        <v-btn @click="goTimeline(data.uuid)" color="secondary">Info</v-btn>
       </v-card-actions>
     </v-layout>
   </v-card>
 </template>
 <script>
   export default {
-    data () {
-      return {
-        dialog: false
-      }
-    },
     methods: {
-      goTimeline () {
-        this.$store.commit('SET_INVERSION', this.data)
-        this.$router.push({path: `/panel/user/`})
+      goTimeline (uuid) {
+        this.$router.push({path: `/panel/user/${uuid}`})
       }
     },
     props: {
