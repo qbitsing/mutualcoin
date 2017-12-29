@@ -132,19 +132,27 @@ export default {
             user: this.authUser.uuid
           }
         }
-        const res = await api('blockUser/create', data, 'post', this.authToken)
-        if (res.status === 200) {
-          const blocks = this.$store.state.blocks.map(e => {
-            if (e.uuid === this.data.uuid) e.amountLeft = decimal.sub(e.amountLeft.toString(), this.amount.toString()).toNumber()
-            return e
-          })
-          this.$store.commit('SET_BLOCKS', blocks)
-          swal('Excelente', 'Inversión guardada con éxito', 'success')
-          this.clear()
-        } else {
-          swal('Ooops...', 'Error al invertir', 'error')
+        try {
+          const res = await api('blockUser/create', data, 'post', this.authToken)
+          this.loading = false
+          console.log(res)
+          if (res.status === 200) {
+            this.blocks.map(e => {
+              if (e.uuid === this.data.uuid) {
+                e.amountLeft = decimal.sub(e.amountLeft.toString(), this.amount.toString()).toNumber()
+              }
+              return e
+            })
+            this.userInversions.push(res.data.blockUserCreated)
+            swal('Excelente', 'Inversión guardada con éxito', 'success')
+            this.clear()
+          } else {
+            swal('Ooops...', 'Error al invertir', 'error')
+          }
+        } catch (error) {
+          this.loading = false
+          swal('Ooops...', 'Error al invertir, intentalo más tarde!', 'error')
         }
-        this.loading = false
       }
     },
     preventLetters (ev) {
@@ -163,7 +171,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['authUser', 'authToken']),
+    ...mapState(['authUser', 'blocks', 'userInversions', 'authToken']),
     totalP () {
       return parseInt(this.high) + parseInt(this.medium) + parseInt(this.bottom)
     }
