@@ -191,6 +191,10 @@ function get() {
   return UsersModel.find({})
 }
 
+function getUuid(uuid) {
+  return UsersModel.find({ uuid })
+}
+
 /* function getByNickname(nickname) {
     return UsersModel.find({ nickname })
 }
@@ -214,6 +218,7 @@ module.exports = function (db) {
   usersMethods.update = update
   usersMethods.getLineReferred = getLineReferred
   usersMethods.get = get
+  usersMethods.getUuid = getUuid
 
   return usersMethods
 }
