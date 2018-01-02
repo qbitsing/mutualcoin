@@ -184,7 +184,7 @@ async function update(uuid, user) {
 }
 
 function getLineReferred(codeReferred) {
-  return UsersModel.find({ codeReferred })
+  return UsersModel.find({ codeReferred }, {})
 }
 
 function get() {

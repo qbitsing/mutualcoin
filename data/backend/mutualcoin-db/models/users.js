@@ -35,7 +35,7 @@ const usersSchema = new Schema({
   firstName: String,
   lastName: String,
   age: Number,
-  birthdate: Date,
+  birthdate: String,
   gender: {
     type: String,
     enum: ['male', 'female']
@@ -48,7 +48,11 @@ const usersSchema = new Schema({
     type: String,
     require: true
   },
-  accountIsActive: { type: Boolean, default: true }
+  state: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active'
+  }
 })
 
 module.exports = usersSchema

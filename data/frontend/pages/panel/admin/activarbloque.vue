@@ -120,6 +120,7 @@
 <script>
 
 import api from '~/plugins/axios'
+import BigNumber from 'bignumber.js'
 import MutualLoader from '~/components/loader.vue'
 import swal from 'sweetalert2'
 import {mapState} from 'vuex'
@@ -139,7 +140,7 @@ export default {
       user: null,
       userCheck: false,
       blockHeader: [
-        {text: 'Identificador', align: 'center', value: 'id'},
+        {text: 'Identificador', align: 'center', value: 'name'},
         {text: 'Moneda', align: 'center', value: '_coin.name'},
         {text: 'Monto', align: 'center', value: 'amount'},
         {text: 'Invertidos', align: 'center', value: 'inverted'},
@@ -172,17 +173,22 @@ export default {
         if (this.userCheck) {
           data.user = this.user
         }
-        let res = await api('block/create', data, 'post', this.authToken)
-        if (res.status === 200) {
-          res.data.blockCreated.spanishState = this.spanishText(res.data.blockCreated.state)
-          res.data.blockCreated.inverted = res.data.blockCreated.amount - res.data.blockCreated.amountLeft
-          this.blocks.push(res.data.blockCreated)
-          this.clear()
-          swal('Excelente', 'Bloque creado correctamente', 'success')
-        } else {
-          swal('Ooops...', 'Error al crear el bloque', 'error')
+        try {
+          let res = await api('block/create', data, 'post', this.authToken)
+          if (res.status === 200) {
+            res.data.blockCreated.spanishState = this.spanishText(res.data.blockCreated.state)
+            let amount = new BigNumber(res.data.blockCrea)
+            res.data.blockCreated.inverted = amount.minus(res.data.blockCreated.amountLeft).toNumber()
+            this.blocks.push(res.data.blockCreated)
+            this.clear()
+            swal('Excelente', 'Bloque creado correctamente', 'success')
+          } else {
+            swal('Ooops...', 'Error al crear el bloque', 'error')
+          }
+          this.loading = false
+        } catch (error) {
+          swal('Ooops...', 'Error al crear el bloque, intentálo más tarde', 'error')
         }
-        this.loading = false
       }
     },
     preventLetters (ev) {
@@ -237,7 +243,8 @@ export default {
   created () {
     this.blocks.map(e => {
       e.spanishState = this.spanishText(e.state)
-      e.inverted = e.amount - e.amountLeft
+      let amount = BigNumber(e.amount)
+      e.inverted = amount.minus(e.amountLeft)
     })
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }

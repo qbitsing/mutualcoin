@@ -89,7 +89,7 @@
 import MutualDialog from '~/components/dialog.vue'
 import api from '~/plugins/axios'
 import swal from 'sweetalert2'
-import decimal from 'decimal'
+import BigNumber from 'bignumber.js'
 import {mapState} from 'vuex'
 export default {
   data () {
@@ -139,15 +139,14 @@ export default {
           if (res.status === 200) {
             this.blocks.map(e => {
               if (e.uuid === this.data.uuid) {
-                e.amountLeft = decimal.sub(e.amountLeft.toString(), this.amount.toString()).toNumber()
+                const amountLeft = new BigNumber(e.amountLeft)
+                e.amountLeft = amountLeft.minus(this.amount).toNumber()
               }
               return e
             })
             // this.userInversions.push(res.data.blockUserCreated)
             swal('Excelente', 'Inversión guardada con éxito', 'success')
             this.clear()
-          } else {
-            swal('Ooops...', 'Error al invertir', 'error')
           }
         } catch (error) {
           this.loading = false
