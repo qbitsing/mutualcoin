@@ -22,7 +22,8 @@ import {
   VAlert,
   VCheckbox,
   VDataTable,
-  VTabs
+  VTabs,
+  VChip
 } from 'vuetify'
 
 Vue.use(Vuetify, {
@@ -57,6 +58,7 @@ Vue.use(Vuetify, {
     VAlert,
     VCheckbox,
     VDataTable,
-    VTabs
+    VTabs,
+    VChip
   }
 })

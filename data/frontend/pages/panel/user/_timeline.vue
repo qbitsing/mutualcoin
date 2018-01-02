@@ -120,31 +120,30 @@
               >
                 <template slot="items" scope="props">
                   <td>{{ props.item.day }}</td>
-                  <td class="text-xs-right">{{ props.item.high}}</td>
-                  <td class="text-xs-right">{{ props.item.highCoin }}</td>
-                  <td class="text-xs-right">{{ props.item.medium }}</td>
-                  <td class="text-xs-right">{{ props.item.mediumCoin }}</td>
-                  <td class="text-xs-right">{{ props.item.low }}</td>
-                  <td class="text-xs-right">{{ props.item.lowCoin }}</td>
+                  <td class="text-xs-center">{{ props.item.high}}</td>
+                  <td class="text-xs-center">{{ props.item.highCoin || 0}}</td>
+                  <td class="text-xs-center">{{ props.item.medium }}</td>
+                  <td class="text-xs-center">{{ props.item.mediumCoin || 0}}</td>
+                  <td class="text-xs-center">{{ props.item.low }}</td>
+                  <td class="text-xs-center">{{ props.item.lowCoin || 0}}</td>
                 </template>
               </v-data-table>
             </v-flex>
           </v-layout>
-          <v-layout row v-show="inversion.pays.filter(e => e.week == week) != []">
+          <v-layout row v-show="this.inversion.pays.some(e => e.week === week)">
             <v-flex xs12 offset-md1 md10>
               <h2>Pagos</h2>
               <v-data-table
                 v-if="weeks.length"
                 :headers="payHeaders"
                 hide-actions
-                :items="[]"
+                :items="payItems"
                 class="elevation-1"
               >
                 <template slot="items" scope="props">
-                  <td>{{ props.item.day }}</td>
-                  <td class="text-xs-right">{{ props.item.high}}</td>
-                  <td class="text-xs-right">{{ props.item.highCoin }}</td>
-                  <td class="text-xs-right">{{ props.item.medium }}</td>
+                  <td class="text-xs-center">{{ props.item.from }} - {{ props.item.to }}</td>
+                  <td class="text-xs-center">{{ props.item.user }}</td>
+                  <td class="text-xs-center">Awesome Date</td>
                 </template>
               </v-data-table>
             </v-flex>
@@ -154,36 +153,49 @@
   </v-layout>
 </template>
 <script>
-import decimal from 'decimal'
+// import decimal from 'decimal'
+import BigNumber from 'bignumber.js'
 import MutualTimeline from '~/components/timeline.vue'
 import MutualTable from '~/components/table.vue'
 import {mapState} from 'vuex'
 export default {
   middleware: ['auth', 'blocks', 'userInversions', 'setInversion'],
   layout: 'dashboard',
-  computed: mapState(['inversion']),
+  computed: {
+    ...mapState(['inversion']),
+    payItems () {
+      return this.inversion.pays.filter(e => e.week === this.week)
+    },
+    headers () {
+      return [
+        { text: 'Día', value: 'day', align: 'center' },
+        { text: 'Alto %', value: 'high', align: 'center' },
+        { text: `Alto ${this.inversion.objBlock._coin.acronym.toUpperCase()}`, value: 'highCoin', align: 'center' },
+        { text: 'Medio %', value: 'medium', align: 'center' },
+        { text: `Medio ${this.inversion.objBlock._coin.acronym.toUpperCase()}`, value: 'mediumCoin', align: 'center' },
+        { text: 'Bajo %', value: 'low', align: 'center' },
+        { text: `Bajo ${this.inversion.objBlock._coin.acronym.toUpperCase()}`, value: 'lowCoin', align: 'center' }
+      ]
+    },
+    payHeaders () {
+      return [
+        {text: 'Rango de días', value: 'to', align: 'center'},
+        {text: `Valor en `, value: 'user', align: 'center'},
+        {text: 'Fecha', value: 'date', align: 'center'}
+      ]
+    }
+  },
   data () {
     return {
       percentToUser: 0.4,
       weeks: [],
-      week: 1,
-      payHeaders: [
-        {text: 'Rango de días', value: 'to'},
-        {text: 'Valor', value: 'user'},
-        {text: 'Fecha', value: 'date'}
-      ],
-      headers: [
-        { text: 'Día', value: 'day' },
-        { text: 'Alto%', value: 'high' },
-        { text: `Alto Coins`, value: 'highCoin' },
-        { text: 'Medio%', value: 'medium' },
-        { text: `Medio Coins`, value: 'mediumCoin' },
-        { text: 'Bajo%', value: 'low' },
-        { text: `Bajo Coins`, value: 'lowCoin' }
-      ]
+      week: 1
     }
   },
   methods: {
+    calcular (exp) {
+      return parseFloat(exp.toFixed(8))
+    },
     dividirArray (arr) {
       let result = []
       for (let index = 1; index <= Math.ceil(arr.length / 7); index++) {
@@ -204,17 +216,29 @@ export default {
       return result
     },
     formatearArray (arr) {
-      let total = 0
       for (let i = 0; i < arr.length; i++) {
         for (let i2 = 0; i2 < arr[i].length; i2++) {
-          console.log(decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(arr[i][i2].high))
-          arr[i][i2].highCoin = decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(arr[i][i2].high).mul(this.percentToUser).toNumber()
-          arr[i][i2].mediumCoin = decimal.mul(this.inversion.amount, this.inversion.medium).div(10000).mul(arr[i][i2].medium).mul(this.percentToUser).toNumber()
-          arr[i][i2].lowCoin = decimal.mul(this.inversion.amount, this.inversion.low).div(10000).mul(arr[i][i2].low).mul(this.percentToUser).toNumber()
-          total += decimal.add(arr[i][i2].highCoin, arr[i][i2].mediumCoin).add(arr[i][i2].lowCoin).toNumber()
+          // let negativeHigh = arr[i][i2].high < 0
+          // let negativeMedium = arr[i][i2].medium < 0
+          // let negativeLow = arr[i][i2].low < 0
+          // let payHigh = negativeHigh ? arr[i][i2].high * -1 : arr[i][i2].high
+          // let payMedium = negativeMedium ? arr[i][i2].medium * -1 : arr[i][i2].medium
+          // let payLow = negativeLow ? arr[i][i2].low * -1 : arr[i][i2].low
+
+          // payHigh = decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(payHigh).mul(this.percentToUser).toNumber()
+          // payMedium = decimal.mul(this.inversion.amount, this.inversion.medium).div(10000).mul(payMedium).mul(this.percentToUser).toNumber()
+          // payLow = decimal.mul(this.inversion.amount, this.inversion.low).div(10000).mul(payLow).mul(this.percentToUser).toNumber()
+
+          // arr[i][i2].highCoin = negativeHigh ? payHigh * -1 : payHigh
+          // arr[i][i2].mediumCoin = negativeMedium ? payMedium * -1 : payMedium
+          // arr[i][i2].lowCoin = negativeLow ? payLow * -1 : payLow
+          // let payHigh = new BigNumber(arr[i][i2].high)
+          BigNumber.config({EXPONENTIAL_AT: [-15, 20]})
+          arr[i][i2].highCoin = new BigNumber(0.0000000003)
+          arr[i][i2].highCoin = arr[i][i2].highCoin.toJSON()
+          // console.log(arr[i][i2].highCoin.toJSON())
         }
       }
-      console.log(total)
       return arr
     }
   },
@@ -227,8 +251,6 @@ export default {
     this.inversion.pays.forEach(e => {
       e.week = Math.ceil(e.to / 7)
     })
-    console.log()
-    console.log(this.inversion.pays.findIndex(e => e.week === 1))
   }
 }
 </script>
