@@ -410,17 +410,33 @@ export default {
           const data = {
             earnings: this.gainItems
           }
-          const res = await api(`block/earnings/${this.$route.params.block}`, data, 'put', this.authToken)
-          if (res.status === 200) {
-            let newBlocks = this.blocks
-            newBlocks[this.indexBlock].daysInfo = res.data.daysInfo
-            this.$store.commit('SET_DAYSINFO', newBlocks)
-            this.gainItems = []
-            this.propsDialogGain = {state: false, title: ''}
-            this.dayMaximum()
-          }
+          swal({
+            title: 'Cuidado',
+            text: `¿Está seguro de que desea guardar estas ganancias?`,
+            input: 'password',
+            inputPlaceholder: 'Ingrese su contraseña',
+            showCancelButton: true,
+            allowOutsideClick: false,
+            type: 'question',
+            inputValidator: (value) => {
+              return !value && 'Escribe la contraseña'
+            },
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+              const res = await api(`block/earnings/${this.$route.params.block}`, data, 'put', this.authToken)
+              if (res.status === 200) {
+                let newBlocks = this.blocks
+                newBlocks[this.indexBlock].daysInfo = res.data.daysInfo
+                this.$store.commit('SET_DAYSINFO', newBlocks)
+                this.gainItems = []
+                this.propsDialogGain = {state: false, title: ''}
+                this.dayMaximum()
+                return swal('Excelente', `Ganancias almacenas con éxito.`, 'success')
+              } else return swal('Ooops...', `Error las ganacias no se alamcenaron.`, 'error')
+            }
+          })
         } catch (error) {
-
+          console.log(error)
         }
       } else {
         swal('Error...', 'No tienes ganancias agregadas', 'error')
@@ -442,15 +458,35 @@ export default {
       }
     },
     async submitPay () {
-      const res = await api(`block/makePay/${this.$route.params.block}`, {}, 'put', this.authToken)
-      if (res.status === 200) {
-        let newBlocks = this.blocks
-        newBlocks[this.indexBlock].last_pay = this.payGeneratedItems[0].to
-        this.$store.commit('SET_BLOCK', newBlocks)
-        this.payGeneratedItems = []
-        this.$store.commit('SET_BLOCKSUSER', res.data.investments)
-        this.addItemsPay()
-        this.propsDialogPay = {state: false, title: ''}
+      try {
+        swal({
+          title: 'Cuidado',
+          text: `¿Está seguro de que desea pagar estas ganancias?`,
+          input: 'password',
+          inputPlaceholder: 'Ingrese su contraseña',
+          showCancelButton: true,
+          allowOutsideClick: false,
+          type: 'question',
+          inputValidator: (value) => {
+            return !value && 'Escribe la contraseña'
+          },
+          showLoaderOnConfirm: true,
+          preConfirm: async () => {
+            const res = await api(`block/makePay/${this.$route.params.block}`, {}, 'put', this.authToken)
+            if (res.status === 200) {
+              let newBlocks = this.blocks
+              newBlocks[this.indexBlock].last_pay = this.payGeneratedItems[0].to
+              this.$store.commit('SET_BLOCK', newBlocks)
+              this.payGeneratedItems = []
+              this.$store.commit('SET_BLOCKSUSER', res.data.investments)
+              this.addItemsPay()
+              this.propsDialogPay = {state: false, title: ''}
+              return swal('Excelente', `Pago realizado con exito.`, 'success')
+            } else return swal('Ooops...', `Error las ganacias no se pagaron.`, 'error')
+          }
+        })
+      } catch (error) {
+        console.log(error)
       }
     },
     closeDialogGain () {
@@ -477,20 +513,23 @@ export default {
           this.payItems.push(ele)
         })
       })
+    },
+    decimal (result) {
+      return parseFloat(result.toFixed(8))
     }
   },
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
     this.indexBlock = this.blocks.findIndex(block => block.uuid === this.$route.params.block)
     this.blocksUser.forEach((ele) => {
-      this.highTotal += decimal.mul(ele.amount.toString(), decimal.div(ele.high, 100)).toNumber()
-      this.mediumTotal += decimal.mul(ele.amount.toString(), decimal.div(ele.medium, 100)).toNumber()
-      this.lowTotal += decimal.mul(ele.amount.toString(), decimal.div(ele.low, 100)).toNumber()
+      this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
+      this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()
+      this.lowTotal = decimal(ele.low).div(100).mul(ele.amount).add(this.lowTotal).toNumber()
     })
     let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
-    this.percentHigh = decimal.div(decimal.mul(this.highTotal.toString(), 100), totalInve.toString()).toNumber()
-    this.percentMedium = decimal.div(decimal.mul(this.mediumTotal.toString(), 100), totalInve.toString()).toNumber()
-    this.percentLow = decimal.div(decimal.mul(this.lowTotal.toString(), 100), totalInve.toString()).toNumber()
+    this.percentHigh = decimal(this.highTotal).div(totalInve).mul(100).toNumber()
+    this.percentMedium = decimal(this.mediumTotal).div(totalInve).mul(100).toNumber()
+    this.percentLow = decimal(this.lowTotal).div(totalInve).mul(100).toNumber()
     this.dayMaximum()
     this.addItemsPay()
   }
@@ -498,7 +537,7 @@ export default {
 </script>
 <style scoped>
 table {
-  overflow-y: scroll;
+  overflow-y: scroll !important;
 }
 .wp {
   box-sizing: border-box;

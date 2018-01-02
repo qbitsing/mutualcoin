@@ -143,7 +143,7 @@ export default {
               }
               return e
             })
-            this.userInversions.push(res.data.blockUserCreated)
+            // this.userInversions.push(res.data.blockUserCreated)
             swal('Excelente', 'Inversión guardada con éxito', 'success')
             this.clear()
           } else {
@@ -152,6 +152,8 @@ export default {
         } catch (error) {
           this.loading = false
           swal('Ooops...', 'Error al invertir, intentalo más tarde!', 'error')
+          console.error(error.message)
+          console.error(error.stack)
         }
       }
     },
