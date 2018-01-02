@@ -38,6 +38,12 @@ api.get('/all', async (req, res, next) => {
   res.send(users)
 })
 
+api.get('/:uuid', async (req, res, next) => {
+  const users = await userModel.getUuid(req.params.uuid)
+
+  res.send(users)
+})
+
 api.post('/login', async (req, res, next) => {
   debug('A requets has come to /api/user/login')
   const { email, password } = req.body.datas
