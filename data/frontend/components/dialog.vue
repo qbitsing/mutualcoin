@@ -34,3 +34,9 @@
     }
   }
 </script>
+<style>
+table {
+  overflow-y: scroll !important;
+}
+</style>
+
