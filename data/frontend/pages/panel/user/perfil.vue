@@ -4,7 +4,7 @@
 			<h2>Editar informacion</h2>
 		</v-card-title>
   	<v-container class="pl-3 pr-3" grid-list-md text-xs-center>
-      <form ref="profile">
+      <v-form ref="profile" >
           <v-layout wrap>
             <v-flex xs12 text-xs-left>
             <h3>Información Personal</h3>
@@ -12,14 +12,30 @@
             <v-flex xs12 sm6>
               <v-text-field
               label="Nickname"
+              :rules="inputRules"
               v-model="userData.nickname"
               required
               ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6>
               <v-text-field
-              v-model="userData.name"
-              label="Nombres y apellidos"
+              label="Código de usuario"
+              disabled
+              :rules="inputRules"
+              v-model="userData.uuid"
+              required
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6>
+              <v-text-field
+              v-model="userData.firstName"
+              label="Nombres"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6>
+              <v-text-field
+              v-model="userData.lastName"
+              label="Apellidos"
               ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6>
@@ -47,21 +63,6 @@
             </v-flex>
             <v-flex xs12 sm6>
               <v-select
-              :items="gender"
-              v-model="userData.gender"
-              label="Genero"
-              ></v-select>
-            </v-flex>
-            <v-flex xs12 sm6>
-              <v-text-field
-              label="Código de usuario"
-              disabled
-              v-model="userData.uuid"
-              required
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6>
-              <v-select
               required
               label="Billetera"
               ></v-select>
@@ -70,10 +71,18 @@
               <v-text-field
               label="Llave pública"
               required
+              :rules="inputRules"
               v-model="userData.bch"
               ></v-text-field>
             </v-flex>
             <v-flex xs12 text-xs-left>
+            <v-flex xs12 sm6>
+              <v-select
+              :items="gender"
+              v-model="userData.spanishGender"
+              label="Genero"
+              ></v-select>
+            </v-flex>
               <template>
                 <v-select
                   label="Hobbies"
@@ -104,6 +113,7 @@
               <v-text-field
               label="Correo 1"
               v-model="userData.email"
+              :rules="inputRules"
               required
               disabled
               ></v-text-field>
@@ -116,7 +126,7 @@
             </v-flex>
             <v-flex xs12 sm6>
               <v-text-field
-              v-model="userData.adress"
+              v-model="userData.address"
               label="Direccion"
               ></v-text-field>
             </v-flex>
@@ -130,7 +140,7 @@
         <v-card-actions align-right>
             <v-btn>Link para Referir</v-btn>
             <v-btn color="warning" @click="propsDialog.state = true">Cambiar Contraseña</v-btn>
-            <v-btn color="primary" @click="update">Guardar</v-btn>
+            <v-btn color="primary" :loading="loading" @click="update">Guardar</v-btn>
             <v-btn color="error" @click="clear">Cancelar</v-btn> 
         </v-card-actions>
          <mutual-dialog :dialog="propsDialog">
@@ -171,7 +181,7 @@
                 </v-form>
             </section>
           </mutual-dialog>
-      </form>
+      </v-form>
     </v-container>
   </v-card>
 </template>
@@ -188,6 +198,7 @@ export default {
       e1: true,
       propsDialog: {state: false, title: `Cambiar Contraseña`},
       modal: false,
+      profileForm: false,
       loading: false,
       lastPassword: null,
       lastData: null,
@@ -200,6 +211,9 @@ export default {
       ],
       confirmRules: [
         (v) => v === this.newPassword || 'Las contraseñas no coinciden.'
+      ],
+      inputRules: [
+        (v) => !!v || 'Campo requerido.'
       ]
     }
   },
@@ -211,10 +225,14 @@ export default {
       }
     },
     async update () {
-      let x = true
-      if (x) {
-        console.log(this.userData)
-        console.log(this.lastData)
+      if (this.$refs.profile.validate()) {
+        this.loading = true
+        if (this.userData.spanishGender) {
+          this.userData.gender = this.userData.spanishGender === 'Masculino' ? 'male' : 'female'
+        }
+        const res = await api(`user/update/${this.authUser.uuid}`, {userToUpdate: this.userData}, 'put', this.authToken)
+        console.log(res)
+        this.loading = false
       }
     },
     clearPass () {
@@ -223,38 +241,42 @@ export default {
     clear () {
       this.userData.bch = this.lastData.bch
       this.userData.age = this.lastData.age
-      this.userData.adress = this.lastData.adress
+      this.userData.firstName = this.lastData.firstName
+      this.userData.lastName = this.lastData.lastName
+      this.userData.address = this.lastData.address
       this.userData.email2 = this.lastData.email2
       this.userData.phone = this.lastData.phone
       this.userData.bchType = this.lastData.bchType
       this.userData.birthdate = this.lastData.birthdate
-      this.userData.gender = this.lastData.gender
+      this.userData.spanishGender = this.lastData.spanishGender
       this.userData.hobbies = this.lastData.hobbies
       this.userData.nickname = this.lastData.nickname
     },
     remove (item) {
-      this.userData.hobies.splice(this.userData.hobies.indexOf(item), 1)
-      this.userData.hobies = [...this.userData.hobies]
+      this.userData.hobbies.splice(this.userData.hobbies.indexOf(item), 1)
+      this.userData.hobbies = [...this.userData.hobbies]
     }
   },
   async created () {
     this.$store.commit('TITLE_VIEW', 'Perfil')
     const res = await api(`user/${this.authUser.uuid}`, {}, 'get', this.authToken)
     this.userData = res.data[0]
-    if (this.userData.gender) {
-      this.userData.gender = this.userData.gender === 'male' ? 'Masculino' : 'Femenino'
-    }
     this.lastData = {
       bch: this.userData.bch,
       age: this.userData.age,
-      adress: this.userData.adress,
+      firstName: this.userData.firstName,
+      lastName: this.userData.lastName,
+      address: this.userData.address,
       email2: this.userData.email2,
       phone: this.userData.phone,
       bchType: this.userData.bchType,
       birthdate: this.userData.birthdate,
-      gender: this.userData.gender,
       hobbies: this.userData.hobbies,
       nickname: this.userData.nickname
+    }
+    if (this.userData.gender) {
+      this.userData.spanishGender = this.userData.gender === 'male' ? 'Masculino' : 'Femenino'
+      this.lastData.spanishGender = this.userData.spanishGender
     }
   },
   computed: mapState(['authUser', 'authToken'])
