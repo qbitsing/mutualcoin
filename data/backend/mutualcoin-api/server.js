@@ -13,6 +13,11 @@ const port = process.env.PORT || 3300
 const app = asyncify(express())
 const server = http.createServer(app)
 const config = require('./config')
+const ensure = require('express-jwt')
+const secret = {
+  secret: config.secret,
+  credentialsRequired: false
+}
 
 async function init () {
   let connect = await db(config.db)
@@ -24,11 +29,18 @@ app.use(bodyParser.json())
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   next()
 })
 init().then(s => {
-  app.use('/graphql', graphqlExpress({ schema: s }))
+  app.use('/graphql',
+    ensure(secret),
+    graphqlExpress(req => ({
+      schema: s,
+      context: req
+    })
+    )
+  )
   app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
   app.use('/api', api)
 

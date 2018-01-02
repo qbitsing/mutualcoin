@@ -23,7 +23,9 @@ import {
   VCheckbox,
   VDataTable,
   VTabs,
-  VChip
+  VChip,
+  VDatePicker,
+  VDivider
 } from 'vuetify'
 
 Vue.use(Vuetify, {
@@ -59,6 +61,8 @@ Vue.use(Vuetify, {
     VCheckbox,
     VDataTable,
     VTabs,
-    VChip
+    VChip,
+    VDatePicker,
+    VDivider
   }
 })

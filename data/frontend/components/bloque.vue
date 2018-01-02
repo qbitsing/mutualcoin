@@ -169,6 +169,9 @@ export default {
     },
     clear () {
       this.$refs.inversion.reset()
+      this.high = '0'
+      this.medium = '0'
+      this.bottom = '0'
     }
   },
   computed: {
@@ -183,7 +186,7 @@ export default {
   }
 }
 </script>
-<style lang="css" scoped>
+<style scoped>
 img{
   box-sizing: border-box;
   max-width: 80%;
