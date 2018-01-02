@@ -194,7 +194,7 @@ export default {
     }
   },
   components: {MutualDialog},
-  middleware: ['coins'],
+  middleware: ['auth', 'coins'],
   computed: mapState(['coins']),
 
   created () {
