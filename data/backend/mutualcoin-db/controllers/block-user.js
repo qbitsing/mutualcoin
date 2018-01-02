@@ -36,7 +36,7 @@ async function validateUser(blockUser) {
 
   userValid = await UserModel.findOne({ uuid: blockUser.user })
 
-  if (!userValid || !userValid.accountIsActive) {
+  if (!userValid) {
     throw new Error('bad request: user is not valid')
   }
 
