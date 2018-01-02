@@ -219,7 +219,7 @@
                       </template>
                       <template slot="no-data">
                         <v-alert :value="true" color="error" icon="warning">
-                          aun no as ingresado ganancias :(
+                          aun no as realizado pagos :(
                         </v-alert>
                       </template>
                     </v-data-table>
