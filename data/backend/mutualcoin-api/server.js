@@ -14,7 +14,7 @@ const app = asyncify(express())
 const server = http.createServer(app)
 const config = require('./config')
 
-async function init() {
+async function init () {
   let connect = await db(config.db)
 
   return schema(connect)

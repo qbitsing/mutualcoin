@@ -22,7 +22,7 @@ module.exports = {
   modules: ['@nuxtjs/apollo'],
   apollo: {
     clientConfigs: {
-      default: '~/plugins/apollo.js'
+      default: '~/plugins/apollo/clientApollo/apollo.js'
       // test: '~/apollo/client-configs/test.js'
     }
   },

@@ -38,14 +38,14 @@ const typeDefs = `
   }
 `
 
-//module.exports = makeExecutableSchema({typeDefs})
+// module.exports = makeExecutableSchema({typeDefs})
 module.exports = function (db) {
   const resolvers = {
     Query: {
-      users: (rootValue, args) => { 
+      users: (rootValue, args) => {
         console.log(args)
         return db.user.get()
-      } 
+      }
     }
   }
 
