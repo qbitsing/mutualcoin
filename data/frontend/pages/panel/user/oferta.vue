@@ -11,7 +11,7 @@
 import MutualBloque from '~/components/bloque.vue'
 import {mapState} from 'vuex'
 export default {
-  middleware: ['auth', 'blocks'],
+  middleware: ['auth', 'blocks', 'userInversions'],
   components: {MutualBloque},
   layout: 'dashboard',
   computed: mapState(['blocks', 'authToken']),
