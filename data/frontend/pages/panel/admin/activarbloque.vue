@@ -163,6 +163,7 @@ export default {
       if (this.$refs.activarBloque.validate()) {
         this.loading = true
         const self = this
+        let res
         const data = {
           blockToCreate: {
             coin: self.coin.uuid,
@@ -174,21 +175,22 @@ export default {
           data.user = this.user
         }
         try {
-          let res = await api('block/create', data, 'post', this.authToken)
-          if (res.status === 200) {
-            res.data.blockCreated.spanishState = this.spanishText(res.data.blockCreated.state)
-            let amount = new BigNumber(res.data.blockCrea)
-            res.data.blockCreated.inverted = amount.minus(res.data.blockCreated.amountLeft).toNumber()
-            this.blocks.push(res.data.blockCreated)
-            this.clear()
-            swal('Excelente', 'Bloque creado correctamente', 'success')
-          } else {
-            swal('Ooops...', 'Error al crear el bloque', 'error')
-          }
-          this.loading = false
+          res = await api('block/create', data, 'post', this.authToken)
         } catch (error) {
           swal('Ooops...', 'Error al crear el bloque, intentálo más tarde', 'error')
         }
+        console.log(res)
+        if (res.status === 200) {
+          res.data.blockCreated.spanishState = this.spanishText(res.data.blockCreated.state)
+          let amount = new BigNumber(res.data.blockCreated.amount.toString())
+          res.data.blockCreated.inverted = amount.minus(res.data.blockCreated.amountLeft).toNumber()
+          this.blocks.push(res.data.blockCreated)
+          this.clear()
+          swal('Excelente', 'Bloque creado correctamente', 'success')
+        } else {
+          swal('Ooops...', 'Error al crear el bloque', 'error')
+        }
+        this.loading = false
       }
     },
     preventLetters (ev) {
@@ -241,10 +243,11 @@ export default {
     }
   },
   created () {
+    BigNumber.config({ DECIMAL_PLACES: 20, EXPONENTIAL_AT: [-20, 20] })
     this.blocks.map(e => {
       e.spanishState = this.spanishText(e.state)
-      // let amount = BigNumber(e.amount)
-      // e.inverted = amount.minus(e.amountLeft)
+      let amount = BigNumber(e.amount.toString())
+      e.inverted = amount.minus(e.amountLeft).toString()
     })
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
