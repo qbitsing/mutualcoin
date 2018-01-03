@@ -42,15 +42,14 @@ export default {
   middleware: 'auth',
   computed: mapState(['authToken']),
   apollo: {
-    users: {
+    user: {
       prefetch: true,
       query: allUsers
     }
   },
-
   data () {
     return {
-      users: null,
+      user: null,
       userHeader: [
         {text: 'Nickname', value: 'nickname'},
         {text: 'Email', value: 'email'},
@@ -66,6 +65,7 @@ export default {
   created () {
     this.$store.commit('TITLE_VIEW', 'Usuarios')
     this.getUser()
+    console.log(this.$apollo.queries)
   },
   methods: {
     async getUser () {
