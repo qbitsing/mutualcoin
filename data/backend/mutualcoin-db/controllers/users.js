@@ -192,7 +192,7 @@ function get() {
 }
 
 function getUuid(uuid) {
-  return UsersModel.find({ uuid })
+  return UsersModel.findOne({ uuid })
 }
 
 /* function getByNickname(nickname) {
