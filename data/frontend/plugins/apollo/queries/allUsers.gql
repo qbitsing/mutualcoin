@@ -1,0 +1,6 @@
+{
+  users {
+    nickname
+    email
+  }
+}

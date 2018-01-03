@@ -34,13 +34,23 @@
 <script>
 import {mapState} from 'vuex'
 import api from '~/plugins/axios'
+// import gql from 'graphql-tag'
+import allUsers from '~/plugins/apollo/queries/allUsers.gql'
 export default {
   ssr: false,
   layout: 'dashboard',
   middleware: 'auth',
   computed: mapState(['authToken']),
+  apollo: {
+    users: {
+      prefetch: true,
+      query: allUsers
+    }
+  },
+
   data () {
     return {
+      users: null,
       userHeader: [
         {text: 'Nickname', value: 'nickname'},
         {text: 'Email', value: 'email'},
@@ -56,7 +66,6 @@ export default {
   created () {
     this.$store.commit('TITLE_VIEW', 'Usuarios')
     this.getUser()
-    console.log(this.$apollo)
   },
   methods: {
     async getUser () {
