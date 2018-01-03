@@ -243,8 +243,8 @@ export default {
   created () {
     this.blocks.map(e => {
       e.spanishState = this.spanishText(e.state)
-      let amount = BigNumber(e.amount)
-      e.inverted = amount.minus(e.amountLeft)
+      // let amount = BigNumber(e.amount)
+      // e.inverted = amount.minus(e.amountLeft)
     })
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
