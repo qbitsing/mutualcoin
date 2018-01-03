@@ -19,7 +19,7 @@ const secret = {
   credentialsRequired: false
 }
 
-async function init() {
+async function init () {
   let connect = await db(config.db)
 
   return schema(connect)

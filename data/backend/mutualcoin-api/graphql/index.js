@@ -1,53 +1,26 @@
 'use strict'
 const { makeExecutableSchema } = require('graphql-tools')
+const User = require('./user')
 
-const typeDefs = `
-  type User {
-    admin: Boolean
-    nickname: String
-    email: String!
-    email2: String
-    bch: String!
-    bchType: String!
-    uuid: String!
-    firstName: String
-    lastName: String
-    age: Int
-    birthdate: String
-    gender: Gender
-    address: String
-    phone: Int
-    hobbies: [String]
-    codeReferred: String!
-    password: String!
-    state: State
-  }
-
-  enum State {
-    active
-    inactive
-  }
-
-  enum Gender {
-    male
-    female
-  }
-
+const rootQuery = `
   type Query {
     users: [User]
+    user(uuid: String): User!
   }
 `
 
-//module.exports = makeExecutableSchema({typeDefs})
+// module.exports = makeExecutableSchema({typeDefs})
 module.exports = function (db) {
   const resolvers = {
     Query: {
-      users: (rootValue, args, context) => { 
-        console.log(context.user)
-        return db.user.get()
-      } 
+      users: (rootValue, args, context) => db.user.get(),
+      user: (rootValue, { uuid }, context) => db.user.getUuid(uuid)
+    },
+    User: {
+      referred: ({ codeReferred }) => db.user.getUuid(codeReferred),
+      line: ({ uuid }) => db.user.getLineReferred(uuid)
     }
   }
 
-  return makeExecutableSchema({typeDefs, resolvers})
+  return makeExecutableSchema({typeDefs: [rootQuery, User], resolvers})
 }
