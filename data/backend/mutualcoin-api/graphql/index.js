@@ -43,7 +43,7 @@ module.exports = function (db) {
   const resolvers = {
     Query: {
       users: (rootValue, args, context) => { 
-        console.log(context.body)
+        console.log(context.user)
         return db.user.get()
       }
     }

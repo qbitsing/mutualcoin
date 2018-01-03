@@ -16,7 +16,7 @@ const config = require('./config')
 const ensure = require('express-jwt')
 const secret = {
   secret: config.secret,
-  credentialsRequired: false
+  credentialsRequired: true
 }
 
 async function init () {
