@@ -42,7 +42,7 @@ const typeDefs = `
 module.exports = function (db) {
   const resolvers = {
     Query: {
-      users: (rootValue, args, context) => { 
+      users: (rootValue, args, context) => {
         console.log(context.user)
         return db.user.get()
       }
