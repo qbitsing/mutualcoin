@@ -1,0 +1,17 @@
+query user($uuid: String!) {
+  line {
+    nickname
+    email
+    uuid
+    line {
+      nickname
+      email
+      uuid
+      line {
+        nickname
+        email
+        uuid
+      }
+    }
+  }
+}
