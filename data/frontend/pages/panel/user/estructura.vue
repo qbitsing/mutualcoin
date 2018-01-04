@@ -122,16 +122,9 @@
   </v-container>
 </template>
 <script>
-  import estructure from '~/plugins/apollo/queries/allUsers.gql'
   import {mapState} from 'vuex'
   export default {
     middleware: 'auth',
-    apollo: {
-      estructure: {
-        prefetch: true,
-        query: estructure
-      }
-    },
     computed: mapState(['authUser']),
     layout: 'dashboard',
     data () {
