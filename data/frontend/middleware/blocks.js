@@ -8,7 +8,7 @@ export default async function ({store}) {
     const res = await api('/', {}, 'get', token, {params: query})
     const blocks = res.data.data.blocks.map(el => {
       let amount = new BigNumber(el.amount.toString())
-      el.spanihState = spanishText(el.state)
+      el.spanishState = spanishText(el.state)
       el.inverted = amount.minus(el.amountLeft).toString()
       return el
     })
