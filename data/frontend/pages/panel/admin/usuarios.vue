@@ -35,12 +35,10 @@
 import {mapState} from 'vuex'
 import api from '~/plugins/axios'
 export default {
-  ssr: false,
   layout: 'dashboard',
   middleware: 'auth',
   data () {
     return {
-      users: [],
       userHeader: [
         {text: 'Nickname', value: 'nickname', align: 'center'},
         {text: 'Email', value: 'email', align: 'center'},
@@ -49,7 +47,8 @@ export default {
         {text: 'Codigo referido', value: 'codeReferred', align: 'center'},
         {text: 'Estado', value: 'state', align: 'center'},
         {text: 'Opciones', value: 'accountIsActive', align: 'center'}
-      ]
+      ],
+      userItems: []
     }
   },
   computed: {
