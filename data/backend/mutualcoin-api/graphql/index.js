@@ -59,7 +59,7 @@ module.exports = function (db) {
       usersBy: (rootValue, { propertie, value }, context) => db.user.getBy(propertie)(value),
       user: (rootValue, { uuid }, context) => db.user.getUuid(uuid),
       blocks: (rootValue, args, context) => db.block.get(),
-      blocks: (rootValue, { states }, context) => { 
+      blocksState: (rootValue, { states }, context) => { 
         const conds = setConds(states)
         return db.block.getState(conds)
       },
