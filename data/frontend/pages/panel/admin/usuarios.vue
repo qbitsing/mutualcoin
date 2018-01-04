@@ -53,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['authToken']),
+    ...mapState(['authToken'])
   },
   created () {
     this.$store.commit('TITLE_VIEW', 'Usuarios')
