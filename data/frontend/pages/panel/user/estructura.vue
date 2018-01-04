@@ -1,10 +1,17 @@
 <template>
   <v-container>
     <v-card>
+      <v-layout row wrap text-xs-center>
+        <v-flex xs12 >
+          <v-card flat color="grey lighten-4">
+            Mis referidos
+          </v-card>
+        </v-flex>
+      </v-layout>
       <v-tabs v-model="first">
         <v-tabs-bar color="grey lighten-2" ligth>
           <v-tabs-item
-            v-for="tab in httpResponse"
+            v-for="tab in estructure"
             :key="tab.uuid"
             :href="'#' + tab.uuid"
             ripple
@@ -15,7 +22,7 @@
         </v-tabs-bar>
         <v-tabs-items>
           <v-tabs-content
-            v-for="user in httpResponse"
+            v-for="user in estructure"
             :key="user.uuid"
             :id="user.uuid"
           >
@@ -33,7 +40,7 @@
               <v-layout row wrap text-xs-center>
                 <v-flex xs12 >
                   <v-card flat color="grey lighten-4">
-                    Su linea
+                    Sus referidos
                   </v-card>
                 </v-flex>
               </v-layout>
@@ -70,7 +77,7 @@
                       <v-layout row wrap text-xs-center>
                         <v-flex xs12 >
                           <v-card flat color="grey lighten-4">
-                            Su linea
+                            Sus referidos
                           </v-card>
                         </v-flex>
                       </v-layout>
@@ -122,17 +129,19 @@
   </v-container>
 </template>
 <script>
+  import estructure from '~/plugins/queries/estructure'
   import {mapState} from 'vuex'
+  import api from '~/plugins/fetch'
   export default {
     middleware: 'auth',
-    computed: mapState(['authUser']),
+    computed: mapState(['authUser', 'authToken']),
     layout: 'dashboard',
     data () {
       return {
-        estructure: null,
         first: '-1',
         second: '-1',
         third: '-1',
+        estructure: null,
         httpResponse: [
           { nickname: 'Nicolás',
             uuid: 'io1',
@@ -154,13 +163,36 @@
                   { nickname: 'random', uuid: '2312adf', mail: 'secondMail@misena.edu.co' },
                   { nickname: 'other', uuid: '2123', mail: 'gerardo@mutualcoin.com' }
                 ] }
+            ] },
+          { nickname: 'Nicolás2',
+            uuid: 'io1213',
+            mail: 'Sumail8@misena.edu.co',
+            line: [
+              { nickname: 'anotherTab',
+                uuid: 'otheruuid',
+                mail: 'jsarias@misena.edu.co',
+                line: [
+                  { nickname: 'sdadas', uuid: '2das', mail: 'secondMail@misena.edu.co' },
+                  { nickname: 'Geradasdrdo', uuid: '21ds23', mail: 'gerardo@mutualcoin.com' }
+                ] },
+              { nickname: 'usario3',
+                uuid: 'qwsad',
+                mail: 'random@mail.com',
+                line: [
+                  { nickname: 'MNuevoReferido', uuid: '2qeqe', mail: 'myNewMail@misena.edu.co' },
+                  { nickname: 'another', uuid: '2312dfs', mail: 'lMail@misena.edu.co' },
+                  { nickname: 'randomasd', uuid: '2312adf', mail: 'secondMail@misena.edu.co' },
+                  { nickname: 'other', uuid: '2123', mail: 'gerardo@mutualcoin.com' }
+                ] }
             ] }
         ]
       }
     },
-    created () {
-      console.log(this.estructure)
+    async created () {
       this.$store.commit('TITLE_VIEW', 'Estructura')
+      const res = await api(estructure(this.authUser.uuid))
+      this.estructure = res.data.user.line
+      console.log(this.estructure)
     }
   }
 </script>
