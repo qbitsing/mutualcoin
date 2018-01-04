@@ -13,12 +13,12 @@
       <h2 v-if="data.state === 'paused'" :class="data.active ? 'paused' : 'paused'">
         {{'Pausado'}}
       </h2>
-      <img :src="`/${data.coin}.png`">
+      <img :src="`/${data._coin.name}.png`">
       <p>Bloque: {{data.name}}</p>
       <p>Plan de: {{data.amount}} {{data.coin}}</p>
       <p>Semanas: {{data.weeks}}</p>
       <p>Invertidos:
-        {{data.amount - data.amountLeft}}
+        {{data.inverted}}
       </p>
       <v-card-actions>
         <v-btn color="success" @click="goBlock(data.uuid)">Detalles</v-btn>
