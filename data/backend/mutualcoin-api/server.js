@@ -35,7 +35,6 @@ app.use(function (req, res, next) {
   } else {
     next()
   }
-  
 })
 init().then(s => {
   app.use('/graphql',

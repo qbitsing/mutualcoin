@@ -195,19 +195,14 @@ function getUuid(uuid) {
   return UsersModel.findOne({ uuid })
 }
 
-/* function getByNickname(nickname) {
-    return UsersModel.find({ nickname })
+function getBy(propertie) {
+  return function (value) {
+    let search = {}
+    search[propertie] = value
+    console.log(search)
+    return UsersModel.find(search)    
+  }
 }
-*/
-/* function getByEmail(email) {
-    const conds = [
-        { email },
-        { email2: email }
-    ]
-
-    return UsersModel.findOne({ $or: conds })
-}
-*/
 module.exports = function (db) {
   UsersModel = db.model('user', usersSchema)
 
@@ -218,6 +213,7 @@ module.exports = function (db) {
   usersMethods.update = update
   usersMethods.getLineReferred = getLineReferred
   usersMethods.get = get
+  usersMethods.getBy = getBy
   usersMethods.getUuid = getUuid
 
   return usersMethods

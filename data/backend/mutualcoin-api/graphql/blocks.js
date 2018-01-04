@@ -5,6 +5,7 @@ module.exports = `
     amount: Int!
     amountLeft: Int!
     coin: String!
+    name: String!
     _coin: Coin
     uuid: String!
     endingDate: String
