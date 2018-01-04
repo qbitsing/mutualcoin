@@ -16,5 +16,6 @@ module.exports = {
       last_pay
       uuid
       days
+      name
     }
   }` }
