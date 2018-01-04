@@ -1,6 +1,13 @@
 <template>
   <v-container>
     <v-card>
+      <v-layout row wrap text-xs-center>
+        <v-flex xs12 >
+          <v-card flat color="grey lighten-4">
+            Mis referidos
+          </v-card>
+        </v-flex>
+      </v-layout>
       <v-tabs v-model="first">
         <v-tabs-bar color="grey lighten-2" ligth>
           <v-tabs-item
@@ -33,7 +40,7 @@
               <v-layout row wrap text-xs-center>
                 <v-flex xs12 >
                   <v-card flat color="grey lighten-4">
-                    Su linea
+                    Sus referidos
                   </v-card>
                 </v-flex>
               </v-layout>
@@ -70,7 +77,7 @@
                       <v-layout row wrap text-xs-center>
                         <v-flex xs12 >
                           <v-card flat color="grey lighten-4">
-                            Su linea
+                            Sus referidos
                           </v-card>
                         </v-flex>
                       </v-layout>
@@ -122,21 +129,13 @@
   </v-container>
 </template>
 <script>
-  import estructure from '~/plugins/apollo/queries/allUsers.gql'
   import {mapState} from 'vuex'
   export default {
     middleware: 'auth',
-    apollo: {
-      estructure: {
-        prefetch: true,
-        query: estructure
-      }
-    },
     computed: mapState(['authUser']),
     layout: 'dashboard',
     data () {
       return {
-        estructure: null,
         first: '-1',
         second: '-1',
         third: '-1',
@@ -166,7 +165,6 @@
       }
     },
     created () {
-      console.log(this.estructure)
       this.$store.commit('TITLE_VIEW', 'Estructura')
     }
   }
