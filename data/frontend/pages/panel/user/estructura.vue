@@ -13,6 +13,7 @@
           <v-tabs-item
             v-for="tab in estructure"
             :key="tab.uuid"
+            @click="unactivate('second')"
             :href="'#' + tab.uuid"
             ripple
           >
@@ -30,7 +31,7 @@
               <v-container text-xs-center>
                 <v-layout row wrap>
                   <v-flex xs6>
-                    <span>Email: {{user.mail}}</span>
+                    <span>Email: {{user.email}}</span>
                   </v-flex>
                   <v-flex xs6>
                     <span>Código: {{user.uuid}}</span>
@@ -40,22 +41,23 @@
               <v-layout row wrap text-xs-center>
                 <v-flex xs12 >
                   <v-card flat color="grey lighten-4">
-                    Sus referidos
+                    {{user.line[0] ? 'Sus referidos' : 'No tiene referidos'}}
                   </v-card>
                 </v-flex>
               </v-layout>
               <!-- second line -->
-              <v-tabs v-model="second">
+              <v-tabs v-model="second" v-show="user.line[0]">
                 <v-tabs-bar color="grey lighten-2" ligth>
                   <v-tabs-item
                     v-for="tab in user.line"
+                    @click="unactivate('third')"
                     :key="tab.uuid"
                     :href="'#' + tab.uuid"
                     ripple
                   >
                     {{ tab.nickname }}
                   </v-tabs-item>
-                  <v-tabs-slider color="primary"></v-tabs-slider>
+                  <v-tabs-slider color="primary" v-show="second!= '-1'"></v-tabs-slider>
                 </v-tabs-bar>
                 <v-tabs-items>
                   <v-tabs-content
@@ -67,7 +69,7 @@
                       <v-container text-xs-center>
                         <v-layout row wrap>
                           <v-flex xs6>
-                            <span>Email: {{user2.mail}}</span>
+                            <span>Email: {{user2.email}}</span>
                           </v-flex>
                           <v-flex xs6>
                             <span>Código: {{user2.uuid}}</span>
@@ -77,12 +79,12 @@
                       <v-layout row wrap text-xs-center>
                         <v-flex xs12 >
                           <v-card flat color="grey lighten-4">
-                            Sus referidos
+                            {{user2.line[0] ? 'Sus referidos' : 'No tiene referidos'}}
                           </v-card>
                         </v-flex>
                       </v-layout>
                       <!-- start-third-line -->
-                        <v-tabs v-model="third">
+                        <v-tabs v-model="third" v-show="user2.line[0]">
                           <v-tabs-bar color="grey lighten-2" ligth>
                             <v-tabs-item
                               v-for="tab in user2.line"
@@ -92,7 +94,7 @@
                             >
                               {{ tab.nickname }}
                             </v-tabs-item>
-                            <v-tabs-slider color="primary"></v-tabs-slider>
+                            <v-tabs-slider color="primary" v-show="third != '-1'"></v-tabs-slider>
                           </v-tabs-bar>
                           <v-tabs-items>
                             <v-tabs-content
@@ -104,7 +106,7 @@
                                 <v-container text-xs-center>
                                   <v-layout row wrap>
                                     <v-flex xs6>
-                                      <span>Email: {{user3.mail}}</span>
+                                      <span>Email: {{user3.email}}</span>
                                     </v-flex>
                                     <v-flex xs6>
                                       <span>Código: {{user3.uuid}}</span>
@@ -131,7 +133,7 @@
 <script>
   import estructure from '~/plugins/queries/estructure'
   import {mapState} from 'vuex'
-  import api from '~/plugins/fetch'
+  import api from '~/plugins/axios'
   export default {
     middleware: 'auth',
     computed: mapState(['authUser', 'authToken']),
@@ -141,58 +143,19 @@
         first: '-1',
         second: '-1',
         third: '-1',
-        estructure: null,
-        httpResponse: [
-          { nickname: 'Nicolás',
-            uuid: 'io1',
-            mail: 'nmarias38@misena.edu.co',
-            line: [
-              { nickname: 'Sebastian',
-                uuid: 'qw',
-                mail: 'jsarias@misena.edu.co',
-                line: [
-                  { nickname: 'Omar', uuid: '2', mail: 'secondMail@misena.edu.co' },
-                  { nickname: 'Gerardo', uuid: '2123', mail: 'gerardo@mutualcoin.com' }
-                ] },
-              { nickname: 'usario3',
-                uuid: 'qwsad',
-                mail: 'random@mail.com',
-                line: [
-                  { nickname: 'MockedUser', uuid: '2qeqe', mail: 'secondMail@misena.edu.co' },
-                  { nickname: 'another', uuid: '2312dfs', mail: 'lMail@misena.edu.co' },
-                  { nickname: 'random', uuid: '2312adf', mail: 'secondMail@misena.edu.co' },
-                  { nickname: 'other', uuid: '2123', mail: 'gerardo@mutualcoin.com' }
-                ] }
-            ] },
-          { nickname: 'Nicolás2',
-            uuid: 'io1213',
-            mail: 'Sumail8@misena.edu.co',
-            line: [
-              { nickname: 'anotherTab',
-                uuid: 'otheruuid',
-                mail: 'jsarias@misena.edu.co',
-                line: [
-                  { nickname: 'sdadas', uuid: '2das', mail: 'secondMail@misena.edu.co' },
-                  { nickname: 'Geradasdrdo', uuid: '21ds23', mail: 'gerardo@mutualcoin.com' }
-                ] },
-              { nickname: 'usario3',
-                uuid: 'qwsad',
-                mail: 'random@mail.com',
-                line: [
-                  { nickname: 'MNuevoReferido', uuid: '2qeqe', mail: 'myNewMail@misena.edu.co' },
-                  { nickname: 'another', uuid: '2312dfs', mail: 'lMail@misena.edu.co' },
-                  { nickname: 'randomasd', uuid: '2312adf', mail: 'secondMail@misena.edu.co' },
-                  { nickname: 'other', uuid: '2123', mail: 'gerardo@mutualcoin.com' }
-                ] }
-            ] }
-        ]
+        estructure: null
+      }
+    },
+    methods: {
+      unactivate (unactivable) {
+        if (unactivable === 'third') this.third = '-1'
+        else this.second = '-1'
       }
     },
     async created () {
       this.$store.commit('TITLE_VIEW', 'Estructura')
-      const res = await api(estructure(this.authUser.uuid))
-      this.estructure = res.data.user.line
-      console.log(this.estructure)
+      const res = await api('/', {}, 'get', this.authToken, {params: estructure(this.authUser.uuid)})
+      this.estructure = res.data.data.user.line
     }
   }
 </script>

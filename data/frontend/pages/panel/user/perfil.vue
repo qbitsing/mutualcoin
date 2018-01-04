@@ -22,7 +22,7 @@
               label="Código de usuario"
               disabled
               :rules="inputRules"
-              v-model="userData.uuid"
+              v-model="authUser.uuid"
               required
               ></v-text-field>
             </v-flex>
@@ -188,6 +188,7 @@
 <script>
 import {mapState} from 'vuex'
 import api from '~/plugins/axios'
+import query from '~/plugins/queries/profile'
 import MutualDialog from '~/components/dialog'
 export default {
   middleware: 'auth',
@@ -259,8 +260,8 @@ export default {
   },
   async created () {
     this.$store.commit('TITLE_VIEW', 'Perfil')
-    const res = await api(`user/${this.authUser.uuid}`, {}, 'get', this.authToken)
-    this.userData = res.data[0]
+    const res = await api('/', {}, 'get', this.authToken, {params: query(this.authUser.uuid)})
+    this.userData = res.data.data.user
     this.lastData = {
       bch: this.userData.bch,
       age: this.userData.age,

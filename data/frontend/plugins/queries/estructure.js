@@ -1,5 +1,6 @@
 module.exports = function (uuid) {
-  return `{
+  return {
+    query: `{
     user(uuid: "${uuid}") { 
       line { 
         nickname 
@@ -17,5 +18,5 @@ module.exports = function (uuid) {
         } 
       } 
     }
-  }`
+  }` }
 }
