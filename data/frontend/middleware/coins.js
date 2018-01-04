@@ -3,7 +3,13 @@ export default async function ({ store }) {
   if (store.state.authUser.admin) {
     if (!store.state.coins) {
       const token = store.state.authToken
-      const res = await api('coin/all', {}, 'get', token)
+      const query = {
+        params: {
+          query: `{coins{name acronym uuid}}`
+        }
+      }
+      const res = await api('/', {}, 'get', token, query)
+      console.log(res)
       store.commit('SET_COINS', res.data.coins)
     }
   }
