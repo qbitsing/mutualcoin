@@ -13,8 +13,8 @@ import {mapState} from 'vuex'
 export default {
   components: { MutualBloqueHistorial },
   layout: 'dashboard',
-  middleware: ['auth', 'blocks', 'userInversions'],
-  computed: mapState(['blocks', 'userInversions']),
+  middleware: ['auth', 'userInversions'],
+  computed: mapState(['userInversions']),
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Historial')
   }

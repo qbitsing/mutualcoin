@@ -137,10 +137,10 @@ export default {
           this.loading = false
           console.log(res)
           if (res.status === 200) {
-            this.blocks.map(e => {
+            this.blocks.active.map(e => {
               if (e.uuid === this.data.uuid) {
-                const amountLeft = new BigNumber(e.amountLeft)
-                e.amountLeft = amountLeft.minus(this.amount).toNumber()
+                const amountLeft = new BigNumber(e.amountLeft.toString())
+                e.amountLeft = amountLeft.minus(this.amount).toString()
               }
               return e
             })

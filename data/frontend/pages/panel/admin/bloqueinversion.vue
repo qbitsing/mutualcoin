@@ -33,17 +33,17 @@
 </template>
 <script>
 import MutualBlock from '~/components/bloqueAdmin.vue'
-import {mapState} from 'vuex'
+// import {mapState} from 'vuex'
 export default {
   data () {
     return {
+      blocks: [],
       coins: null,
       nameCoin: null
     }
   },
   layout: 'dashboard',
-  middleware: ['auth', 'blocks'],
-  computed: mapState(['blocks']),
+  middleware: ['auth', 'inversionBlocks'],
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloques en inversión')
     // this.getBlock()
