@@ -2,9 +2,9 @@ import axios from 'axios'
 const api = function (resource, data, methods, token, params) {
   let instance
   if (methods === 'get') {
-    instance = axios.create({ baseURL: 'http://localhost:3300/graphql/' })
+    instance = axios.create({ baseURL: 'http://localhost:3300/graphql' })
     setToken(resource, token)
-    return instance.get(params)
+    return instance.get(resource, params)
   } else {
     instance = axios.create({ baseURL: 'http://localhost:3300/api/' })
     setToken(resource, token)
