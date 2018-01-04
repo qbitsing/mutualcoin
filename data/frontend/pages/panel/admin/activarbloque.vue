@@ -120,7 +120,6 @@
 <script>
 
 import api from '~/plugins/axios'
-import BigNumber from 'bignumber.js'
 import MutualLoader from '~/components/loader.vue'
 import swal from 'sweetalert2'
 import {mapState} from 'vuex'
@@ -182,13 +181,10 @@ export default {
         console.log(res)
         if (res.status === 200) {
           res.data.blockCreated.spanishState = this.spanishText(res.data.blockCreated.state)
-          let amount = new BigNumber(res.data.blockCreated.amount.toString())
-          res.data.blockCreated.inverted = amount.minus(res.data.blockCreated.amountLeft).toNumber()
+          res.data.blockCreated.inverted = 0
           this.blocks.push(res.data.blockCreated)
           this.clear()
           swal('Excelente', 'Bloque creado correctamente', 'success')
-        } else {
-          swal('Ooops...', 'Error al crear el bloque', 'error')
         }
         this.loading = false
       }
@@ -243,12 +239,6 @@ export default {
     }
   },
   created () {
-    BigNumber.config({ DECIMAL_PLACES: 20, EXPONENTIAL_AT: [-20, 20] })
-    this.blocks.map(e => {
-      e.spanishState = this.spanishText(e.state)
-      let amount = BigNumber(e.amount.toString())
-      e.inverted = amount.minus(e.amountLeft).toString()
-    })
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
 }
