@@ -5,12 +5,17 @@ export default async function ({ store }) {
       const token = store.state.authToken
       const query = {
         params: {
-          query: `{coins{name acronym uuid}}`
+          query: `{
+            coins{
+              name
+              acronym
+              uuid
+            }
+          }`
         }
       }
       const res = await api('/', {}, 'get', token, query)
-      console.log(res)
-      store.commit('SET_COINS', res.data.coins)
+      store.commit('SET_COINS', res.data.data.coins)
     }
   }
 }
