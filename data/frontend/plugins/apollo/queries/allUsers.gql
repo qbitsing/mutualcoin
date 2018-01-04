@@ -1,9 +1,0 @@
-{
-  users {
-    nickname
-    email
-    bchType
-    bch
-    codeReferred
-  }
-}

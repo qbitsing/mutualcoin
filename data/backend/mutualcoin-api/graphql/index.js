@@ -13,7 +13,11 @@ const rootQuery = `
 module.exports = function (db) {
   const resolvers = {
     Query: {
-      users: (rootValue, args, context) => db.user.get(),
+      users: (rootValue, args, context) => {
+        console.log('user')
+        return db.user.get()
+        
+      },
       user: (rootValue, { uuid }, context) => db.user.getUuid(uuid)
     },
     User: {

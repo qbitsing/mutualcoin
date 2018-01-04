@@ -15,7 +15,7 @@
                     <td class="text-xs-center">{{ props.item.bchType }}</td>
                     <td class="text-xs-center">{{ props.item.bch }}</td>
                     <td class="text-xs-center">{{ props.item.codeReferred }}</td>
-                    <td class="text-xs-center">{{ props.item.accountIsActive }}</td>
+                    <td class="text-xs-center">{{ props.item.state }}</td>
                     <td class="text-xs-center"></td>
                   </template>
                   <template slot="no-data">
@@ -34,38 +34,29 @@
 <script>
 import {mapState} from 'vuex'
 import api from '~/plugins/axios'
-// import gql from 'graphql-tag'
-import allUsers from '~/plugins/apollo/queries/allUsers.gql'
 export default {
   ssr: false,
   layout: 'dashboard',
   middleware: 'auth',
-  computed: mapState(['authToken']),
-  apollo: {
-    user: {
-      prefetch: true,
-      query: allUsers
-    }
-  },
   data () {
     return {
-      user: null,
+      users: [],
       userHeader: [
-        {text: 'Nickname', value: 'nickname'},
-        {text: 'Email', value: 'email'},
-        {text: 'Tipo billetera', value: 'bchType'},
-        {text: 'Bch', value: 'bch'},
-        {text: 'Codigo referido', value: 'codeReferred'},
-        {text: 'Estado', value: 'accountIsActive'},
-        {text: 'Opciones', value: 'accountIsActive'}
-      ],
-      userItems: []
+        {text: 'Nickname', value: 'nickname', align: 'center'},
+        {text: 'Email', value: 'email', align: 'center'},
+        {text: 'Tipo billetera', value: 'bchType', align: 'center'},
+        {text: 'Bch', value: 'bch', align: 'center'},
+        {text: 'Codigo referido', value: 'codeReferred', align: 'center'},
+        {text: 'Estado', value: 'state', align: 'center'},
+        {text: 'Opciones', value: 'accountIsActive', align: 'center'}
+      ]
     }
+  },
+  computed: {
+    ...mapState(['authToken']),
   },
   created () {
     this.$store.commit('TITLE_VIEW', 'Usuarios')
-    this.getUser()
-    console.log(this.$apollo.queries)
   },
   methods: {
     async getUser () {

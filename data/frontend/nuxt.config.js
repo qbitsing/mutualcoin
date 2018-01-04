@@ -19,13 +19,6 @@ module.exports = {
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' }
     ]
   },
-  modules: ['@nuxtjs/apollo'],
-  apollo: {
-    clientConfigs: {
-      default: '~/plugins/apollo/clientApollo/apollo.js'
-      // test: '~/apollo/client-configs/test.js'
-    }
-  },
   plugins: ['~/plugins/vuetify.js'],
   css: [
     '~/assets/style/app.styl'
