@@ -51,6 +51,10 @@ async function update(uuid, coin) {
   return coinToUpdate
 }
 
+function getUuid(uuid) { 
+  return CoinsModel.findOne({ uuid })
+}
+
 module.exports = function (db) {
   CoinsModel = db.model('coin', coinsSchema)
 
@@ -59,6 +63,7 @@ module.exports = function (db) {
   coinMethods.create = create
   coinMethods.update = update
   coinMethods.get = get
+  coinMethods.getUuid = getUuid
 
   return coinMethods
 }

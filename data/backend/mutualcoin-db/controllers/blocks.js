@@ -223,6 +223,17 @@ async function setInfoDays(uuid, info) {
   }
 }
 
+function getUuid(uuid) { 
+  return BlockModel.findOne({ uuid })
+}
+function getBy(propertie) { 
+  return function (value) {
+    let search = {}
+    search[propertie] = value
+    return BlockModel.find(search)
+  }
+}
+
 function validateInfo(info, length) {
   let oldDay = length
   for (let i of info) {
@@ -247,6 +258,8 @@ module.exports = function (db) {
   BlockUserModel = db.model('blocks_user', blockUserSchema)
   const blockMethods = {}
   blockMethods.get = get
+  blockMethods.getBy = getBy
+  blockMethods.getUuid = getUuid
   blockMethods.getState = getState
   blockMethods.create = create
   blockMethods.activate = activate

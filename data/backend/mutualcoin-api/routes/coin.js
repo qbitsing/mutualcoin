@@ -18,12 +18,12 @@ api.use('*', (req, res, next) => {
 })
 
 api.get('/all',
-  ensure({ secret: config.secret }),
+  // ensure({ secret: config.secret }),
   async (req, res, next) => {
     debug('a request has come to api/coins/all')
-    if (!req.user.admin) {
-      return next(new Error('Unauthorized'))
-    }
+    // if (!req.user.admin) {
+    //   return next(new Error('Unauthorized'))
+    // }
     let coins = []
     try {
       coins = await coinModel.get()
