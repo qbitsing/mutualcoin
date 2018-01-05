@@ -1,19 +1,19 @@
 <template>
   <v-card class="card">
 
-    <h2 v-if="data.objBlock.state == 'active'" :class="data.objBlock.state" >Activo</h2>
-    <h2 v-else-if="data.objBlock.state == 'waiting'" :class="data.objBlock.state" >En espera</h2>
-    <h2 v-else-if="data.objBlock.state == 'running'" :class="data.objBlock.state" >Corriendo</h2>
-    <h2 v-else-if="data.objBlock.state == 'paused'" :class="data.objBlock.state" >Pausado</h2>
-    <h2 v-else-if="data.objBlock.state == 'finished'" :class="data.objBlock.state" >Finalizado</h2>
+    <h2 v-if="data._block.state == 'active'" :class="data._block.state" >Activo</h2>
+    <h2 v-else-if="data._block.state == 'waiting'" :class="data._block.state" >En espera</h2>
+    <h2 v-else-if="data._block.state == 'running'" :class="data._block.state" >Corriendo</h2>
+    <h2 v-else-if="data._block.state == 'paused'" :class="data._block.state" >Pausado</h2>
+    <h2 v-else-if="data._block.state == 'finished'" :class="data._block.state" >Finalizado</h2>
     <h2 v-else class="cancel" >Cancelado</h2>
     <v-layout column justify-center align-center text-align-center>
-      <img :src="`/${data.objBlock._coin.name}.png`">
-      <p>Plan {{data.objBlock.name}} de {{data.objBlock.amount}} {{data.objBlock._coin.name}} </p>
-      <p v-if="data.objBlock.state != 'active'">Fecha Inicio: {{data.objBlock.startDate}}</p>
-      <p v-if="data.objBlock.state != 'active'">Días corridos: {{data.objBlock.runDays}}</p>
-      <p v-else>Cupo: {{data.objBlock.amountLeft}}</p>
-      <p>Mi inversión: {{data.amount}} {{data.objBlock._coin.name}}</p>
+      <img :src="`/${data._block._coin.name}.png`">
+      <p>Plan {{data._block.name}} de {{data._block.amount}} {{data._block._coin.name}} </p>
+      <p v-if="data._block.state != 'active'">Fecha Inicio: {{data._block.startDate}}</p>
+      <p v-if="data._block.state != 'active'">Días corridos: {{data._block.runDays}}</p>
+      <p v-else>Cupo: {{data._block.amountLeft}}</p>
+      <p>Mi inversión: {{data.amount}} {{data._block._coin.name}}</p>
       <v-card-actions>
         <v-btn @click="goTimeline(data.uuid)" color="secondary">Info</v-btn>
       </v-card-actions>
