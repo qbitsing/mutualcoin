@@ -1,20 +1,20 @@
 module.exports = function (states) {
   let data = `
     amount
-      amountLeft
-      _coin {
-        name
-      }
-      uuid
-      weeks
-      state
-      uuid
-      days
-      user{
-         uuid
-        email
-      }
+    amountLeft
+    _coin {
       name
+    }
+    uuid
+    weeks
+    state
+    uuid
+    days
+    user{
+        uuid
+      email
+    }
+    name
     endingDate
     startDate
     runDays
@@ -25,6 +25,7 @@ module.exports = function (states) {
     active: `active: blocksState(states: ["active"]) {${data}}`,
     inactive: `inactive: blocksState(states: ["inactive"]) {${data}}`,
     running: `running: blocksState(states: ["running"]) {${data}}`,
+    waiting: `waiting: blocksState(states: ["waiting"]) {${data}}`,
     paused: `paused: blocksState(states: ["paused"]) {${data}}`,
     cancel: `cancel: blocksState(states: ["cancel"]) {${data}}`,
     finished: `finished: blocksState(states: ["finished"]) {${data}}`
