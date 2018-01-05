@@ -196,14 +196,14 @@ function getUuid(uuid) {
 }
 
 function getBy(propertie) {
-  return function (value) {
+  return function(value) {
     let search = {}
     search[propertie] = value
     console.log(search)
-    return UsersModel.find(search)    
+    return UsersModel.find(search)
   }
 }
-module.exports = function (db) {
+module.exports = function(db) {
   UsersModel = db.model('user', usersSchema)
 
   const usersMethods = {}

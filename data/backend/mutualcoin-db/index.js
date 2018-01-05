@@ -7,7 +7,7 @@ const coin = require('./controllers/coins')
 const block = require('./controllers/blocks')
 const blockUser = require('./controllers/block-user')
 
-module.exports = async function (config) {
+module.exports = async function(config) {
   // configuramos la configuracion por defecto
   config = defaulst(config, {
     host: 'localhost',

@@ -44,14 +44,15 @@ async function validateUser(uuid) {
 }
 
 function get() {
-  return BlockModel.find({}).populate('_coin').exec()
+  return BlockModel.find({})
 }
 
 function getState(state) {
-  return BlockModel.find({ $or: state }).populate('_coin').exec()
+  return BlockModel.find({ $or: state })
 }
 
 async function create(block) {
+  await validateCoin(block.coin)
   let invalidBlock = null
   let uuid = v4()
   invalidBlock = await BlockModel.findOne({ uuid })
@@ -74,7 +75,6 @@ async function create(block) {
 
   blockToCreate.amount = block.amount
   blockToCreate.amountLeft = block.amount
-  blockToCreate._coin = await validateCoin(block.coin)
 
   blockToCreate.coin = block.coin
 
@@ -97,9 +97,7 @@ async function create(block) {
   blockToCreate.uuid = block.uuid
   blockToCreate.last_pay = 0
 
-  let x = await blockToCreate.save()
-
-  return await BlockModel.findById(x._id).populate('_coin').exec()
+  return blockToCreate.save()
 }
 
 async function activate(uuid) {
@@ -140,10 +138,10 @@ async function run(uuid, startDate) {
   if (block.state !== 'waiting' && block.state !== 'paused') {
     throw new Error(`bad request: the block cannot be runnig because the state is: ${block.state}`)
   }
-  if (block.state === 'waiting') { 
+  if (block.state === 'waiting') {
     up.startDate = startDate
   }
-  up.state = 'running' 
+  up.state = 'running'
 
   await BlockModel.findByIdAndUpdate(block._id, up)
 
@@ -214,20 +212,19 @@ async function setInfoDays(uuid, info) {
     validateInfo(info, length)
     daysInfo = daysInfo.concat(info)
 
-
     await BlockModel.findByIdAndUpdate(_id, { daysInfo })
 
-    return { result: true , daysInfo}
+    return { result: true, daysInfo }
   } else {
     throw new Error('bad request: the block cannot receive info because the state is: ' + state)
   }
 }
 
-function getUuid(uuid) { 
+function getUuid(uuid) {
   return BlockModel.findOne({ uuid })
 }
-function getBy(propertie) { 
-  return function (value) {
+function getBy(propertie) {
+  return function(value) {
     let search = {}
     search[propertie] = value
     return BlockModel.find(search)
@@ -245,13 +242,13 @@ function validateInfo(info, length) {
   }
 }
 
-async function updateLatsPay(uuid, to) { 
+async function updateLatsPay(uuid, to) {
   const block = await validateBlock(uuid)
 
   return BlockModel.findByIdAndUpdate(block._id, { last_pay: to })
 }
 
-module.exports = function (db) {
+module.exports = function(db) {
   BlockModel = db.model('block', blockSchema)
   CoinModel = db.model('coin', coinSchema)
   UserModel = db.model('user', userSchema)

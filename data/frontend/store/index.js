@@ -8,7 +8,7 @@ export const state = () => ({
   authToken: null,
   authUser: null,
   coins: null,
-  blocks: null,
+  blocks: {},
   blocksUser: null,
   inversion: null,
   userInversions: null

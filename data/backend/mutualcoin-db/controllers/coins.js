@@ -51,11 +51,11 @@ async function update(uuid, coin) {
   return coinToUpdate
 }
 
-function getUuid(uuid) { 
+function getUuid(uuid) {
   return CoinsModel.findOne({ uuid })
 }
 
-module.exports = function (db) {
+module.exports = function(db) {
   CoinsModel = db.model('coin', coinsSchema)
 
   const coinMethods = {}

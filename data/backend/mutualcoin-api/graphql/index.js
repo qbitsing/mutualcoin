@@ -8,31 +8,31 @@ const BlockUser = require('./block-user')
 function setConds (query) {
   const conds = []
 
-  if (query.indexOf('paused')!== -1) {
+  if (query.indexOf('paused') !== -1) {
     conds.push({ state: 'paused' })
   }
 
-  if (query.indexOf('active')!== -1) {
+  if (query.indexOf('active') !== -1) {
     conds.push({ state: 'active' })
   }
 
-  if (query.indexOf('finished')!== -1) {
+  if (query.indexOf('finished') !== -1) {
     conds.push({ state: 'finished' })
   }
 
-  if (query.indexOf('cancel')!== -1) {
+  if (query.indexOf('cancel') !== -1) {
     conds.push({ state: 'cancel' })
   }
 
-  if (query.indexOf('inactive')!== -1) {
+  if (query.indexOf('inactive') !== -1) {
     conds.push({ state: 'inactive' })
   }
 
-  if (query.indexOf('running')!== -1) {
+  if (query.indexOf('running') !== -1) {
     conds.push({ state: 'running' })
   }
 
-  if (query.indexOf('waiting')!== -1) {
+  if (query.indexOf('waiting') !== -1) {
     conds.push({ state: 'waiting' })
   }
 
@@ -48,6 +48,7 @@ const rootQuery = `
     blocksState(states: [String]): [Block]
     coins: [Coin]
     blocksUsers: [BlockUser]
+    blocksUsersBy(propertie: String, value: String): [BlockUser]
   }
 `
 
@@ -59,12 +60,13 @@ module.exports = function (db) {
       usersBy: (rootValue, { propertie, value }, context) => db.user.getBy(propertie)(value),
       user: (rootValue, { uuid }, context) => db.user.getUuid(uuid),
       blocks: (rootValue, args, context) => db.block.get(),
-      blocksState: (rootValue, { states }, context) => { 
+      blocksState: (rootValue, { states }, context) => {
         const conds = setConds(states)
         return db.block.getState(conds)
       },
       coins: (rootValue, args, context) => db.coin.get(),
-      blocksUsers: (rootValue, args, context) => db.blockUser.get()
+      blocksUsers: (rootValue, args, context) => db.blockUser.get(),
+      blocksUsersBy: (rootValue, { propertie, value }, context) => db.blockUser.getBy(propertie)(value)
     },
     User: {
       referred: ({ codeReferred }) => db.user.getUuid(codeReferred),

@@ -67,40 +67,25 @@ function validateAmount(blockUser) {
   }
 }
 
-async function get(_block, _user) {
-  let find = BlockUserModel.find({})
-
-  if (true) { 
-    find = find.populate('_block')
-  }
-
-  if (true) { 
-    find = find.populate('_user')
-  }
-  return await find.exec()
+function get() {
+  return BlockUserModel.find({})
 }
 
 function getBy(propertie) {
   let search = {}
 
-  return function (value, block) {
+  return function(value, block) {
     search[propertie] = value
-    if (propertie === 'user') { 
-      return BlockUserModel.find(search).populate('_block').exec()
-    }
-    if (block) { 
-      return BlockUserModel.find(search).populate('_block').populate('_user').exec()
-    }
-    return BlockUserModel.find(search).populate('_user').exec()
+    return BlockUserModel.find(search)
   }
 }
 
-async function generateUuid() { 
+async function generateUuid() {
   let uuid = v4()
 
   let valid = await BlockUserModel.findOne({ uuid })
 
-  while (valid) { 
+  while (valid) {
     uuid = v4()
     valid = await BlockUserModel.findOne({ uuid })
   }
@@ -109,7 +94,7 @@ async function generateUuid() {
 }
 async function create(blockUser) {
   const block = await validateBlock(blockUser)
-  const user = await validateUser(blockUser)
+  await validateUser(blockUser)
   const uuid = await generateUuid()
   validateConfig(blockUser)
   validateAmount(blockUser, block)
@@ -124,9 +109,7 @@ async function create(blockUser) {
   blockUserToCreate.uuid = uuid
   blockUserToCreate.amount = blockUser.amount
   blockUserToCreate.block = blockUser.block
-  blockUserToCreate._block = block._id
   blockUserToCreate.user = blockUser.user
-  blockUserToCreate._user = user._id
   blockUserToCreate.high = blockUser.high
   blockUserToCreate.medium = blockUser.medium
   blockUserToCreate.low = blockUser.low
@@ -134,10 +117,10 @@ async function create(blockUser) {
   return await blockUserToCreate.save()
 }
 
-function updatePays(id, pays, last_pay) { 
-  return BlockUserModel.findByIdAndUpdate(id, { pays, last_pay })
+function updatePays(id, pays, lastPay) {
+  return BlockUserModel.findByIdAndUpdate(id, { pays, last_pay: lastPay })
 }
-module.exports = function (db) {
+module.exports = function(db) {
   BlockModel = db.model('block', blockSchema)
   UserModel = db.model('user', userSchema)
   BlockUserModel = db.model('blocks_user', blockUserSchema)
