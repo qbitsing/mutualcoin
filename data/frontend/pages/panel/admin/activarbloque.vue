@@ -130,6 +130,7 @@ export default {
   components: {MutualLoader},
   data () {
     return {
+      blocks: [],
       valid: false,
       loading: false,
       coin: null,
@@ -156,7 +157,7 @@ export default {
       ]
     }
   },
-  computed: mapState(['blocks', 'coins', 'authToken']),
+  computed: mapState(['coins', 'authToken']),
   methods: {
     async submit () {
       if (this.$refs.activarBloque.validate()) {

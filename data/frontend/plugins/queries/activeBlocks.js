@@ -1,6 +1,6 @@
 module.exports = {
   query: `{
-    blocks { 
+    active: blocksState(states: ["active"]) {
       amount
       amountLeft
       _coin {
@@ -8,13 +8,9 @@ module.exports = {
       }
       uuid
       weeks
-      startDate
-      endingDate
       state
-      runDays
-      daysInfo
-      last_pay
       uuid
       days
+      name
     }
   }` }

@@ -11,7 +11,7 @@
 import MutualBloque from '~/components/bloque.vue'
 import {mapState} from 'vuex'
 export default {
-  middleware: ['auth', 'blocks', 'userInversions'],
+  middleware: ['auth', 'activeBlocks', 'userInversions'],
   components: {MutualBloque},
   layout: 'dashboard',
   computed: mapState(['blocks', 'authToken']),
@@ -21,7 +21,7 @@ export default {
     }
   },
   created () {
-    this.blocksActive = this.blocks.filter(b => b.state === 'active' && b.amountLeft > 0)
+    this.blocksActive = this.blocks.active
   },
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Oferta')
