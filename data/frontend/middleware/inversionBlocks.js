@@ -1,10 +1,11 @@
 import api from '~/plugins/axios'
 import query from '~/plugins/queries/inversionBlocks'
 export default async function ({ store }) {
-  if (!store.state.blocks) {
+  if (store.state.blocks === {}) {
     const token = store.state.authToken
     const res = await api('/', {}, 'get', token, { params: query })
     const blocks = res.data.data
+    console.log(blocks)
     store.commit('SET_BLOCKS', blocks)
   }
 }

@@ -3,8 +3,10 @@ import query from '~/plugins/queries/allBlocks'
 export default async function ({store}) {
   if (!store.state.blocks) {
     await doRequest(store)
+    console.log('primera')
   } else if (!store.state.blocks.finished) {
     await doRequest(store)
+    console.log('primera')
   }
 }
 async function doRequest (store) {

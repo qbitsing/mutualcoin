@@ -7,7 +7,7 @@
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
           <v-layout row wrap>
-            <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2" v-if="block.state === 'active'">
+            <v-flex xs6 sm4 lg3 v-for="block in blocks.active" :key="block.reference" class="pt-2" >
               <mutual-block :data="block" />
             </v-flex>
           </v-layout>
@@ -21,7 +21,13 @@
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
           <v-layout row wrap>
-            <v-flex xs6 sm4 lg3 v-for="block in blocks" :key="block.reference" class="pt-2" v-if="block.state === 'waiting' || block.state === 'running' || block.state === 'paused'">
+            <v-flex xs6 sm4 lg3 v-for="block in blocks.waiting" :key="block.reference" class="pt-2">
+              <mutual-block  :data="block" />
+            </v-flex>
+            <v-flex xs6 sm4 lg3 v-for="block in blocks.running" :key="block.reference" class="pt-2">
+              <mutual-block  :data="block" />
+            </v-flex>
+            <v-flex xs6 sm4 lg3 v-for="block in blocks.paused" :key="block.reference" class="pt-2">
               <mutual-block  :data="block" />
             </v-flex>
           </v-layout>
@@ -33,19 +39,20 @@
 </template>
 <script>
 import MutualBlock from '~/components/bloqueAdmin.vue'
-// import {mapState} from 'vuex'
+import {mapState} from 'vuex'
 export default {
   data () {
     return {
-      blocks: [],
       coins: null,
       nameCoin: null
     }
   },
   layout: 'dashboard',
   middleware: ['auth', 'inversionBlocks'],
+  computed: mapState(['blocks']),
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloques en inversión')
+
     // this.getBlock()
   },
   components: {MutualBlock},
