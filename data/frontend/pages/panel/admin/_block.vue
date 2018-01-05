@@ -2,7 +2,7 @@
   <section>
     <v-card class="mb-2">
       <v-card-title class="mutual-title">
-        <h2>Bloque {{blocks[indexBlock].name}} </h2>
+        <h2>Bloque {{blocks[state][indexBlock].name}} </h2>
       </v-card-title>
       <v-card-text class="no-padding-top-bottom">
         <v-container grid-list-md>
@@ -10,7 +10,7 @@
             <v-flex d-flex xs5 sm3>
               <v-card flat>
                 <v-layout align-center>
-                  <img class="coin" :src="`/${blocks[indexBlock]._coin.name}.png`" alt="">
+                  <img class="coin" :src="`/${blocks[state][indexBlock]._coin.name}.png`" alt="">
                 </v-layout>
               </v-card>
             </v-flex>
@@ -19,19 +19,19 @@
                 <v-flex d-flex>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Semanas</v-card-title>
-                    <v-card-text class="no-padding" v-text="blocks[indexBlock].weeks"></v-card-text>
+                    <v-card-text class="no-padding" v-text="blocks[state][indexBlock].weeks"></v-card-text>
                   </v-card>
                 </v-flex>
                 <v-flex d-flex xs12>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Inversiones</v-card-title>
-                    <v-card-text class="no-padding" v-text="`${blocks[indexBlock].amount - blocks[indexBlock].amountLeft} ${blocks[indexBlock]._coin.name}`"></v-card-text>
+                    <v-card-text class="no-padding" v-text="`${blocks[state][indexBlock].amount - blocks[state][indexBlock].amountLeft} ${blocks[state][indexBlock]._coin.name}`"></v-card-text>
                   </v-card>
                 </v-flex>
                 <v-flex d-flex xs12>
                   <v-card flat>
                     <v-card-title primary class="title no-padding">Monto</v-card-title>
-                    <v-card-text v-text="`${blocks[indexBlock].amount} ${blocks[indexBlock]._coin.name}`" class="no-padding"></v-card-text>
+                    <v-card-text v-text="`${blocks[state][indexBlock].amount} ${blocks[state][indexBlock]._coin.name}`" class="no-padding"></v-card-text>
                   </v-card>
                 </v-flex>
               </v-layout>
@@ -39,14 +39,14 @@
             <v-flex d-flex offset-sm2 xs5 sm4>
               <v-card flat>
                 <v-card-title primary class="title no-padding ">Estado</v-card-title>
-                <v-card-text class="no-padding blue--text" v-if="blocks[indexBlock].state === 'active'">activo</v-card-text>
-                <v-card-text class="no-padding green--text" v-if="blocks[indexBlock].state === 'running'">En marcha</v-card-text>
-                <v-card-text class="no-padding yellow--text" v-if="blocks[indexBlock].state === 'waiting'">En espera</v-card-text>
-                <v-card-text class="no-padding red--text" v-if="blocks[indexBlock].state === 'paused'">pausado</v-card-text>
-                <v-card-actions v-if="(blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused') && dayMax < blocks[indexBlock].runDays">
+                <v-card-text class="no-padding blue--text" v-if="blocks[state][indexBlock].state === 'active'">activo</v-card-text>
+                <v-card-text class="no-padding green--text" v-if="blocks[state][indexBlock].state === 'running'">En marcha</v-card-text>
+                <v-card-text class="no-padding yellow--text" v-if="blocks[state][indexBlock].state === 'waiting'">En espera</v-card-text>
+                <v-card-text class="no-padding red--text" v-if="blocks[state][indexBlock].state === 'paused'">pausado</v-card-text>
+                <v-card-actions v-if="(blocks[state][indexBlock].state === 'running' || blocks[state][indexBlock].state === 'paused') && dayMax < blocks[state][indexBlock].runDays">
                   <v-btn block  color="primary mx-0" @click="dialogGain">Agregar ganancias</v-btn>
                 </v-card-actions>
-                <v-card-actions v-if="(blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused') && dayMax > 0 && blocks[indexBlock].last_pay < dayMax">
+                <v-card-actions v-if="(blocks[state][indexBlock].state === 'running' || blocks[state][indexBlock].state === 'paused') && dayMax > 0 && blocks[state][indexBlock].last_pay < dayMax">
                   <v-btn block  color="success mx-0" @click="dialogPay">Generación de pagos</v-btn>
                 </v-card-actions>
               </v-card>
@@ -158,21 +158,21 @@
         <v-layout row>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text class="text-xs-center">{{highTotal}} - {{blocks[indexBlock]._coin.name}}</v-card-text>
+                <v-card-text class="text-xs-center">{{highTotal}} - {{blocks[state][indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text class="text-xs-center">{{mediumTotal}} - {{blocks[indexBlock]._coin.name}}</v-card-text>
+                <v-card-text class="text-xs-center">{{mediumTotal}} - {{blocks[state][indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text class="text-xs-center">{{lowTotal}} - {{blocks[indexBlock]._coin.name}}</v-card-text>
+              <v-card-text class="text-xs-center">{{lowTotal}} - {{blocks[state][indexBlock]._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
-        <v-tabs v-model="active" v-if="blocks[indexBlock].state === 'running' || blocks[indexBlock].state === 'paused'" class="elevation-9 mt-2">
+        <v-tabs v-model="active" v-if="blocks[state][indexBlock].state === 'running' || blocks[state][indexBlock].state === 'paused'" class="elevation-9 mt-2">
           <v-tabs-bar class="blue" dark>
             <v-tabs-item v-for="tab in tabs" :key="tab" :href="'#' + tab" ripple>
               {{ tab }}
@@ -184,7 +184,7 @@
               <v-layout row class="ma-2">
                 <v-flex xs12>
                   <v-card class="elevation-9">
-                    <v-data-table :headers="dayGainHeader" :items="blocks[indexBlock].daysInfo" >
+                    <v-data-table :headers="dayGainHeader" :items="blocks[state][indexBlock].daysInfo" >
                       <template slot="items" scope="props">
                         <td class="text-xs-center">{{ props.item.day }}</td>
                         <td class="text-xs-center">{{ props.item.high }}</td>
@@ -275,15 +275,16 @@ import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
-import decimal from 'decimal'
+// import decimal from 'decimal'
 export default {
   layout: 'dashboard',
-  middleware: ['auth', 'blocks', 'coins', 'blocksUser'],
+  middleware: ['auth', 'inversionBlocks', 'coins'],
   data () {
     return {
       tabs: ['ganancias', 'pagos'],
       active: null,
       indexBlock: null,
+      state: null,
       disableDays: false,
       selectDay: null,
       itemsDay: [],
@@ -366,7 +367,7 @@ export default {
       this.propsDialogGain = {state: true, title: 'Registro de ganancias'}
       this.dayMaximum()
       this.dayGain = this.dayMax
-      if (this.dayGain === this.blocks[this.indexBlock].runDays) {
+      if (this.dayGain === this.blocks[this.state][this.indexBlock].runDays) {
         this.disableDays = true
       } else {
         this.dayGain += 1
@@ -375,7 +376,7 @@ export default {
     addGain () {
       if (this.btnGain === 'Agregar') {
         this.gainItems.push({day: this.dayGain, high: this.high, medium: this.medium, low: this.low})
-        if (this.dayGain === this.blocks[this.indexBlock].runDays) {
+        if (this.dayGain === this.blocks[this.state][this.indexBlock].runDays) {
           this.disableDays = true
         } else {
           this.dayGain += 1
@@ -426,7 +427,7 @@ export default {
               const res = await api(`block/earnings/${this.$route.params.block}`, data, 'put', this.authToken)
               if (res.status === 200) {
                 let newBlocks = this.blocks
-                newBlocks[this.indexBlock].daysInfo = res.data.daysInfo
+                newBlocks[this.state][this.indexBlock].daysInfo = res.data.daysInfo
                 this.$store.commit('SET_DAYSINFO', newBlocks)
                 this.gainItems = []
                 this.propsDialogGain = {state: false, title: ''}
@@ -446,7 +447,7 @@ export default {
       this.propsDialogPay = {state: true, title: 'Realizar Pago'}
       this.dayMaximum()
       this.itemsDay = []
-      for (let i = this.blocks[this.indexBlock].last_pay; i < this.dayMax; i++) {
+      for (let i = this.blocks[this.state][this.indexBlock].last_pay; i < this.dayMax; i++) {
         this.itemsDay.push({text: `dia ${i + 1}`, day: i + 1})
       }
     },
@@ -500,7 +501,7 @@ export default {
       console.log('close dialog pay')
     },
     dayMaximum () {
-      this.blocks[this.indexBlock].daysInfo.forEach((ele) => {
+      this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
         if (ele.day > this.dayMax) {
           this.dayMax = ele.day
         }
@@ -520,18 +521,25 @@ export default {
   },
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
-    this.indexBlock = this.blocks.findIndex(block => block.uuid === this.$route.params.block)
-    this.blocksUser.forEach((ele) => {
-      this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
-      this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()
-      this.lowTotal = decimal(ele.low).div(100).mul(ele.amount).add(this.lowTotal).toNumber()
-    })
-    let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
-    this.percentHigh = decimal(this.highTotal).div(totalInve).mul(100).toNumber()
-    this.percentMedium = decimal(this.mediumTotal).div(totalInve).mul(100).toNumber()
-    this.percentLow = decimal(this.lowTotal).div(totalInve).mul(100).toNumber()
-    this.dayMaximum()
-    this.addItemsPay()
+
+    for (var prop in this.blocks) {
+      this.indexBlock = this.blocks[prop].findIndex(block => block.uuid === this.$route.params.block)
+      if (!this.indexBlock) {
+        this.state = prop
+        break
+      }
+    }
+    // this.blocksUser.forEach((ele) => {
+    //   this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
+    //   this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()
+    //   this.lowTotal = decimal(ele.low).div(100).mul(ele.amount).add(this.lowTotal).toNumber()
+    // })
+    // let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
+    // this.percentHigh = decimal(this.highTotal).div(totalInve).mul(100).toNumber()
+    // this.percentMedium = decimal(this.mediumTotal).div(totalInve).mul(100).toNumber()
+    // this.percentLow = decimal(this.lowTotal).div(totalInve).mul(100).toNumber()
+    // this.dayMaximum()
+    // this.addItemsPay()
   }
 }
 </script>
