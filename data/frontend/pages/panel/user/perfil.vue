@@ -143,45 +143,45 @@
             <v-btn color="primary" :loading="loading" @click="update">Guardar</v-btn>
             <v-btn color="error" @click="clear">Cancelar</v-btn> 
         </v-card-actions>
-         <mutual-dialog :dialog="propsDialog">
-            <section slot="contenDialog">
-                <v-form ref="passwordForm" lazy-validation>
-                  <v-card flat class="no-padding-bottom">
-                    <v-card-text>
-                      <v-text-field 
-                      v-model="lastPassword"
-                      label="Actual Contraseña"
-                      :append-icon="e1 ? 'visibility' : 'visibility_off'"
-                      :append-icon-cb="() => (e1 = !e1)"
-                      :type="e1 ? 'password' : 'text'"
-                      :rules="passRules"
-                      ></v-text-field>
-                      <v-text-field 
-                      v-model="newPassword"
-                      label="Nueva Contraseña"
-                      :append-icon="e1 ? 'visibility' : 'visibility_off'"
-                      :append-icon-cb="() => (e1 = !e1)"
-                      :type="e1 ? 'password' : 'text'"
-                      :rules="passRules"
-                      ></v-text-field>
-                      <v-text-field 
-                      v-model="confirm"
-                      label="Confirmar Contraseña"
-                      :append-icon="e1 ? 'visibility' : 'visibility_off'"
-                      :append-icon-cb="() => (e1 = !e1)"
-                      :type="e1 ? 'password' : 'text'"
-                      :rules="confirmRules"
-                      ></v-text-field>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-btn color="primary" @click="changuePass" :loading="loading">Cambiar</v-btn>
-                      <v-btn color="error" @click="clearPass">cancelar</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-form>
-            </section>
-          </mutual-dialog>
       </v-form>
+      <mutual-dialog :dialog="propsDialog">
+        <section slot="contenDialog">
+            <v-form ref="passwordForm" lazy-validation>
+              <v-card flat class="no-padding-bottom">
+                <v-card-text>
+                  <v-text-field 
+                  v-model="lastPassword"
+                  label="Actual Contraseña"
+                  :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                  :append-icon-cb="() => (e1 = !e1)"
+                  :type="e1 ? 'password' : 'text'"
+                  :rules="passRules"
+                  ></v-text-field>
+                  <v-text-field 
+                  v-model="newPassword"
+                  label="Nueva Contraseña"
+                  :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                  :append-icon-cb="() => (e1 = !e1)"
+                  :type="e1 ? 'password' : 'text'"
+                  :rules="passRules"
+                  ></v-text-field>
+                  <v-text-field 
+                  v-model="confirm"
+                  label="Confirmar Contraseña"
+                  :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                  :append-icon-cb="() => (e1 = !e1)"
+                  :type="e1 ? 'password' : 'text'"
+                  :rules="confirmRules"
+                  ></v-text-field>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn color="primary" @click="changuePass" :loading="loading">Cambiar</v-btn>
+                  <v-btn color="error" @click="clearPass">cancelar</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-form>
+        </section>
+      </mutual-dialog>
     </v-container>
   </v-card>
 </template>
@@ -189,6 +189,7 @@
 import {mapState} from 'vuex'
 import api from '~/plugins/axios'
 import query from '~/plugins/queries/profile'
+import mutation from '~/plugins/mutations/editUser'
 import MutualDialog from '~/components/dialog'
 export default {
   middleware: 'auth',
@@ -231,7 +232,9 @@ export default {
         if (this.userData.spanishGender) {
           this.userData.gender = this.userData.spanishGender === 'Masculino' ? 'male' : 'female'
         }
-        const res = await api(`user/update/${this.authUser.uuid}`, {userToUpdate: this.userData}, 'put', this.authToken)
+        this.userData.uuid = this.authUser.uuid
+        console.log(mutation(this.userData))
+        const res = await api('/', {}, 'get', this.authToken, {params: mutation(this.userData)})
         console.log(res)
         this.loading = false
       }
