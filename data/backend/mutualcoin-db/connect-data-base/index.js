@@ -5,8 +5,8 @@ let db
 
 module.exports = function(config) {
   if (!db) {
-    console.log('nos conectamos !!')
     db = mongoose.createConnection(config.uri, config.options)
+    console.log('nos conectamos !!')
   }
   return db
 }
