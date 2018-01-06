@@ -14,7 +14,7 @@ export default async function ({route, store}) {
 
   let missing = faltantes(need, have)
   if (missing.length) {
-    console.log(query(missing))
+    // console.log(query(missing))
     const token = store.state.authToken
     const res = await api({}, 'get', token, { params: query(missing) })
     let newBlocks = res.data.data

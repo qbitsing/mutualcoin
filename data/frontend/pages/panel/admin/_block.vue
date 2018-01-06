@@ -502,11 +502,11 @@ export default {
     },
     dayMaximum () {
       console.log(this.state, this.indexBlock)
-      // this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
-      //   if (ele.day > this.dayMax) {
-      //     this.dayMax = ele.day
-      //   }
-      // })
+      this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
+        if (ele.day > this.dayMax) {
+          this.dayMax = ele.day
+        }
+      })
     },
     addItemsPay () {
       this.payItems = []
