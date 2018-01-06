@@ -5,7 +5,7 @@ export default async function ({route, store}) {
   const path = route.name.split('-')
   if (path[2] === 'activarbloque') {
     need = ['inactive', 'active', 'waiting', 'running', 'paused', 'cancel', 'finished']
-  } else if (path[2] === 'bloqueinversion') {
+  } else if (path[2] === 'bloqueinversion' || route.params.block) {
     need = ['active', 'waiting', 'running', 'paused']
   } else if (path[2] === 'oferta') {
     need = ['active']
@@ -16,7 +16,7 @@ export default async function ({route, store}) {
   if (missing.length) {
     console.log(query(missing))
     const token = store.state.authToken
-    const res = await api('/', {}, 'get', token, { params: query(missing) })
+    const res = await api({}, 'get', token, { params: query(missing) })
     let newBlocks = res.data.data
     let oldBlocks = store.state.blocks
     for (const key in newBlocks) {
@@ -26,10 +26,14 @@ export default async function ({route, store}) {
   }
 }
 function faltantes (need, have) {
-  return need.filter(e => {
-    for (const x of have) {
-      if (x === e) return false
-    }
-    return true
-  })
+  if (need) {
+    return need.filter(e => {
+      for (const x of have) {
+        if (x === e) return false
+      }
+      return true
+    })
+  } else {
+    return []
+  }
 }

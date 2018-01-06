@@ -234,7 +234,7 @@ export default {
         }
         this.userData.uuid = this.authUser.uuid
         console.log(mutation(this.userData))
-        const res = await api('/', {}, 'get', this.authToken, {params: mutation(this.userData)})
+        const res = await api(mutation(this.userData), 'post', this.authToken)
         console.log(res)
         this.loading = false
       }
@@ -263,7 +263,7 @@ export default {
   },
   async created () {
     this.$store.commit('TITLE_VIEW', 'Perfil')
-    const res = await api('/', {}, 'get', this.authToken, {params: query(this.authUser.uuid)})
+    const res = await api({}, 'get', this.authToken, {params: query(this.authUser.uuid)})
     this.userData = res.data.data.user
     this.lastData = {
       bch: this.userData.bch,
