@@ -275,10 +275,10 @@ import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
-// import decimal from 'decimal'
+import decimal from 'decimal'
 export default {
   layout: 'dashboard',
-  middleware: ['auth', 'inversionBlocks', 'coins'],
+  middleware: ['auth', 'blocksUser', 'coins'],
   data () {
     return {
       tabs: ['ganancias', 'pagos'],
@@ -501,6 +501,7 @@ export default {
       console.log('close dialog pay')
     },
     dayMaximum () {
+      console.log()
       this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
         if (ele.day > this.dayMax) {
           this.dayMax = ele.day
@@ -529,17 +530,17 @@ export default {
         break
       }
     }
-    // this.blocksUser.forEach((ele) => {
-    //   this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
-    //   this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()
-    //   this.lowTotal = decimal(ele.low).div(100).mul(ele.amount).add(this.lowTotal).toNumber()
-    // })
-    // let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
-    // this.percentHigh = decimal(this.highTotal).div(totalInve).mul(100).toNumber()
-    // this.percentMedium = decimal(this.mediumTotal).div(totalInve).mul(100).toNumber()
-    // this.percentLow = decimal(this.lowTotal).div(totalInve).mul(100).toNumber()
-    // this.dayMaximum()
-    // this.addItemsPay()
+    this.blocksUser.forEach((ele) => {
+      this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
+      this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()
+      this.lowTotal = decimal(ele.low).div(100).mul(ele.amount).add(this.lowTotal).toNumber()
+    })
+    let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
+    this.percentHigh = decimal(this.highTotal).div(totalInve).mul(100).toNumber()
+    this.percentMedium = decimal(this.mediumTotal).div(totalInve).mul(100).toNumber()
+    this.percentLow = decimal(this.lowTotal).div(totalInve).mul(100).toNumber()
+    this.dayMaximum()
+    this.addItemsPay()
   }
 }
 </script>
