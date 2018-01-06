@@ -48,7 +48,7 @@ export default {
     }
   },
   layout: 'dashboard',
-  middleware: ['auth', 'inversionBlocks'],
+  middleware: ['auth', 'blocks'],
   computed: mapState(['blocks']),
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloques en inversión')

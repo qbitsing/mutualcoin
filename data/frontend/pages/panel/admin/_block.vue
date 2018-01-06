@@ -1,6 +1,6 @@
 <template>
   <section>
-    <v-card class="mb-2">
+    <!--<v-card class="mb-2">
       <v-card-title class="mutual-title">
         <h2>Bloque {{blocks[state][indexBlock].name}} </h2>
       </v-card-title>
@@ -266,7 +266,7 @@
           </v-layout>
         </v-container>
       </v-card-text>
-    </v-card>
+    </v-card>-->
     
   </section>
 </template>
@@ -275,10 +275,10 @@ import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
-// import decimal from 'decimal'
+import decimal from 'decimal'
 export default {
   layout: 'dashboard',
-  middleware: ['auth', 'inversionBlocks', 'coins'],
+  middleware: ['auth', 'blocksUser', 'coins', 'blocks'],
   data () {
     return {
       tabs: ['ganancias', 'pagos'],
@@ -501,11 +501,12 @@ export default {
       console.log('close dialog pay')
     },
     dayMaximum () {
-      this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
-        if (ele.day > this.dayMax) {
-          this.dayMax = ele.day
-        }
-      })
+      console.log(this.state, this.indexBlock)
+      // this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
+      //   if (ele.day > this.dayMax) {
+      //     this.dayMax = ele.day
+      //   }
+      // })
     },
     addItemsPay () {
       this.payItems = []
@@ -523,23 +524,24 @@ export default {
     this.$store.commit('TITLE_VIEW', 'Bloque')
 
     for (var prop in this.blocks) {
+      console.log(prop)
       this.indexBlock = this.blocks[prop].findIndex(block => block.uuid === this.$route.params.block)
       if (!this.indexBlock) {
         this.state = prop
         break
       }
     }
-    // this.blocksUser.forEach((ele) => {
-    //   this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
-    //   this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()
-    //   this.lowTotal = decimal(ele.low).div(100).mul(ele.amount).add(this.lowTotal).toNumber()
-    // })
-    // let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
-    // this.percentHigh = decimal(this.highTotal).div(totalInve).mul(100).toNumber()
-    // this.percentMedium = decimal(this.mediumTotal).div(totalInve).mul(100).toNumber()
-    // this.percentLow = decimal(this.lowTotal).div(totalInve).mul(100).toNumber()
-    // this.dayMaximum()
-    // this.addItemsPay()
+    this.blocksUser.forEach((ele) => {
+      this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
+      this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()
+      this.lowTotal = decimal(ele.low).div(100).mul(ele.amount).add(this.lowTotal).toNumber()
+    })
+    let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
+    this.percentHigh = decimal(this.highTotal).div(totalInve).mul(100).toNumber()
+    this.percentMedium = decimal(this.mediumTotal).div(totalInve).mul(100).toNumber()
+    this.percentLow = decimal(this.lowTotal).div(totalInve).mul(100).toNumber()
+    this.dayMaximum()
+    this.addItemsPay()
   }
 }
 </script>
