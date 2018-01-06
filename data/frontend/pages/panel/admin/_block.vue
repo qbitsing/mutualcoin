@@ -1,6 +1,6 @@
 <template>
   <section>
-    <!--<v-card class="mb-2">
+    <v-card class="mb-2">
       <v-card-title class="mutual-title">
         <h2>Bloque {{blocks[state][indexBlock].name}} </h2>
       </v-card-title>
@@ -266,7 +266,7 @@
           </v-layout>
         </v-container>
       </v-card-text>
-    </v-card>-->
+    </v-card>
     
   </section>
 </template>
@@ -278,7 +278,7 @@ import api from '~/plugins/axios'
 import decimal from 'decimal'
 export default {
   layout: 'dashboard',
-  middleware: ['auth', 'blocksUser', 'coins', 'blocks'],
+  middleware: ['auth', 'coins', 'blocks', 'blocksUser'],
   data () {
     return {
       tabs: ['ganancias', 'pagos'],
@@ -501,7 +501,6 @@ export default {
       console.log('close dialog pay')
     },
     dayMaximum () {
-      console.log(this.state, this.indexBlock)
       this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
         if (ele.day > this.dayMax) {
           this.dayMax = ele.day
@@ -524,13 +523,13 @@ export default {
     this.$store.commit('TITLE_VIEW', 'Bloque')
 
     for (var prop in this.blocks) {
-      console.log(prop)
       this.indexBlock = this.blocks[prop].findIndex(block => block.uuid === this.$route.params.block)
-      if (!this.indexBlock) {
+      if (this.indexBlock !== -1) {
         this.state = prop
         break
       }
     }
+    console.log(this.indexBlock)
     this.blocksUser.forEach((ele) => {
       this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
       this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()

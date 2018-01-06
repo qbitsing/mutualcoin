@@ -176,7 +176,7 @@ export default {
           data.user = this.user
         }
         try {
-          res = await api('block/create', data, 'post', this.authToken)
+          res = await api(data, 'post', this.authToken, '', 'block/create')
         } catch (error) {
           swal('Ooops...', 'Error al crear el bloque, intentálo más tarde', 'error')
         }
