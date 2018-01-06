@@ -16,6 +16,7 @@ module.exports = function (uuid) {
       runDays
       daysInfo
     }
+    uuid
     amount
     high
     medium

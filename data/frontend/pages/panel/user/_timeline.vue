@@ -6,7 +6,7 @@
         <v-flex d-flex offset-xs1 xs5 sm2>
           <v-card flat>
             <v-layout align-center>
-              <img class="coin" :src="`/${inversion.objBlock._coin.name}.png`" alt="">
+              <img class="coin" :src="`/${inversion._block._coin.name}.png`" alt="">
             </v-layout>
           </v-card>
         </v-flex>
@@ -15,23 +15,23 @@
             <v-flex d-flex>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Estado</v-card-title>
-                <v-card-text class="no-padding blue--text" v-if="inversion.objBlock.state === 'active'">Activo</v-card-text>
-                <v-card-text class="no-padding green--text" v-if="inversion.objBlock.state === 'running'">En marcha</v-card-text>
-                <v-card-text class="no-padding yellow--text" v-if="inversion.objBlock.state === 'waiting'">En espera</v-card-text>
-                <v-card-text class="no-padding red--text" v-if="inversion.objBlock.state === 'paused'">Pausado</v-card-text>
-                <v-card-text class="no-padding red--text" v-if="inversion.objBlock.state === 'cancel'">Cancelado</v-card-text>
+                <v-card-text class="no-padding blue--text" v-if="inversion._block.state === 'active'">Activo</v-card-text>
+                <v-card-text class="no-padding green--text" v-if="inversion._block.state === 'running'">En marcha</v-card-text>
+                <v-card-text class="no-padding yellow--text" v-if="inversion._block.state === 'waiting'">En espera</v-card-text>
+                <v-card-text class="no-padding red--text" v-if="inversion._block.state === 'paused'">Pausado</v-card-text>
+                <v-card-text class="no-padding red--text" v-if="inversion._block.state === 'cancel'">Cancelado</v-card-text>
               </v-card>
             </v-flex>
             <v-flex d-flex xs12>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Mi Inversión</v-card-title>
-                <v-card-text class="no-padding" v-text="`${inversion.amount} ${inversion.objBlock._coin.name}`"></v-card-text>
+                <v-card-text class="no-padding" v-text="`${inversion.amount} ${inversion._block._coin.name}`"></v-card-text>
               </v-card>
             </v-flex>
             <v-flex d-flex xs12>
               <v-card flat>
                 <v-card-title primary class="title no-padding">Monto</v-card-title>
-                <v-card-text v-text="`${inversion.objBlock.amount} ${inversion.objBlock._coin.name}`" class="no-padding"></v-card-text>
+                <v-card-text v-text="`${inversion._block.amount} ${inversion._block._coin.name}`" class="no-padding"></v-card-text>
               </v-card>
             </v-flex>
           </v-layout>
@@ -74,30 +74,30 @@
         <v-layout row text-xs-center>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-2">
-                <v-card-text>{{inversion.high * inversion.amount / 100}} {{inversion.objBlock._coin.name}}</v-card-text>
+                <v-card-text>{{inversion.high * inversion.amount / 100}} {{inversion._block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-3">
-                <v-card-text>{{inversion.medium * inversion.amount / 100}} {{inversion.objBlock._coin.name}}</v-card-text>
+                <v-card-text>{{inversion.medium * inversion.amount / 100}} {{inversion._block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
           <v-flex xs4 class="no-padding">
             <v-card dark tile flat color="light-blue darken-4">
-              <v-card-text>{{inversion.low * inversion.amount / 100}} {{inversion.objBlock._coin.name}}</v-card-text>
+              <v-card-text>{{inversion.low * inversion.amount / 100}} {{inversion._block._coin.name}}</v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
         </v-flex>
         </v-layout>
       </v-card-title>
-        <mutual-timeline :data="inversion.objBlock"></mutual-timeline>
+        <mutual-timeline :data="inversion._block"></mutual-timeline>
         <v-container grid-list-md text-xs-center>
           <v-layout row>
             <v-flex xs12 offset-md1 md10>
               <div class="wp">
                 <v-btn
-                v-for="n in inversion.objBlock.weeks"
+                v-for="n in inversion._block.weeks"
                 :flat="week == n"
                 :key="n"
                 class="wel"
@@ -159,7 +159,7 @@ import MutualTimeline from '~/components/timeline.vue'
 import MutualTable from '~/components/table.vue'
 import {mapState} from 'vuex'
 export default {
-  middleware: ['auth', 'blocks', 'userInversions', 'setInversion'],
+  middleware: ['auth', 'userInversions', 'setInversion'],
   layout: 'dashboard',
   computed: {
     ...mapState(['inversion']),
@@ -170,11 +170,11 @@ export default {
       return [
         { text: 'Día', value: 'day', align: 'center' },
         { text: 'Alto %', value: 'high', align: 'center' },
-        { text: `Alto ${this.inversion.objBlock._coin.acronym.toUpperCase()}`, value: 'highCoin', align: 'center' },
+        { text: `Alto ${this.inversion._block._coin.acronym.toUpperCase()}`, value: 'highCoin', align: 'center' },
         { text: 'Medio %', value: 'medium', align: 'center' },
-        { text: `Medio ${this.inversion.objBlock._coin.acronym.toUpperCase()}`, value: 'mediumCoin', align: 'center' },
+        { text: `Medio ${this.inversion._block._coin.acronym.toUpperCase()}`, value: 'mediumCoin', align: 'center' },
         { text: 'Bajo %', value: 'low', align: 'center' },
-        { text: `Bajo ${this.inversion.objBlock._coin.acronym.toUpperCase()}`, value: 'lowCoin', align: 'center' }
+        { text: `Bajo ${this.inversion._block._coin.acronym.toUpperCase()}`, value: 'lowCoin', align: 'center' }
       ]
     },
     payHeaders () {
@@ -245,7 +245,7 @@ export default {
   components: { MutualTimeline, MutualTable },
   created () {
     this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
-    const weeks = this.dividirArray(this.inversion.objBlock.daysInfo)
+    const weeks = this.dividirArray(this.inversion._block.daysInfo)
     this.weeks = this.formatearArray(weeks)
     this.week = this.weeks.length
     this.inversion.pays.forEach(e => {
