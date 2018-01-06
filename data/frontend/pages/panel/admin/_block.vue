@@ -1,6 +1,6 @@
 <template>
   <section>
-    <v-card class="mb-2">
+    <!--<v-card class="mb-2">
       <v-card-title class="mutual-title">
         <h2>Bloque {{blocks[state][indexBlock].name}} </h2>
       </v-card-title>
@@ -266,7 +266,7 @@
           </v-layout>
         </v-container>
       </v-card-text>
-    </v-card>
+    </v-card>-->
     
   </section>
 </template>
@@ -278,7 +278,7 @@ import api from '~/plugins/axios'
 import decimal from 'decimal'
 export default {
   layout: 'dashboard',
-  middleware: ['auth', 'blocksUser', 'coins'],
+  middleware: ['auth', 'blocksUser', 'coins', 'blocks'],
   data () {
     return {
       tabs: ['ganancias', 'pagos'],
@@ -501,12 +501,12 @@ export default {
       console.log('close dialog pay')
     },
     dayMaximum () {
-      console.log()
-      this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
-        if (ele.day > this.dayMax) {
-          this.dayMax = ele.day
-        }
-      })
+      console.log(this.state, this.indexBlock)
+      // this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
+      //   if (ele.day > this.dayMax) {
+      //     this.dayMax = ele.day
+      //   }
+      // })
     },
     addItemsPay () {
       this.payItems = []
@@ -524,6 +524,7 @@ export default {
     this.$store.commit('TITLE_VIEW', 'Bloque')
 
     for (var prop in this.blocks) {
+      console.log(prop)
       this.indexBlock = this.blocks[prop].findIndex(block => block.uuid === this.$route.params.block)
       if (!this.indexBlock) {
         this.state = prop
