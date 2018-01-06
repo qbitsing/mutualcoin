@@ -109,7 +109,7 @@ async function activate(uuid) {
 
   await BlockModel.findByIdAndUpdate(block._id, { state: 'active' })
 
-  return { result: true }
+  return 200
 }
 
 async function waiting(uuid) {
@@ -129,7 +129,7 @@ async function waiting(uuid) {
 
   await BlockModel.findByIdAndUpdate(block._id, update)
 
-  return { result: true }
+  return 200
 }
 
 async function run(uuid, startDate) {
@@ -145,7 +145,7 @@ async function run(uuid, startDate) {
 
   await BlockModel.findByIdAndUpdate(block._id, up)
 
-  return { result: true }
+  return 200
 }
 
 async function pause(uuid) {
@@ -157,7 +157,7 @@ async function pause(uuid) {
 
   await BlockModel.findByIdAndUpdate(block._id, { state: 'paused' })
 
-  return { result: true }
+  return 200
 }
 
 async function cancel(uuid) {
@@ -169,7 +169,7 @@ async function cancel(uuid) {
 
   await BlockModel.findByIdAndUpdate(block._id, { state: 'cancel' })
 
-  return { result: true }
+  return 200
 }
 
 async function finish(uuid) {
@@ -181,7 +181,7 @@ async function finish(uuid) {
 
   await BlockModel.findByIdAndUpdate(block._id, { state: 'finished' })
 
-  return { result: true }
+  return 200
 }
 
 async function updateAmount(uuid, amount) {
@@ -200,7 +200,7 @@ async function updateAmount(uuid, amount) {
 
   await BlockModel.findByIdAndUpdate(block._id, { amount })
 
-  return { result: true }
+  return 200
 }
 
 async function setInfoDays(uuid, info) {

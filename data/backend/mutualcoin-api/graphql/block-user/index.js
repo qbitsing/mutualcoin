@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  BlockUser:`
+  BlockUser: `
     type BlockUser {
       block: String!
       _block: Block

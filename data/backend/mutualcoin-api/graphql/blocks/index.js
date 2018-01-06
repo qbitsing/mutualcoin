@@ -34,6 +34,12 @@ function setConds (query) {
   return conds
 }
 
+const infoDays = `
+  day: Int
+  low: Int
+  high: Int
+  medium: Int
+`
 module.exports = {
   Block: `
     type Block {
@@ -47,7 +53,8 @@ module.exports = {
       startDate: String
       weeks: Int!
       days: Int!
-      user: User
+      user: String
+      _user: User
       state: blockState!
       runDays: Int!
       daysInfo: [String]
@@ -63,6 +70,21 @@ module.exports = {
       running
       waiting
     }
+
+    input newBlock {
+      amount: Int!
+      coin: String!
+      weeks: Int!
+      user: String
+    }
+
+    input dayInfo {
+      ${infoDays}
+    }
+
+    type infoDay {
+      ${infoDays}
+    }
   `,
   QueryBlock: (db) => ({
     blocks: (rootValue, args, context) => db.block.get(),
@@ -70,6 +92,14 @@ module.exports = {
       const conds = setConds(states)
       return db.block.getState(conds)
     },
-    _coin: ({ coin }) => db.coin.getUuid(coin)
+    _coin: ({ coin }) => db.coin.getUuid(coin),
+    blockAdd: (_, { block }) => db.block.create(block),
+    blockActivate: (_, { uuid }) => db.block.activate(uuid),
+    blockWaiting: (_, { uuid }) => db.block.waiting(uuid),
+    blockRun: (_, { uuid }) => db.block.run(uuid),
+    blockPause: (_, { uuid }) => db.block.pause(uuid),
+    blockCancel: (_, { uuid }) => db.block.cancel(uuid),
+    blockFinish: (_, { uuid }) => db.block.finish(uuid),
+    blockEarnings: (_, { uuid, earnings }) => db.block.setInfoDays(uuid, earnings)
   })
 }

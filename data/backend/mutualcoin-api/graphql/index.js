@@ -20,13 +20,21 @@ const rootQuery = `
   type Mutation {
     userAdd(user: newUser): User
     userEdit(uuid: String, user: userEditable): User
+    blockAdd(block: newBlock): Block
+    blockActivate(uuid: String): Int
+    blockWaiting(uuid: String): Int
+    blockRun(uuid: String): Int
+    blockPause(uuid: String): Int
+    blockCancel(uuid: String): Int
+    blockFinish(uuid: String): Int
+    blockEarnings(uuid: String, earnings: [dayInfo]): [infoDay]
   }
 `
 
 // module.exports = makeExecutableSchema({typeDefs})
 module.exports = function (db) {
   const { users, usersBy, user, referred, line, userAdd, userEdit } = QueryUser(db)
-  const { _coin, blocks, blocksState } = QueryBlock(db)
+  const { _coin, blocks, blocksState, blockAdd, blockActivate, blockWaiting, blockRun, blockPause, blockCancel, blockFinish, blockEarnings } = QueryBlock(db)
   const { coins } = QueryCoins(db)
   const { blocksUsers, blocksUsersBy, _block, _user } = QueryBlockUser(db)
   const resolvers = {
@@ -53,7 +61,15 @@ module.exports = function (db) {
     },
     Mutation: {
       userAdd,
-      userEdit
+      userEdit,
+      blockAdd,
+      blockActivate,
+      blockWaiting,
+      blockRun,
+      blockPause,
+      blockCancel,
+      blockFinish,
+      blockEarnings
     }
   }
 

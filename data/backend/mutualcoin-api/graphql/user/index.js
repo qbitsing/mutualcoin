@@ -62,7 +62,7 @@ module.exports = {
     user: (rootValue, { uuid }, context) => db.user.getUuid(uuid),
     referred: ({ codeReferred }) => db.user.getUuid(codeReferred),
     line: ({ uuid }) => db.user.getLineReferred(uuid),
-    userAdd: (_ , { user }) => db.user.register(user),
-    userEdit: (_ , { uuid, user }) => db.user.update(uuid, user)
+    userAdd: (_, { user }) => db.user.register(user),
+    userEdit: (_, { uuid, user }) => db.user.update(uuid, user)
   })
 }
