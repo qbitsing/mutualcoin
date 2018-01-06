@@ -1,6 +1,7 @@
 import api from '~/plugins/axios'
 import query from '~/plugins/queries/userInversions'
 export default async function ({ store }) {
+  console.log('yeah')
   if (!store.state.userInversions) {
     const token = store.state.authToken
     const uuid = store.state.authUser.uuid

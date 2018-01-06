@@ -92,7 +92,7 @@
           <v-data-table
             :headers="blockHeader"
             :search="search"
-            :items="blocks"
+            :items="allBlocks"
             class="elevation-1">
             <template
               slot="items"
@@ -124,13 +124,14 @@ import MutualLoader from '~/components/loader.vue'
 import swal from 'sweetalert2'
 import {mapState} from 'vuex'
 import moment from 'moment'
+import BigNumber from 'bignumber.js'
 export default {
   layout: 'dashboard',
   middleware: ['auth', 'blocks', 'coins'],
   components: {MutualLoader},
   data () {
     return {
-      blocks: [],
+      allBlocks: [],
       valid: false,
       loading: false,
       coin: null,
@@ -157,7 +158,7 @@ export default {
       ]
     }
   },
-  computed: mapState(['coins', 'authToken']),
+  computed: mapState(['coins', 'authToken', 'blocks']),
   methods: {
     async submit () {
       if (this.$refs.activarBloque.validate()) {
@@ -175,7 +176,7 @@ export default {
           data.user = this.user
         }
         try {
-          res = await api('block/create', data, 'post', this.authToken)
+          res = await api(data, 'post', this.authToken, '', 'block/create')
         } catch (error) {
           swal('Ooops...', 'Error al crear el bloque, intentálo más tarde', 'error')
         }
@@ -237,9 +238,23 @@ export default {
       else if (text === 'waiting') return 'En espera'
       else if (text === 'finished') return 'Finalizado'
       else return text
+    },
+    formatBlocks () {
+      this.allBlocks.map(e => {
+        if (!e.spanishState) {
+          let amount = new BigNumber(e.amount.toString())
+          e.spanishState = this.spanishText(e.state)
+          e.inverted = amount.minus(e.amountLeft).toString()
+        }
+        return e
+      })
     }
   },
   created () {
+    for (const key in this.blocks) {
+      this.allBlocks = this.allBlocks.concat(this.blocks[key])
+    }
+    this.formatBlocks()
     this.$store.commit('TITLE_VIEW', 'Gestion de Bloques')
   }
 }
