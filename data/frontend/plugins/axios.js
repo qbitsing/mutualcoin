@@ -6,7 +6,7 @@ const api = function (resource, data, methods, token, params) {
     setToken(resource, token)
     return instance.get(resource, params)
   } else {
-    instance = axios.create({ baseURL: 'http://localhost:3300/api/' })
+    instance = axios.create({ baseURL: 'http://localhost:3300/grphql/' })
     setToken(resource, token)
     if (methods === 'post') {
       return instance.post(resource, data)
