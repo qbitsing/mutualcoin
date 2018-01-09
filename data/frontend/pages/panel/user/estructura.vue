@@ -129,7 +129,7 @@
         </v-tabs-items>
       </v-tabs>
     </v-card>
-    <v-alert v-else error>No tienes referidos :(</v-alert>
+    <v-alert v-else color="error" icon="warning" value="true">No tienes referidos :(</v-alert>
   </v-container>
 </template>
 <script>

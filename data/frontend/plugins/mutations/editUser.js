@@ -1,4 +1,4 @@
-module.exports = function (user) {
+module.exports = (user) => {
   return { query: `mutation {
       userEdit(uuid: "${user.uuid}", user: {
       email2: "${user.email2}"
