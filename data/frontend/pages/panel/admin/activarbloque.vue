@@ -122,6 +122,7 @@
 import api from '~/plugins/axios'
 import MutualLoader from '~/components/loader.vue'
 import swal from 'sweetalert2'
+import create from '~/plugins/mutations/blockAdd'
 import mutation from '~/plugins/mutations/changeState'
 import {mapState} from 'vuex'
 import moment from 'moment'
@@ -164,28 +165,29 @@ export default {
     async submit () {
       if (this.$refs.activarBloque.validate()) {
         this.loading = true
-        const self = this
         let res
         const data = {
-          blockToCreate: {
-            coin: self.coin.uuid,
-            amount: parseInt(self.amount),
-            weeks: parseInt(self.weeks)
-          }
+          coin: this.coin.uuid,
+          amount: parseInt(this.amount),
+          weeks: parseInt(this.weeks)
         }
+        console.log(data)
+        console.log(create(data))
         if (this.userCheck) {
           data.user = this.user
         }
         try {
-          res = await api(data, 'post', this.authToken, '', 'block/create')
+          res = await api(create(data), 'post', this.authToken)
         } catch (error) {
           swal('Ooops...', 'Error al crear el bloque, intentálo más tarde', 'error')
         }
         console.log(res)
         if (res.status === 200) {
-          res.data.blockCreated.spanishState = this.spanishText(res.data.blockCreated.state)
-          res.data.blockCreated.inverted = 0
-          this.blocks.push(res.data.blockCreated)
+          let block = res.data.data.result
+          block.spanishState = this.spanishText(block.state)
+          block.inverted = 0
+          this.allBlocks.push(block)
+          this.blocks.inactive.push(block)
           this.clear()
           swal('Excelente', 'Bloque creado correctamente', 'success')
         }
@@ -252,15 +254,16 @@ export default {
     formatBlocks () {
       this.allBlocks.map(e => {
         if (!e.spanishState) {
-          let amount = new BigNumber(e.amount.toString())
+          let amount = new BigNumber('' + e.amount)
           e.spanishState = this.spanishText(e.state)
-          e.inverted = amount.minus(e.amountLeft).toString()
+          e.inverted = amount.minus('' + e.amountLeft).toString()
         }
         return e
       })
     }
   },
   created () {
+    BigNumber.config({EXPONENTIAL_AT: [-20, 20]})
     for (const key in this.blocks) {
       this.allBlocks = this.allBlocks.concat(this.blocks[key])
     }

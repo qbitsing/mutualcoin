@@ -129,6 +129,28 @@ module.exports = {
       paysMap.set(uuid, result)
 
       return result.pays
-    }
+    },
+    blockMakePay: async (_, { uuid }) => { 
+      let result = paysMap.get(uuid)
+
+      if (!result) {
+        throw new Error('bad request: there is no payment generated with the indicated uuid')
+      }
+
+      let { investments } = result
+      let newInvestments = null
+      let promises = investments.map(investment => db.blockUser.updatePays(investment._id, investment.pays, investment.last_pay))
+      try {
+        await Promise.all(promises)
+        await db.block.updateLatsPay(uuid, result.to)
+        newInvestments = await req.db.blockUser.getBy('block')(uuid)
+      } catch (error) {
+        throw error
+      }
+
+      paysMap.delete(uuid)
+      return newInvestments
+    },
+    blockAmount: (_, { uuid, amount }) => db.block.updateAmount(uuid, amount)
   })
 }

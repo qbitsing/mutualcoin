@@ -216,8 +216,8 @@ export default {
       return result
     },
     calcEarnings (percent, pay) {
-      let amount = new BigNumber(this.inversion.amount)
-      return amount.times(percent).dividedBy(10000).times(pay).times(this.inversion.percentToUser).toString()
+      let amount = new BigNumber('' + this.inversion.amount)
+      return amount.times('' + percent).dividedBy('10000').times('' + pay).times('' + this.inversion.percentToUser).toString()
     },
     formatearArray (arr) {
       for (let i = 0; i < arr.length; i++) {
