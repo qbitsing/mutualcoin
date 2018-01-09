@@ -214,7 +214,7 @@ async function setInfoDays(uuid, info) {
 
     await BlockModel.findByIdAndUpdate(_id, { daysInfo })
 
-    return { result: true, daysInfo }
+    return daysInfo
   } else {
     throw new Error('bad request: the block cannot receive info because the state is: ' + state)
   }

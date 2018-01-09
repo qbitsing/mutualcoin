@@ -15,7 +15,12 @@ module.exports = function (states) {
     endingDate
     startDate
     runDays
-    daysInfo
+    daysInfo {
+      low
+      medium
+      high
+      day
+    }
     last_pay
   `
   const blocks = {
