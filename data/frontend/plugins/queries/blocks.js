@@ -10,10 +10,7 @@ module.exports = function (states) {
     state
     uuid
     days
-    user{
-        uuid
-      email
-    }
+    user
     name
     endingDate
     startDate

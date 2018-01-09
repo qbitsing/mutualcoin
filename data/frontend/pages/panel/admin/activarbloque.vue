@@ -104,12 +104,12 @@
               <td class="text-xs-center">{{ props.item.weeks }}</td>
               <td class="text-xs-center">{{ props.item.spanishState }}</td>
               <td class="text-xs-right">
-                <v-btn small color="primary" @click="changeState(props.item, 'activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
-                <v-btn small color="primary" @click="changeState(props.item, 'waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
-                <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'iniciar', 'corriendo')" v-if="props.item.state == 'waiting'">iniciar</v-btn>
-                <v-btn small color="primary" @click="changeState(props.item, 'run', 'running', 'reanudar', 'corriendo')" v-if="props.item.state == 'paused'">reanudar</v-btn>
-                <v-btn small color="warning" @click="changeState(props.item, 'pause', 'paused', 'pausar', 'pausado')" v-if="props.item.state == 'running'">pausar</v-btn>
-                <v-btn small color="error" @click="changeState(props.item, 'cancel', 'cancel', 'cancelar', 'cancelado')" v-if="props.item.state != 'finished' && props.item.state != 'cancel'">cancelar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'Activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'Waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'Run', 'running', 'iniciar', 'corriendo')" v-if="props.item.state == 'waiting'">iniciar</v-btn>
+                <v-btn small color="primary" @click="changeState(props.item, 'Run', 'running', 'reanudar', 'corriendo')" v-if="props.item.state == 'paused'">reanudar</v-btn>
+                <v-btn small color="warning" @click="changeState(props.item, 'Pause', 'paused', 'pausar', 'pausado')" v-if="props.item.state == 'running'">pausar</v-btn>
+                <v-btn small color="error" @click="changeState(props.item, 'Cancel', 'cancel', 'cancelar', 'cancelado')" v-if="props.item.state != 'finished' && props.item.state != 'cancel'">cancelar</v-btn>
               </td>
             </template>
           </v-data-table>
@@ -122,6 +122,7 @@
 import api from '~/plugins/axios'
 import MutualLoader from '~/components/loader.vue'
 import swal from 'sweetalert2'
+import mutation from '~/plugins/mutations/changeState'
 import {mapState} from 'vuex'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
@@ -199,7 +200,7 @@ export default {
     clear () {
       this.$refs.activarBloque.reset()
     },
-    async changeState (item, route, newState, text1, text2) {
+    async changeState (item, to, newState, text1, text2) {
       swal({
         title: 'Cuidado',
         text: `¿Está seguro de que desea ${text1} el bloque?`,
@@ -213,16 +214,25 @@ export default {
         showLoaderOnConfirm: true,
         preConfirm: async () => {
           moment.locale('es')
-          const data = text1 === 'iniciar' ? {startDate: moment().format('DD/MM/YY')} : {}
-          const res = await api(`block/${route}/${item.uuid}`, data, 'put', this.authToken)
-          if (res.status === 200) {
+          let data = {uuid: item.uuid, to}
+          if (text1 === 'iniciar') {
+            data.startDate = moment().format('DD/MM/YY')
+          }
+          const res = await api(mutation(data), 'post', this.authToken)
+          if (res.data.data.result === 200) {
+            // let objBlocks = this.blocks
+            this.blocks[item.state] = this.blocks[item.state].filter(e => {
+              if (e.uuid === item.uuid) return false
+              else return true
+            })
             item.state = newState
-            item.spanishState = this.spanishText(newState)
             if (data.startDate) {
               item.startDate = data.startDate
             }
-            const waitingAmount = item.amount - item.amountLeft
+            const waitingAmount = item.inverted
             item.amount = newState === 'waiting' ? waitingAmount : item.amount
+            this.blocks[item.state].push(item)
+            item.spanishState = this.spanishText(newState)
             this.$store.commit('SET_BLOCKS', this.blocks)
             return swal('Excelente', `Bloque ${text2} con éxito.`, 'success')
           } else return swal('Ooops...', `Error al ${text1} el bloque.`, 'error')

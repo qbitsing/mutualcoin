@@ -215,6 +215,10 @@ export default {
       }
       return result
     },
+    calcEarnings (percent, pay) {
+      let amount = new BigNumber(this.inversion.amount)
+      return amount.times(percent).dividedBy(10000).times(pay).times(this.inversion.percentToUser).toString()
+    },
     formatearArray (arr) {
       for (let i = 0; i < arr.length; i++) {
         for (let i2 = 0; i2 < arr[i].length; i2++) {
@@ -233,9 +237,10 @@ export default {
           // arr[i][i2].mediumCoin = negativeMedium ? payMedium * -1 : payMedium
           // arr[i][i2].lowCoin = negativeLow ? payLow * -1 : payLow
           // let payHigh = new BigNumber(arr[i][i2].high)
-          BigNumber.config({EXPONENTIAL_AT: [-15, 20]})
-          arr[i][i2].highCoin = new BigNumber(0.0000000003)
-          arr[i][i2].highCoin = arr[i][i2].highCoin.toJSON()
+
+          arr[i][i2].highCoin = this.calcEarnings(this.inversion.high, arr[i][i2].highCoin)
+          arr[i][i2].mediumCoin = this.calcEarnings(this.inversion.medium, arr[i][i2].mediumCoin)
+          arr[i][i2].lowCoin = this.calcEarnings(this.inversion.low, arr[i][i2].lowCoin)
           // console.log(arr[i][i2].highCoin.toJSON())
         }
       }
@@ -244,6 +249,7 @@ export default {
   },
   components: { MutualTimeline, MutualTable },
   created () {
+    BigNumber.config({EXPONENTIAL_AT: [-20, 20]})
     this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
     const weeks = this.dividirArray(this.inversion._block.daysInfo)
     this.weeks = this.formatearArray(weeks)
