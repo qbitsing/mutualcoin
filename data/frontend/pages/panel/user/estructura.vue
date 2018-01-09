@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <v-card>
+    <mutual-loader v-if="estructure == 'loading'"></mutual-loader>
+    <v-card v-else-if="estructure.length > 0">
       <v-layout row wrap text-xs-center>
         <v-flex xs12 >
           <v-card flat color="grey lighten-4">
@@ -41,12 +42,12 @@
               <v-layout row wrap text-xs-center>
                 <v-flex xs12 >
                   <v-card flat color="grey lighten-4">
-                    {{user.line[0] ? 'Sus referidos' : 'No tiene referidos'}}
+                    {{user.line.length > 0 ? 'Sus referidos' : 'No tiene referidos'}}
                   </v-card>
                 </v-flex>
               </v-layout>
               <!-- second line -->
-              <v-tabs v-model="second" v-show="user.line[0]">
+              <v-tabs v-model="second" v-show="user.line.length > 0">
                 <v-tabs-bar color="grey lighten-2" ligth>
                   <v-tabs-item
                     v-for="tab in user.line"
@@ -79,12 +80,12 @@
                       <v-layout row wrap text-xs-center>
                         <v-flex xs12 >
                           <v-card flat color="grey lighten-4">
-                            {{user2.line[0] ? 'Sus referidos' : 'No tiene referidos'}}
+                            {{user2.line.length > 0 ? 'Sus referidos' : 'No tiene referidos'}}
                           </v-card>
                         </v-flex>
                       </v-layout>
                       <!-- start-third-line -->
-                        <v-tabs v-model="third" v-show="user2.line[0]">
+                        <v-tabs v-model="third" v-show="user2.line.length > 0">
                           <v-tabs-bar color="grey lighten-2" ligth>
                             <v-tabs-item
                               v-for="tab in user2.line"
@@ -128,22 +129,25 @@
         </v-tabs-items>
       </v-tabs>
     </v-card>
+    <v-alert v-else error>No tienes referidos :(</v-alert>
   </v-container>
 </template>
 <script>
-  import estructure from '~/plugins/queries/estructure'
+  import query from '~/plugins/queries/estructure'
   import {mapState} from 'vuex'
+  import MutualLoader from '~/components/loader.vue'
   import api from '~/plugins/axios'
   export default {
     middleware: 'auth',
     computed: mapState(['authUser', 'authToken']),
     layout: 'dashboard',
+    components: {MutualLoader},
     data () {
       return {
         first: '-1',
         second: '-1',
         third: '-1',
-        estructure: null
+        estructure: 'loading'
       }
     },
     methods: {
@@ -154,7 +158,7 @@
     },
     async created () {
       this.$store.commit('TITLE_VIEW', 'Estructura')
-      const res = await api('/', {}, 'get', this.authToken, {params: estructure(this.authUser.uuid)})
+      const res = await api({}, 'get', this.authToken, {params: query(this.authUser.uuid)})
       this.estructure = res.data.data.user.line
     }
   }
