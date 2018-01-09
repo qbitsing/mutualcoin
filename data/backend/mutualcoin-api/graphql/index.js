@@ -23,7 +23,7 @@ const rootQuery = `
     blockAdd(block: newBlock): Block
     blockActivate(uuid: String): Int
     blockWaiting(uuid: String): Int
-    blockRun(uuid: String): Int
+    blockRun(uuid: String, startDate: String): Int
     blockPause(uuid: String): Int
     blockCancel(uuid: String): Int
     blockFinish(uuid: String): Int

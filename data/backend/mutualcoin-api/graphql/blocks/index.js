@@ -96,10 +96,14 @@ module.exports = {
     blockAdd: (_, { block }) => db.block.create(block),
     blockActivate: (_, { uuid }) => db.block.activate(uuid),
     blockWaiting: (_, { uuid }) => db.block.waiting(uuid),
-    blockRun: (_, { uuid }) => db.block.run(uuid),
+    blockRun: (_, { uuid, startDate }) => db.block.run(uuid, startDate),
     blockPause: (_, { uuid }) => db.block.pause(uuid),
     blockCancel: (_, { uuid }) => db.block.cancel(uuid),
     blockFinish: (_, { uuid }) => db.block.finish(uuid),
-    blockEarnings: (_, { uuid, earnings }) => db.block.setInfoDays(uuid, earnings)
+    blockEarnings: async (_, { uuid, earnings }) => {
+      const result = await db.block.setInfoDays(uuid, earnings)
+      console.log(result)
+      return result
+    }
   })
 }

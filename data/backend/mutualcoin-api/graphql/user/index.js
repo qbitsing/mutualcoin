@@ -46,6 +46,7 @@ module.exports = {
 
     input userEditable {
       email2: String
+      nickname: String
       firstName: String
       lastName: String
       age: Int
