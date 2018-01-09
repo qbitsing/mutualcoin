@@ -57,7 +57,7 @@ module.exports = {
       _user: User
       state: blockState!
       runDays: Int!
-      daysInfo: [String]
+      daysInfo: [days]
       last_pay: Int!
     }
 
@@ -83,6 +83,10 @@ module.exports = {
     }
 
     type infoDay {
+      ${infoDays}
+    }
+
+    type days {
       ${infoDays}
     }
   `,

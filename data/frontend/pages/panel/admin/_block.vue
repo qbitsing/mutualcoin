@@ -273,9 +273,10 @@
 <script>
 import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
+import mutationEarnings from ''
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
-import decimal from 'decimal'
+import BigNumber from 'bignumber.js'
 export default {
   layout: 'dashboard',
   middleware: ['auth', 'coins', 'blocks', 'blocksUser'],
@@ -531,14 +532,21 @@ export default {
     }
     console.log(this.indexBlock)
     this.blocksUser.forEach((ele) => {
-      this.highTotal = decimal(ele.high).div(100).mul(ele.amount).add(this.highTotal).toNumber()
-      this.mediumTotal = decimal(ele.medium).div(100).mul(ele.amount).add(this.mediumTotal).toNumber()
-      this.lowTotal = decimal(ele.low).div(100).mul(ele.amount).add(this.lowTotal).toNumber()
+      let high = new BigNumber(ele.high)
+      let medium = new BigNumber(ele.medium)
+      let low = new BigNumber(ele.low)
+      this.highTotal = high.dividedBy('100').times(ele.amount.toString()).plus(this.highTotal.toString()).toNumber()
+      this.mediumTotal = medium.dividedBy('100').times(ele.amount.toString()).plus(this.mediumTotal.toString()).toNumber()
+      this.lowTotal = low.dividedBy('100').times(ele.amount.toString()).plus(this.lowTotal.toString()).toNumber()
     })
-    let totalInve = this.highTotal + this.mediumTotal + this.lowTotal
-    this.percentHigh = decimal(this.highTotal).div(totalInve).mul(100).toNumber()
-    this.percentMedium = decimal(this.mediumTotal).div(totalInve).mul(100).toNumber()
-    this.percentLow = decimal(this.lowTotal).div(totalInve).mul(100).toNumber()
+    let highTotal = new BigNumber(this.highTotal)
+    let mediumTotal = new BigNumber(this.mediumTotal)
+    let lowTotal = new BigNumber(this.lowTotal)
+    let totalInve = highTotal.plus(mediumTotal.toString()).plus(lowTotal.toString()).toNumber()
+
+    this.percentHigh = highTotal.dividedBy(totalInve.toString()).times('100').toNumber()
+    this.percentMedium = mediumTotal.dividedBy(totalInve.toString()).times('100').toNumber()
+    this.percentLow = lowTotal.dividedBy(totalInve.toString()).times('100').toNumber()
     this.dayMaximum()
     this.addItemsPay()
   }
