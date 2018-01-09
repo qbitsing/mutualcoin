@@ -1,5 +1,6 @@
 'use strict'
 
+const { pays } = require('mutualcoin-utils')
 const paysMap = new Map()
 function setConds (query) {
   const conds = []
@@ -116,17 +117,17 @@ module.exports = {
     blockCancel: (_, { uuid }) => db.block.cancel(uuid),
     blockFinish: (_, { uuid }) => db.block.finish(uuid),
     blockEarnings: (_, { uuid, earnings }) => db.block.setInfoDays(uuid, earnings),
-    blockPay: async (_, { uuid, to }) => { 
+    blockPay: async (_, { uuid, to }) => {
       let investments
       let result
       try {
-        investments = await req.db.blockUser.getBy('block')(uuid, true)
+        investments = await db.blockUser.getBy('block')(uuid, true)
         result = pays(to, investments)
       } catch (error) {
         throw error
       }
       paysMap.set(uuid, result)
-  
+
       return result.pays
     }
   })
