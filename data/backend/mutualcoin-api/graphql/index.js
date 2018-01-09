@@ -28,6 +28,7 @@ const rootQuery = `
     blockCancel(uuid: String): Int
     blockFinish(uuid: String): Int
     blockEarnings(uuid: String, earnings: [dayInfo]): [infoDay]
+    blockPay(uuid: String, to: Int): [pays]
   }
 `
 
