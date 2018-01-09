@@ -100,10 +100,6 @@ module.exports = {
     blockPause: (_, { uuid }) => db.block.pause(uuid),
     blockCancel: (_, { uuid }) => db.block.cancel(uuid),
     blockFinish: (_, { uuid }) => db.block.finish(uuid),
-    blockEarnings: async (_, { uuid, earnings }) => {
-      const result = await db.block.setInfoDays(uuid, earnings)
-      console.log(result)
-      return result
-    }
+    blockEarnings: (_, { uuid, earnings }) => db.block.setInfoDays(uuid, earnings)
   })
 }
