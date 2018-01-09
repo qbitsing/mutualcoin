@@ -273,7 +273,7 @@
 <script>
 import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
-import mutationEarnings from ''
+import mutationEarnings from '~/plugins/mutations/submitGain'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
 import BigNumber from 'bignumber.js'
@@ -409,9 +409,6 @@ export default {
     async submitGain () {
       if (this.gainItems.length > 0) {
         try {
-          const data = {
-            earnings: this.gainItems
-          }
           swal({
             title: 'Cuidado',
             text: `¿Está seguro de que desea guardar estas ganancias?`,
@@ -425,7 +422,7 @@ export default {
             },
             showLoaderOnConfirm: true,
             preConfirm: async () => {
-              const res = await api(`block/earnings/${this.$route.params.block}`, data, 'put', this.authToken)
+              const res = await api(mutationEarnings(this.$route.params.block, this.gainItems), 'post', this.authToken)
               if (res.status === 200) {
                 let newBlocks = this.blocks
                 newBlocks[this.state][this.indexBlock].daysInfo = res.data.daysInfo
