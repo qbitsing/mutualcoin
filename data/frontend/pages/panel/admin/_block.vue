@@ -423,13 +423,14 @@ export default {
             showLoaderOnConfirm: true,
             preConfirm: async () => {
               const res = await api(mutationEarnings(this.$route.params.block, this.gainItems), 'post', this.authToken)
-              if (res.status === 200) {
-                let newBlocks = this.blocks
-                newBlocks[this.state][this.indexBlock].daysInfo = res.data.daysInfo
-                this.$store.commit('SET_DAYSINFO', newBlocks)
-                this.gainItems = []
-                this.propsDialogGain = {state: false, title: ''}
-                this.dayMaximum()
+              if (!res.data.errors) {
+                // let newBlocks = this.blocks
+                console.log(res.data)
+                // newBlocks[this.state][this.indexBlock].daysInfo = res.data.daysInfo
+                // this.$store.commit('SET_DAYSINFO', newBlocks)
+                // this.gainItems = []
+                // this.propsDialogGain = {state: false, title: ''}
+                // this.dayMaximum()
                 return swal('Excelente', `Ganancias almacenas con éxito.`, 'success')
               } else return swal('Ooops...', `Error las ganacias no se alamcenaron.`, 'error')
             }
