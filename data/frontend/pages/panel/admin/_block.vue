@@ -422,7 +422,8 @@ export default {
             },
             showLoaderOnConfirm: true,
             preConfirm: async () => {
-              const res = await api(mutationEarnings(this.$route.params.block, this.gainItems), 'post', this.authToken)
+              console.log(this.gainItems)
+              const res = await api(mutationEarnings(this.$route.params.block, JSON.stringify(this.gainItems)), 'post', this.authToken)
               if (!res.data.errors) {
                 // let newBlocks = this.blocks
                 console.log(res.data)

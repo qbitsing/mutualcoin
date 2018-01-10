@@ -37,10 +37,10 @@ function setConds (query) {
 }
 
 const infoDays = `
-  day: Int
-  low: Int
-  high: Int
-  medium: Int
+  day: Float
+  low: Float
+  high: Float
+  medium: Float
 `
 module.exports = {
   Block: `
