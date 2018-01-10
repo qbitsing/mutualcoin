@@ -37,10 +37,10 @@ function setConds (query) {
 }
 
 const infoDays = `
-  day: Int
-  low: Int
-  high: Int
-  medium: Int
+  day: Float
+  low: Float
+  high: Float
+  medium: Float
 `
 module.exports = {
   Block: `
@@ -130,7 +130,7 @@ module.exports = {
 
       return result.pays
     },
-    blockMakePay: async (_, { uuid }) => { 
+    blockMakePay: async (_, { uuid }) => {
       let result = paysMap.get(uuid)
 
       if (!result) {
