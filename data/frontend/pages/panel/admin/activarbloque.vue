@@ -182,7 +182,7 @@ export default {
           swal('Ooops...', 'Error al crear el bloque, intentálo más tarde', 'error')
         }
         console.log(res)
-        if (res.status === 200) {
+        if (res.data.data.result) {
           let block = res.data.data.result
           block.spanishState = this.spanishText(block.state)
           block.inverted = 0

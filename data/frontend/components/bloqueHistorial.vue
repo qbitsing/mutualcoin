@@ -10,9 +10,11 @@
     <v-layout column justify-center align-center text-align-center>
       <img :src="`/${data._block._coin.name}.png`">
       <p>Plan {{data._block.name}} de {{data._block.amount}} {{data._block._coin.name}} </p>
-      <p v-if="data._block.state != 'active'">Fecha Inicio: {{data._block.startDate}}</p>
-      <p v-if="data._block.state != 'active'">Días corridos: {{data._block.runDays}}</p>
-      <p v-else>Cupo: {{data._block.amountLeft}}</p>
+      <template v-if="data._block.startDate">
+        <p>Fecha Inicio: {{data._block.startDate}}</p>
+        <p>Días corridos: {{data._block.runDays}}</p>
+      </template>
+      <p v-else>Cupo: {{data._block.amountLeft}} {{data._block._coin.name}}</p>
       <p>Mi inversión: {{data.amount}} {{data._block._coin.name}}</p>
       <v-card-actions>
         <v-btn @click="goTimeline(data.uuid)" color="secondary">Info</v-btn>

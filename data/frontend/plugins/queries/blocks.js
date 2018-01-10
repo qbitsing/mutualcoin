@@ -1,4 +1,4 @@
-module.exports = function (states) {
+module.exports = (states) => {
   let data = `
     amount
     amountLeft
