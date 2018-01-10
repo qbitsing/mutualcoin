@@ -422,16 +422,14 @@ export default {
             },
             showLoaderOnConfirm: true,
             preConfirm: async () => {
-              console.log(this.gainItems)
               const res = await api(mutationEarnings(this.$route.params.block, JSON.stringify(this.gainItems)), 'post', this.authToken)
               if (!res.data.errors) {
-                // let newBlocks = this.blocks
-                console.log(res.data)
-                // newBlocks[this.state][this.indexBlock].daysInfo = res.data.daysInfo
-                // this.$store.commit('SET_DAYSINFO', newBlocks)
-                // this.gainItems = []
-                // this.propsDialogGain = {state: false, title: ''}
-                // this.dayMaximum()
+                let newBlocks = this.blocks
+                newBlocks[this.state][this.indexBlock].daysInfo = res.data.data.daysInfo
+                this.$store.commit('SET_DAYSINFO', newBlocks)
+                this.gainItems = []
+                this.propsDialogGain = {state: false, title: ''}
+                this.dayMaximum()
                 return swal('Excelente', `Ganancias almacenas con éxito.`, 'success')
               } else return swal('Ooops...', `Error las ganacias no se alamcenaron.`, 'error')
             }
@@ -444,6 +442,7 @@ export default {
       }
     },
     dialogPay () {
+      this.$refs.formPay.reset()
       this.propsDialogPay = {state: true, title: 'Realizar Pago'}
       this.dayMaximum()
       this.itemsDay = []
@@ -498,7 +497,8 @@ export default {
       this.low = 0
     },
     closeDialogPay () {
-      console.log('close dialog pay')
+      this.payGeneratedItems = []
+      this.$refs.formGain.reset()
     },
     dayMaximum () {
       this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
@@ -529,7 +529,6 @@ export default {
         break
       }
     }
-    console.log(this.indexBlock)
     this.blocksUser.forEach((ele) => {
       let high = new BigNumber(ele.high)
       let medium = new BigNumber(ele.medium)
