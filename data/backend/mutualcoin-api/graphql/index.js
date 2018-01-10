@@ -31,6 +31,7 @@ const rootQuery = `
     blockPay(uuid: String, to: Int): [pay]
     blockMakePay(uuid: String): [BlockUser]
     blockAmount(uuid: String, amount: Int): Block
+    blockUserAdd(blockUser: newBlockUser): BlockUser
   }
 `
 
@@ -39,7 +40,7 @@ module.exports = function (db) {
   const { users, usersBy, user, referred, line, userAdd, userEdit } = QueryUser(db)
   const { _coin, blocks, blocksState, blockAdd, blockActivate, blockWaiting, blockRun, blockPause, blockCancel, blockFinish, blockEarnings, blockAmount, blockMakePay, blockPay } = QueryBlock(db)
   const { coins } = QueryCoins(db)
-  const { blocksUsers, blocksUsersBy, _block, _user } = QueryBlockUser(db)
+  const { blocksUsers, blocksUsersBy, _block, _user, blockUserAdd } = QueryBlockUser(db)
   const resolvers = {
     Query: {
       users,
@@ -75,7 +76,8 @@ module.exports = function (db) {
       blockEarnings,
       blockAmount,
       blockMakePay,
-      blockPay
+      blockPay,
+      blockUserAdd
     }
   }
 

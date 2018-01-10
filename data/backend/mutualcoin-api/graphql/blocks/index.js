@@ -130,7 +130,7 @@ module.exports = {
 
       return result.pays
     },
-    blockMakePay: async (_, { uuid }) => { 
+    blockMakePay: async (_, { uuid }) => {
       let result = paysMap.get(uuid)
 
       if (!result) {
@@ -143,7 +143,7 @@ module.exports = {
       try {
         await Promise.all(promises)
         await db.block.updateLatsPay(uuid, result.to)
-        newInvestments = await req.db.blockUser.getBy('block')(uuid)
+        newInvestments = await db.blockUser.getBy('block')(uuid)
       } catch (error) {
         throw error
       }
