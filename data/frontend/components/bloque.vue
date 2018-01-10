@@ -87,6 +87,7 @@
 </template>
 <script>
 import MutualDialog from '~/components/dialog.vue'
+import mutation from '~/plugins/mutations/invert'
 import api from '~/plugins/axios'
 import swal from 'sweetalert2'
 import BigNumber from 'bignumber.js'
@@ -123,28 +124,29 @@ export default {
       if (this.$refs.inversion.validate()) {
         this.loading = true
         const data = {
-          blockUserToCreate: {
-            block: this.data.uuid,
-            high: this.high,
-            medium: this.medium,
-            low: this.bottom,
-            amount: this.amount,
-            user: this.authUser.uuid
-          }
+          block: this.data.uuid,
+          high: this.high,
+          medium: this.medium,
+          low: this.bottom,
+          amount: parseFloat(this.amount),
+          user: this.authUser.uuid
         }
         try {
-          const res = await api('blockUser/create', data, 'post', this.authToken)
+          const res = await api(mutation(data), 'post', this.authToken)
           this.loading = false
           console.log(res)
-          if (res.status === 200) {
+          if (res.data.data.inversion) {
             this.blocks.active.map(e => {
               if (e.uuid === this.data.uuid) {
                 const amountLeft = new BigNumber(e.amountLeft.toString())
                 e.amountLeft = amountLeft.minus(this.amount).toString()
+                if (e.amountLeft === 0) {
+                  e.state = 'waiting'
+                }
               }
               return e
             })
-            // this.userInversions.push(res.data.blockUserCreated)
+            this.userInversions.push(res.data.data.inversion)
             swal('Excelente', 'Inversión guardada con éxito', 'success')
             this.clear()
           }

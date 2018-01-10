@@ -14,7 +14,12 @@ module.exports = function (uuid) {
       weeks
       state
       runDays
-      daysInfo
+      daysInfo {
+        day
+        high
+        medium
+        low
+      }
     }
     uuid
     amount

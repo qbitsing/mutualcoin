@@ -19,7 +19,12 @@ module.exports = (data) => {
     endingDate
     startDate
     last_pay
-    daysInfo
+    daysInfo {
+      day
+      high
+      medium
+      low
+    }
     runDays
   }
     }`
