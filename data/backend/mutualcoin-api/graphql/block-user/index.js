@@ -8,11 +8,11 @@ module.exports = {
       user: String!
       _user: User
       uuid: String!
-      amount: Int!
-      high: Int!
-      medium: Int!
-      low: Int!
-      pays: [String]
+      amount: Float!
+      high: Float!
+      medium: Float!
+      low: Float!
+      pays: [pay]
       last_pay: Int
     }
 
@@ -27,7 +27,9 @@ module.exports = {
   `,
   QueryBlockUser: (db) => ({
     blocksUsers: (rootValue, args, context) => db.blockUser.get(),
-    blocksUsersBy: (rootValue, { propertie, value }, context) => db.blockUser.getBy(propertie)(value),
+    blocksUsersBy: (rootValue, { propertie, value }, context) => {
+      return db.blockUser.getBy(propertie)(value)
+    },
     _block: ({ block }) => db.block.getUuid(block),
     _user: ({ user }) => db.user.getUuid(user),
     blockUserAdd: (_, { blockUser }) => {
@@ -39,8 +41,6 @@ module.exports = {
         high: blockUser.high,
         medium: blockUser.medium
       }
-
-      console.log(obj, obj.hasOwnProperty)
       return db.blockUser.create(obj)
     }
   })
