@@ -2,10 +2,6 @@ module.exports = (block) => {
   return `{
     blocksUsers: blocksUsersBy(propertie:"block", value:"${block}") {
       block
-      _block {
-        endingDate
-        startDate
-      }
       user
       _user {
         nickname
@@ -15,7 +11,19 @@ module.exports = (block) => {
       high
       medium
       low
-      pays
+      pays {
+        user
+        app
+        red
+        trader
+        low
+        high
+        medium
+        from
+        to
+        nickname
+        amount
+      }
       last_pay
     }
   }`

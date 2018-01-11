@@ -275,6 +275,7 @@ import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
 import mutationEarnings from '~/plugins/mutations/submitGain'
 import mutationPayGenerated from '~/plugins/mutations/payGenerated'
+import mutationMakePay from '~/plugins/mutations/makePay'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
 import BigNumber from 'bignumber.js'
@@ -452,12 +453,11 @@ export default {
       }
     },
     async submitPayGenerated () {
-      console.log(this.$route.params.block, this.selectDay.day)
-      // const res = await api(mutationPayGenerated(this.$route.params.block, this.selectDay.day), 'post', this.authToken)
-      // if (res.status === 200) {
-      //   console.log(res.data)
-      //   this.payGeneratedItems = res.data.data.payGenerated
-      // }
+      const res = await api(mutationPayGenerated(this.$route.params.block, this.selectDay.day), 'post', this.authToken)
+      if (!res.data.errors) {
+        swal('Excelente', `Pagos generados con éxito.`, 'success')
+        this.payGeneratedItems = res.data.data.payGenerated
+      }
     },
     async submitPay () {
       try {
@@ -474,13 +474,13 @@ export default {
           },
           showLoaderOnConfirm: true,
           preConfirm: async () => {
-            const res = await api(`block/makePay/${this.$route.params.block}`, {}, 'put', this.authToken)
-            if (res.status === 200) {
+            const res = await api(mutationMakePay(this.$route.params.block), 'post', this.authToken)
+            if (!res.data.errors) {
               let newBlocks = this.blocks
-              newBlocks[this.indexBlock].last_pay = this.payGeneratedItems[0].to
+              newBlocks[this.state][this.indexBlock].last_pay = this.payGeneratedItems[0].to
               this.$store.commit('SET_BLOCK', newBlocks)
               this.payGeneratedItems = []
-              this.$store.commit('SET_BLOCKSUSER', res.data.investments)
+              this.$store.commit('SET_BLOCKSUSER', res.data.data.blocksUser)
               this.addItemsPay()
               this.propsDialogPay = {state: false, title: ''}
               return swal('Excelente', `Pago realizado con exito.`, 'success')
