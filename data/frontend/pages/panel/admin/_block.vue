@@ -274,7 +274,7 @@
 import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
 import mutationEarnings from '~/plugins/mutations/submitGain'
-// import mutationPayGenerated from '~/plugins/mutations/payGenerated'
+import mutationPayGenerated from '~/plugins/mutations/payGenerated'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
 import BigNumber from 'bignumber.js'
@@ -453,7 +453,7 @@ export default {
     },
     async submitPayGenerated () {
       console.log(this.$route.params.block, this.selectDay.day)
-      // const res = await api(mutationPayGenerated(this.$route.params.block, this.selectDay.day ), 'post', this.authToken)
+      // const res = await api(mutationPayGenerated(this.$route.params.block, this.selectDay.day), 'post', this.authToken)
       // if (res.status === 200) {
       //   console.log(res.data)
       //   this.payGeneratedItems = res.data.data.payGenerated
