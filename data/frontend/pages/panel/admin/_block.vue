@@ -274,6 +274,7 @@
 import {mapState} from 'vuex'
 import MutualDialog from '~/components/dialog.vue'
 import mutationEarnings from '~/plugins/mutations/submitGain'
+// import mutationPayGenerated from '~/plugins/mutations/payGenerated'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
 import BigNumber from 'bignumber.js'
@@ -422,15 +423,14 @@ export default {
             },
             showLoaderOnConfirm: true,
             preConfirm: async () => {
-              const res = await api(mutationEarnings(this.$route.params.block, this.gainItems), 'post', this.authToken)
+              const res = await api(mutationEarnings(this.$route.params.block, JSON.stringify(this.gainItems)), 'post', this.authToken)
               if (!res.data.errors) {
-                // let newBlocks = this.blocks
-                console.log(res.data)
-                // newBlocks[this.state][this.indexBlock].daysInfo = res.data.daysInfo
-                // this.$store.commit('SET_DAYSINFO', newBlocks)
-                // this.gainItems = []
-                // this.propsDialogGain = {state: false, title: ''}
-                // this.dayMaximum()
+                let newBlocks = this.blocks
+                newBlocks[this.state][this.indexBlock].daysInfo = res.data.data.daysInfo
+                this.$store.commit('SET_DAYSINFO', newBlocks)
+                this.gainItems = []
+                this.propsDialogGain = {state: false, title: ''}
+                this.dayMaximum()
                 return swal('Excelente', `Ganancias almacenas con éxito.`, 'success')
               } else return swal('Ooops...', `Error las ganacias no se alamcenaron.`, 'error')
             }
@@ -443,6 +443,7 @@ export default {
       }
     },
     dialogPay () {
+      this.$refs.formPay.reset()
       this.propsDialogPay = {state: true, title: 'Realizar Pago'}
       this.dayMaximum()
       this.itemsDay = []
@@ -451,11 +452,12 @@ export default {
       }
     },
     async submitPayGenerated () {
-      const res = await api(`block/pay/${this.$route.params.block}/${this.selectDay.day}`, {}, 'put', this.authToken)
-      if (res.status === 200) {
-        console.log(res.data)
-        this.payGeneratedItems = res.data
-      }
+      console.log(this.$route.params.block, this.selectDay.day)
+      // const res = await api(mutationPayGenerated(this.$route.params.block, this.selectDay.day ), 'post', this.authToken)
+      // if (res.status === 200) {
+      //   console.log(res.data)
+      //   this.payGeneratedItems = res.data.data.payGenerated
+      // }
     },
     async submitPay () {
       try {
@@ -497,7 +499,8 @@ export default {
       this.low = 0
     },
     closeDialogPay () {
-      console.log('close dialog pay')
+      this.payGeneratedItems = []
+      this.$refs.formGain.reset()
     },
     dayMaximum () {
       this.blocks[this.state][this.indexBlock].daysInfo.forEach((ele) => {
@@ -528,7 +531,6 @@ export default {
         break
       }
     }
-    console.log(this.indexBlock)
     this.blocksUser.forEach((ele) => {
       let high = new BigNumber(ele.high)
       let medium = new BigNumber(ele.medium)
