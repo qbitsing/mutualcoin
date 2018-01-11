@@ -12,6 +12,7 @@ module.exports = (uuid) => new Promise(function (resolve, reject) {
             medium
           }
         }
+        uuid
         last_pay
         low
         medium

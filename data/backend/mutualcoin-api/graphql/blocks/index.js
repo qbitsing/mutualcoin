@@ -53,14 +53,14 @@ module.exports = {
       uuid: String!
       endingDate: String
       startDate: String
-      weeks: Float!
-      days: Float!
+      weeks: Int!
+      days: Int!
       user: String
       _user: User
       state: blockState!
-      runDays: Float!
+      runDays: Int!
       daysInfo: [infoDay]
-      last_pay: Float!
+      last_pay: Int!
     }
 
     enum blockState {
@@ -130,14 +130,13 @@ module.exports = {
     },
     blockMakePay: async (_, { uuid }) => {
       let result = paysMap.get(uuid)
-
       if (!result) {
         throw new Error('bad request: there is no payment generated with the indicated uuid')
       }
 
       let { investments } = result
       let newInvestments = null
-      let promises = investments.map(investment => db.blockUser.updatePays(investment._id, investment.pays, investment.last_pay))
+      let promises = investments.map(investment => db.blockUser.updatePays(investment.uuid, investment.pays, investment.last_pay))
       try {
         await Promise.all(promises)
         await db.block.updateLatsPay(uuid, result.to)

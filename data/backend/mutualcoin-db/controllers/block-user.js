@@ -117,7 +117,8 @@ async function create(blockUser) {
   return await blockUserToCreate.save()
 }
 
-function updatePays(id, pays, lastPay) {
+async function updatePays(uuid, pays, lastPay) {
+  const { id } = await BlockUserModel.findOne({ uuid })
   return BlockUserModel.findByIdAndUpdate(id, { pays, last_pay: lastPay })
 }
 module.exports = function(db) {
