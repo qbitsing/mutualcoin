@@ -454,7 +454,7 @@ export default {
       const res = await api(`block/pay/${this.$route.params.block}/${this.selectDay.day}`, {}, 'put', this.authToken)
       if (res.status === 200) {
         console.log(res.data)
-        this.payGeneratedItems = res.data
+        this.payGeneratedItems = res.data.data.payGenerated
       }
     },
     async submitPay () {
