@@ -1,7 +1,7 @@
 module.exports = (uuid, to) => {
   return {
     query: ` mutation {
-      payGenerated: blockPay (uuid: ${uuid},to:${to}) {
+      payGenerated: blockPay (uuid: "${uuid}",to:${to}) {
         user
         app
         red
