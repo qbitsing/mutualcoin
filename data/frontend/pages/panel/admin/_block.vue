@@ -478,7 +478,7 @@ export default {
             if (!res.data.errors) {
               let newBlocks = this.blocks
               newBlocks[this.state][this.indexBlock].last_pay = this.payGeneratedItems[0].to
-              this.$store.commit('SET_BLOCK', newBlocks)
+              this.$store.commit('SET_BLOCKS', newBlocks)
               this.payGeneratedItems = []
               this.$store.commit('SET_BLOCKSUSER', res.data.data.blocksUser)
               this.addItemsPay()
