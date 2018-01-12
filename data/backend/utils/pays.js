@@ -1,5 +1,6 @@
 'use strict'
 
+const axios = require('./axios')
 const decimal = require('decimal')
 const $user = 40
 const $red = 10
@@ -17,10 +18,16 @@ function calculatePercentages (daysInfo, i, obj) {
 
   return obj
 }
-module.exports = function (hasta, investments) {
-  const pays = [], users = []
+module.exports = async function (hasta, uuid) {
+  let investments, response
+  try {
+    response = await axios(uuid)
+  } catch (error) {
+    throw error
+  }
+  investments = response.data.blocksUsersBy
+  const pays = []
   hasta = parseInt(hasta)
-
   investments = investments.map(investment => {
     let { _block, last_pay, low, medium, high, amount, _user } = investment
     let { daysInfo } = _block, pay

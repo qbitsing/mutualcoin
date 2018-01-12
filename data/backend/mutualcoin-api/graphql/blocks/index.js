@@ -45,8 +45,8 @@ const infoDays = `
 module.exports = {
   Block: `
     type Block {
-      amount: Int!
-      amountLeft: Int!
+      amount: Float!
+      amountLeft: Float!
       coin: String!
       name: String!
       _coin: Coin
@@ -74,9 +74,9 @@ module.exports = {
     }
 
     input newBlock {
-      amount: Int!
+      amount: Float!
       coin: String!
-      weeks: Int!
+      weeks: Float!
       user: String
     }
 
@@ -89,17 +89,17 @@ module.exports = {
     }
 
     type pay {
-      user: Int
-      app: Int
-      red: Int
-      trader: Int
-      low: Int
-      high: Int
-      medium: Int
-      from: Int
-      to: Int
+      user: Float
+      app: Float
+      red: Float
+      trader: Float
+      low: Float
+      high: Float
+      medium: Float
+      from: Float
+      to: Float
       nickname: String
-      amount: Int
+      amount: Float
     }
   `,
   QueryBlock: (db) => ({
@@ -118,11 +118,9 @@ module.exports = {
     blockFinish: (_, { uuid }) => db.block.finish(uuid),
     blockEarnings: (_, { uuid, earnings }) => db.block.setInfoDays(uuid, earnings),
     blockPay: async (_, { uuid, to }) => {
-      let investments
       let result
       try {
-        investments = await db.blockUser.getBy('block')(uuid, true)
-        result = pays(to, investments)
+        result = await pays(to, uuid)
       } catch (error) {
         throw error
       }
@@ -132,14 +130,13 @@ module.exports = {
     },
     blockMakePay: async (_, { uuid }) => {
       let result = paysMap.get(uuid)
-
       if (!result) {
         throw new Error('bad request: there is no payment generated with the indicated uuid')
       }
 
       let { investments } = result
       let newInvestments = null
-      let promises = investments.map(investment => db.blockUser.updatePays(investment._id, investment.pays, investment.last_pay))
+      let promises = investments.map(investment => db.blockUser.updatePays(investment.uuid, investment.pays, investment.last_pay))
       try {
         await Promise.all(promises)
         await db.block.updateLatsPay(uuid, result.to)
