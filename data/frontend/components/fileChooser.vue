@@ -15,11 +15,21 @@
   </v-layout>
 </template>
 <script>
+  import swal from 'sweetalert2'
   export default {
     props: ['imageData'],
     methods: {
       pickFile () {
         this.$refs.image.click()
+      },
+      validBase64Image () {
+        let code = this.imageData.imageBase64.split('base64,')[1]
+        try {
+          atob(code)
+          return true
+        } catch (e) {
+          return false
+        }
       },
       async onFilePicked (e) {
         const files = e.target.files
@@ -32,8 +42,14 @@
             })
           })
           this.imageData.imageBase64 = await wait
-          this.imageData.imageName = files[0].name
-          console.log(this.imageData)
+          if (!this.validBase64Image()) {
+            swal('Ooops...', 'La imagen seleccionada no es válida o está dañada.', 'error')
+            this.imageData = {
+              imageName: null
+            }
+          } else {
+            this.imageData.imageName = files[0].name
+          }
         }
       }
     }
