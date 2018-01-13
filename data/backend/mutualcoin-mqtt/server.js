@@ -38,13 +38,6 @@ server.on('clientDisconnected', async (client) => {
 server.on('published', (packet, client) => { 
   debug(`Received: ${packet.topic}`)
   debug(`Payload: ${packet.payload}`)
-  message.payload = packet.payload
-  message.topic = packet.topic
-  if (client) { 
-    server.publish(message, function () { 
-      debug('done')
-    })
-  }
 })
 
 server.on('ready', () => {
