@@ -1,4 +1,3 @@
-// import api from '~/plugins/axios'
 import axios from 'axios'
 export const strict = false
 export const state = () => ({
