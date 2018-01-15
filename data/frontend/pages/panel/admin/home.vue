@@ -13,7 +13,10 @@ export default {
       message: 'ola'
     }
   },
-  mounted () {
+  created () {
+    // const socket = io('http://localhost')
+    // console.log(socket)
+    console.log(this)
     this.$store.commit('TITLE_VIEW', 'Tablero')
   }
 }
