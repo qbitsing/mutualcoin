@@ -180,8 +180,8 @@ export default {
     payHeaders () {
       return [
         {text: 'Rango de días', value: 'to', align: 'center'},
-        {text: `Valor en `, value: 'user', align: 'center'},
-        {text: 'Fecha', value: 'date', align: 'center'}
+        {text: `Valor en ${this.inversion._block._coin.acronym.toUpperCase()}`, value: 'user', align: 'center'},
+        {text: 'Fecha de pago ', value: 'date', align: 'center'}
       ]
     }
   },
@@ -217,31 +217,14 @@ export default {
     },
     calcEarnings (percent, pay) {
       let amount = new BigNumber('' + this.inversion.amount)
-      return amount.times('' + percent).dividedBy('10000').times('' + pay).times('' + this.inversion.percentToUser).toString()
+      return amount.times('' + percent).dividedBy('10000').times('' + pay).times('' + this.percentToUser).toString()
     },
     formatearArray (arr) {
       for (let i = 0; i < arr.length; i++) {
         for (let i2 = 0; i2 < arr[i].length; i2++) {
-          // let negativeHigh = arr[i][i2].high < 0
-          // let negativeMedium = arr[i][i2].medium < 0
-          // let negativeLow = arr[i][i2].low < 0
-          // let payHigh = negativeHigh ? arr[i][i2].high * -1 : arr[i][i2].high
-          // let payMedium = negativeMedium ? arr[i][i2].medium * -1 : arr[i][i2].medium
-          // let payLow = negativeLow ? arr[i][i2].low * -1 : arr[i][i2].low
-
-          // payHigh = decimal.mul(this.inversion.amount, this.inversion.high).div(10000).mul(payHigh).mul(this.percentToUser).toNumber()
-          // payMedium = decimal.mul(this.inversion.amount, this.inversion.medium).div(10000).mul(payMedium).mul(this.percentToUser).toNumber()
-          // payLow = decimal.mul(this.inversion.amount, this.inversion.low).div(10000).mul(payLow).mul(this.percentToUser).toNumber()
-
-          // arr[i][i2].highCoin = negativeHigh ? payHigh * -1 : payHigh
-          // arr[i][i2].mediumCoin = negativeMedium ? payMedium * -1 : payMedium
-          // arr[i][i2].lowCoin = negativeLow ? payLow * -1 : payLow
-          // let payHigh = new BigNumber(arr[i][i2].high)
-
-          arr[i][i2].highCoin = this.calcEarnings(this.inversion.high, arr[i][i2].highCoin)
-          arr[i][i2].mediumCoin = this.calcEarnings(this.inversion.medium, arr[i][i2].mediumCoin)
-          arr[i][i2].lowCoin = this.calcEarnings(this.inversion.low, arr[i][i2].lowCoin)
-          // console.log(arr[i][i2].highCoin.toJSON())
+          arr[i][i2].highCoin = this.calcEarnings(this.inversion.high, arr[i][i2].high)
+          arr[i][i2].mediumCoin = this.calcEarnings(this.inversion.medium, arr[i][i2].medium)
+          arr[i][i2].lowCoin = this.calcEarnings(this.inversion.low, arr[i][i2].low)
         }
       }
       return arr

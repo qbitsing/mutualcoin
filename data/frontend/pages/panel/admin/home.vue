@@ -4,7 +4,6 @@
 </div>
 </template>
 <script>
-// import io from 'socket.io-client'
 export default {
   layout: 'dashboard',
   middleware: 'auth',
@@ -13,7 +12,8 @@ export default {
       message: 'ola'
     }
   },
-  mounted () {
+  created () {
+    console.log(this)
     this.$store.commit('TITLE_VIEW', 'Tablero')
   }
 }

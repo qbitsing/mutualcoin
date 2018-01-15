@@ -26,7 +26,14 @@ module.exports = function (uuid) {
     high
     medium
     low
-    pays
+    pays {
+      app
+      user
+      red
+      trader
+      from
+      to
+    }
   }
 }` }
 }
