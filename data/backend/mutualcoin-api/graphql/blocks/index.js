@@ -321,12 +321,12 @@ module.exports = {
       } catch (error) {
         throw error
       }
-      
-      const client = await socket().catch((err) => { 
-        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)          
+
+      const client = await socket().catch((err) => {
+        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
       })
 
-      if (client) { 
+      if (client) {
         const message = {
           topic: 'block/make/pay',
           body: {
@@ -341,7 +341,6 @@ module.exports = {
           }
         }
       }
-      
 
       paysMap.delete(uuid)
       return newInvestments
