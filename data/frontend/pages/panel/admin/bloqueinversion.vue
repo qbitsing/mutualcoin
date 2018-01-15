@@ -45,26 +45,29 @@ export default {
   data () {
     return {
       coins: null,
-      nameCoin: null,
-      client: null
+      nameCoin: null
     }
   },
   layout: 'dashboard',
   middleware: ['auth', 'blocks'],
   computed: mapState(['blocks']),
   created () {
-    this.conectSocket()
+    this.socketInvestment()
     this.$store.commit('TITLE_VIEW', 'Bloques en inversión')
-
-    // this.getBlock()
   },
   components: {MutualBlock},
   methods: {
-    async conectSocket () {
-      this.client = await socket().catch((err) => {
+    async socketInvestment () {
+      const client = await socket().catch((err) => {
         console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
       })
-      console.log(this.client)
+      if (client.connected) {
+        client.emit('suscribe', 'block/user/add')
+        client.on('block/user/add', (data) => {
+          console.log(data)
+        })
+      }
+      // console.log(client)
     },
     nameMoneda (uuid) {
       this.coins.forEach((ele, index) => {
