@@ -321,10 +321,33 @@ module.exports = {
       } catch (error) {
         throw error
       }
+      
+      const client = await socket().catch((err) => { 
+        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)          
+      })
+
+      if (client) { 
+        const message = {
+          topic: 'block/make/pay',
+          body: {
+            uuid,
+            last_pay: result.to,
+            investments: newInvestments.map(investment => ({
+              pays: investment.pays,
+              last_pay: investment.last_pay,
+              uuid: investment.uuid,
+              _user: investment._user
+            }))
+          }
+        }
+      }
+      
 
       paysMap.delete(uuid)
       return newInvestments
     },
-    blockAmount: (_, { uuid, amount }) => db.block.updateAmount(uuid, amount)
+    blockAmount: async (_, { uuid, amount }) => {
+      return db.block.updateAmount(uuid, amount)
+    }
   })
 }
