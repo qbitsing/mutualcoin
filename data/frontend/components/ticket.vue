@@ -46,7 +46,7 @@
         </v-card>  
       </v-flex>
     </v-layout>
-    <v-dialog v-model="dialog" scrollable width="1400px">
+    <v-dialog v-model="dialog" content-class="ticket-modal" scrollable>
       <img class="modal-image" :src="modalImage" alt="">
     </v-dialog>
   </section>
@@ -104,6 +104,9 @@
   }
 </script>
 <style scoped>
+  .modal-image {
+    align-self: center;
+  }
   .message{
     position: relative;
     text-align: justify;
@@ -124,8 +127,7 @@
   }
 </style>
 <style>
-  .dialog--scrollable {
-    display: grid;
-    /* overflow: hidden; */
+  .ticket-modal {
+    width: auto !important;
   }
 </style>
