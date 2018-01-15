@@ -1,6 +1,7 @@
 'use strict'
 
 const { pays } = require('mutualcoin-utils')
+const socket = require('../../io')
 const paysMap = new Map()
 function setConds (query) {
   const conds = []
@@ -110,13 +111,189 @@ module.exports = {
     },
     _coin: ({ coin }) => db.coin.getUuid(coin),
     blockAdd: (_, { block }) => db.block.create(block),
-    blockActivate: (_, { uuid }) => db.block.activate(uuid),
-    blockWaiting: (_, { uuid }) => db.block.waiting(uuid),
-    blockRun: (_, { uuid, startDate }) => db.block.run(uuid, startDate),
-    blockPause: (_, { uuid }) => db.block.pause(uuid),
-    blockCancel: (_, { uuid }) => db.block.cancel(uuid),
-    blockFinish: (_, { uuid }) => db.block.finish(uuid),
-    blockEarnings: (_, { uuid, earnings }) => db.block.setInfoDays(uuid, earnings),
+    blockActivate: async (_, { uuid }) => {
+      let result
+      let message
+      try {
+        result = await db.block.activate(uuid)
+      } catch (error) {
+        return error
+      }
+      if (result === 200) {
+        const client = await socket().catch((err) => {
+          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+        })
+        message = {
+          topic: 'block/change/state',
+          body: {
+            uuid,
+            state: 'active',
+            date: null
+          }
+        }
+
+        if (client) {
+          client.emit('message', message)
+        }
+      }
+      return result
+    },
+    blockWaiting: async (_, { uuid }) => {
+      let result
+      let message
+      try {
+        result = await db.block.waiting(uuid)
+      } catch (error) {
+        return error
+      }
+      if (result === 200) {
+        const client = await socket().catch((err) => {
+          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+        })
+        message = {
+          topic: 'block/change/state',
+          body: {
+            uuid,
+            state: 'waiting',
+            date: null
+          }
+        }
+
+        if (client) {
+          client.emit('message', message)
+        }
+      }
+      return result
+    },
+    blockRun: async (_, { uuid, startDate }) => {
+      let result
+      let message
+      try {
+        result = await db.block.run(uuid, startDate)
+      } catch (error) {
+        return error
+      }
+      if (result === 200) {
+        const client = await socket().catch((err) => {
+          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+        })
+        message = {
+          topic: 'block/change/state',
+          body: {
+            uuid,
+            state: 'running',
+            date: startDate
+          }
+        }
+        if (client) {
+          client.emit('message', message)
+        }
+      }
+      return result
+    },
+    blockPause: async (_, { uuid }) => {
+      let result
+      let message
+      try {
+        result = await db.block.pause(uuid)
+      } catch (error) {
+        return error
+      }
+      if (result === 200) {
+        const client = await socket().catch((err) => {
+          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+        })
+        message = {
+          topic: 'block/change/state',
+          body: {
+            uuid,
+            state: 'paused',
+            date: null
+          }
+        }
+        if (client) {
+          client.emit('message', message)
+        }
+      }
+      return result
+    },
+    blockCancel: async (_, { uuid }) => {
+      let result
+      let message
+      try {
+        result = await db.block.cancel(uuid)
+      } catch (error) {
+        return error
+      }
+      if (result === 200) {
+        const client = await socket().catch((err) => {
+          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+        })
+        message = {
+          topic: 'block/change/state',
+          body: {
+            uuid,
+            state: 'cancel',
+            date: null
+          }
+        }
+        if (client) {
+          client.emit('message', message)
+        }
+      }
+      return result
+    },
+    blockFinish: async (_, { uuid }) => {
+      let result
+      let message
+      try {
+        result = await db.block.finish(uuid)
+      } catch (error) {
+        return error
+      }
+      if (result === 200) {
+        const client = await socket().catch((err) => {
+          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+        })
+        message = {
+          topic: 'block/change/state',
+          body: {
+            uuid,
+            state: 'finished',
+            date: null
+          }
+        }
+        if (client) {
+          client.emit('message', message)
+        }
+      }
+      return result
+    },
+    blockEarnings: async (_, { uuid, earnings }) => {
+      let result
+      let message
+      try {
+        result = await db.block.setInfoDays(uuid, earnings)
+      } catch (error) {
+        return error
+      }
+      if (result.length > 0) {
+        const client = await socket().catch((err) => {
+          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+        })
+        message = {
+          topic: 'block/earnings',
+          body: {
+            uuid,
+            daysInfo: result
+          }
+        }
+        if (client) {
+          client.emit('message', message)
+        }
+      }
+      return result
+    },
     blockPay: async (_, { uuid, to }) => {
       let result
       try {
@@ -144,10 +321,33 @@ module.exports = {
       } catch (error) {
         throw error
       }
+      
+      const client = await socket().catch((err) => { 
+        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)          
+      })
+
+      if (client) { 
+        const message = {
+          topic: 'block/make/pay',
+          body: {
+            uuid,
+            last_pay: result.to,
+            investments: newInvestments.map(investment => ({
+              pays: investment.pays,
+              last_pay: investment.last_pay,
+              uuid: investment.uuid,
+              _user: investment._user
+            }))
+          }
+        }
+      }
+      
 
       paysMap.delete(uuid)
       return newInvestments
     },
-    blockAmount: (_, { uuid, amount }) => db.block.updateAmount(uuid, amount)
+    blockAmount: async (_, { uuid, amount }) => {
+      return db.block.updateAmount(uuid, amount)
+    }
   })
 }

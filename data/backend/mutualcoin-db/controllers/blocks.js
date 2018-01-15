@@ -198,6 +198,8 @@ async function updateAmount(uuid, amount) {
     throw new Error('bad request: the amount cannot be lower to amount invested')
   }
 
+  
+
   await BlockModel.findByIdAndUpdate(block._id, { amount })
 
   return 200

@@ -4,7 +4,7 @@
 </div>
 </template>
 <script>
-// import io from 'socket.io-client'
+import socket from '~/plugins/socket'
 export default {
   layout: 'dashboard',
   middleware: 'auth',
@@ -13,7 +13,16 @@ export default {
       message: 'ola'
     }
   },
-  mounted () {
+  methods: {
+    async conectSocket () {
+      const client = await socket().catch((err) => {
+        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+      })
+      console.log(client)
+    }
+  },
+  created () {
+    this.conectSocket()
     this.$store.commit('TITLE_VIEW', 'Tablero')
   }
 }
