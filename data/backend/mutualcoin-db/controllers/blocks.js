@@ -198,11 +198,11 @@ async function updateAmount(uuid, amount) {
     throw new Error('bad request: the amount cannot be lower to amount invested')
   }
 
-  
+  let amountLeft = block.amountLeft + (amount - block.amoun)
 
-  await BlockModel.findByIdAndUpdate(block._id, { amount })
+  await BlockModel.findByIdAndUpdate(block._id, { amount, amountLeft })
 
-  return 200
+  return { status: 200, amountLeft }
 }
 
 async function setInfoDays(uuid, info) {
