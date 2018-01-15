@@ -19,13 +19,13 @@ io.on('connection', (socket) => {
       case 'block/change/state':
         debug(`suscribing to "block/change/state" client: ${socket.id}`)
         socket.join('block/change/state')
-        break;
+        break
       case 'block/earnings':
         debug(`suscribing to "block/earnings" client: ${socket.id}`)
         socket.join('block/earnings')
-        break;
+        break
       default:
-        break;
+        break
     }
   })
   socket.on('unsuscribe', (payload) => {
@@ -33,16 +33,16 @@ io.on('connection', (socket) => {
       case 'block/change/state':
         debug(`unsuscribing to "block/change/state" client: ${socket.id}`)
         socket.leave('block/change/state')
-        break;
+        break
       case 'block/earnings':
         debug(`unsuscribing to "block/earnings" client: ${socket.id}`)
         socket.leave('block/earnings')
-        break;
+        break
       default:
-        break;
+        break
     }
   })
-  socket.on('message', (payload) => { 
+  socket.on('message', (payload) => {
     debug(`a message has come from ${socket.id}`)
     console.log(payload)
     io.to(payload.topic).emit(payload.topic, payload.body)

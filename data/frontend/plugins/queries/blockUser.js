@@ -16,9 +16,6 @@ module.exports = (block) => {
         app
         red
         trader
-        low
-        high
-        medium
         from
         to
         nickname
