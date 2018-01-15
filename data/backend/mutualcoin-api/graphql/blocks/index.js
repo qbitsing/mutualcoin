@@ -164,7 +164,6 @@ module.exports = {
         })
       }
       return result
-      
     },
     blockPause: async (_, { uuid }) => {
       let result

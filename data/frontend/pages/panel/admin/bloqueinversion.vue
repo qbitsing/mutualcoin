@@ -40,6 +40,7 @@
 <script>
 import MutualBlock from '~/components/bloqueAdmin.vue'
 import {mapState} from 'vuex'
+import socket from '~/plugins/socket'
 export default {
   data () {
     return {
@@ -51,24 +52,19 @@ export default {
   middleware: ['auth', 'blocks'],
   computed: mapState(['blocks']),
   created () {
+    this.conectSocket()
     this.$store.commit('TITLE_VIEW', 'Bloques en inversión')
 
     // this.getBlock()
   },
   components: {MutualBlock},
   methods: {
-    // async getBlock () {
-    //   if (res.status === 200) {
-    //     this.coins = this.$store.state.coins
-    //     this.blocks = res.data.blocks
-    //     this.blocks.forEach((ele, index) => {
-    //       this.nameMoneda(ele.coin)
-    //       this.blocks[index].coin = this.nameCoin
-    //     })
-    //   } else {
-    //     console.log(res)
-    //   }
-    // },
+    async conectSocket () {
+      const client = await socket().catch((err) => {
+        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+      })
+      console.log(client)
+    },
     nameMoneda (uuid) {
       this.coins.forEach((ele, index) => {
         if (ele.uuid === uuid) {

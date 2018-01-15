@@ -7,7 +7,6 @@ export const state = () => ({
   authToken: null,
   authUser: null,
   coins: null,
-  conectinSocke: false,
   blocks: {},
   blocksUser: null,
   inversion: null,
@@ -43,9 +42,6 @@ export const mutations = {
   },
   SET_DAYSINFO: (state, newBlocks) => {
     state.blocks = newBlocks
-  },
-  SET_CONECTIONSOCKET: (state, socket) => {
-    state.socket = socket
   }
 }
 export const actions = {
