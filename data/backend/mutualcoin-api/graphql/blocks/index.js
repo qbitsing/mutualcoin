@@ -190,7 +190,6 @@ module.exports = {
         }
       }
       return result
-      
     },
     blockPause: async (_, { uuid }) => {
       let result
@@ -278,7 +277,7 @@ module.exports = {
       } catch (error) {
         return error
       }
-      if (result.length > 0) { 
+      if (result.length > 0) {
         const client = await socket().catch((err) => {
           console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
         })
