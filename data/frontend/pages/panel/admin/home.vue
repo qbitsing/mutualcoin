@@ -4,7 +4,7 @@
 </div>
 </template>
 <script>
-import Mqtt from 'web-mqtt-client'
+// import io from 'socket.io-client'
 export default {
   layout: 'dashboard',
   middleware: 'auth',
@@ -14,12 +14,6 @@ export default {
     }
   },
   mounted () {
-    const MqttClient = Mqtt(window)
-    var client = new MqttClient({
-      host: 'mqtt://localhost',
-      port: 1883
-    })
-    client.connect()
     this.$store.commit('TITLE_VIEW', 'Tablero')
   }
 }
