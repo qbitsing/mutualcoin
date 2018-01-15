@@ -17,34 +17,33 @@ io.on('connection', (socket) => {
   socket.on('suscribe', (payload) => {
     switch (payload) {
       case 'block/change/state':
-        debug(`suscribing to "block/change/state" client: ${socket.id}`)
-        socket.join('block/change/state')
-        break;
       case 'block/earnings':
-        debug(`suscribing to "block/earnings" client: ${socket.id}`)
-        socket.join('block/earnings')
-        break;
+      case 'block/make/pay':
+      case 'block/amount':
+      case 'block/user/add':
+        debug(`suscribing to "${payload}" client: ${socket.id}`)
+        socket.join(payload)
+        break
       default:
-        break;
+        break
     }
   })
   socket.on('unsuscribe', (payload) => {
     switch (payload) {
       case 'block/change/state':
-        debug(`unsuscribing to "block/change/state" client: ${socket.id}`)
-        socket.leave('block/change/state')
-        break;
       case 'block/earnings':
-        debug(`unsuscribing to "block/earnings" client: ${socket.id}`)
-        socket.leave('block/earnings')
-        break;
+      case 'block/make/pay':
+      case 'block/amount':
+      case 'block/user/add':
+        debug(`unsuscribing to "${payload}" client: ${socket.id}`)
+        socket.leave(payload)
+        break
       default:
-        break;
+        break
     }
   })
-  socket.on('message', (payload) => { 
+  socket.on('message', (payload) => {
     debug(`a message has come from ${socket.id}`)
-    console.log(payload)
     io.to(payload.topic).emit(payload.topic, payload.body)
   })
 })

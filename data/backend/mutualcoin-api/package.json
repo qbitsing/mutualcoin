@@ -33,6 +33,7 @@
     "graphql-tools": "^2.15.0",
     "jsonwebtoken": "^8.1.0",
     "mutualcoin-db": "file:../mutualcoin-db",
-    "mutualcoin-utils": "file:../utils"
+    "mutualcoin-utils": "file:../utils",
+    "socket.io-client": "^2.0.4"
   }
 }
