@@ -1,5 +1,5 @@
 'use strict'
-
+const socket = require('../../io/emit-message')
 module.exports = {
   BlockUser: `
     type BlockUser {
@@ -32,7 +32,7 @@ module.exports = {
     },
     _block: ({ block }) => db.block.getUuid(block),
     _user: ({ user }) => db.user.getUuid(user),
-    blockUserAdd: (_, { blockUser }) => {
+    blockUserAdd: async (_, { blockUser }) => {
       let obj = {
         amount: blockUser.amount,
         user: blockUser.user,
@@ -41,7 +41,22 @@ module.exports = {
         high: blockUser.high,
         medium: blockUser.medium
       }
-      return db.blockUser.create(obj)
+      let result
+      try {
+        result = await db.blockUser.create(obj)
+      } catch (error) {
+        return error
+      }
+      if (result) { 
+        obj._block = await db.block.getUuid(obj.block)
+        obj._user = await db.user.getUuid(obj.user)
+        socket({
+          topic: 'block/user/add',
+          body: obj
+        })
+      }
+
+      return result
     }
   })
 }

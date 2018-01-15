@@ -45,7 +45,8 @@ export default {
   data () {
     return {
       coins: null,
-      nameCoin: null
+      nameCoin: null,
+      client: null
     }
   },
   layout: 'dashboard',
@@ -60,10 +61,10 @@ export default {
   components: {MutualBlock},
   methods: {
     async conectSocket () {
-      const client = await socket().catch((err) => {
+      this.client = await socket().catch((err) => {
         console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
       })
-      console.log(client)
+      console.log(this.client)
     },
     nameMoneda (uuid) {
       this.coins.forEach((ele, index) => {

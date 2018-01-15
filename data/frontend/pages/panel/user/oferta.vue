@@ -10,6 +10,7 @@
 <script>
 import MutualBloque from '~/components/bloque.vue'
 import {mapState} from 'vuex'
+import socket from '~/plugins/socket'
 export default {
   middleware: ['auth', 'blocks', 'userInversions'],
   components: {MutualBloque},
@@ -17,14 +18,22 @@ export default {
   computed: mapState(['blocks', 'authToken']),
   data () {
     return {
+      client: null,
       blocksActive: []
     }
   },
-  created () {
-    this.blocksActive = this.blocks.active
+  methods: {
+    async conectSocket () {
+      this.client = await socket().catch((err) => {
+        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+      })
+      console.log(this.client)
+    }
   },
-  beforeMount () {
+  created () {
     this.$store.commit('TITLE_VIEW', 'Oferta')
+    this.conectSocket()
+    this.blocksActive = this.blocks.active
   }
 }
 </script>

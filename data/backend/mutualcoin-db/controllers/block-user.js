@@ -114,7 +114,7 @@ async function create(blockUser) {
   blockUserToCreate.medium = blockUser.medium
   blockUserToCreate.low = blockUser.low
 
-  return await blockUserToCreate.save()
+  return blockUserToCreate.save()
 }
 
 async function updatePays(uuid, pays, lastPay) {

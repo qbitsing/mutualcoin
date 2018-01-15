@@ -1,7 +1,7 @@
 'use strict'
 
 const { pays } = require('mutualcoin-utils')
-const socket = require('../../io')
+const socket = require('../../io/emit-message')
 const paysMap = new Map()
 function setConds (query) {
   const conds = []
@@ -113,184 +113,129 @@ module.exports = {
     blockAdd: (_, { block }) => db.block.create(block),
     blockActivate: async (_, { uuid }) => {
       let result
-      let message
-      try {
-        result = await db.block.activate(uuid)
-      } catch (error) {
-        return error
-      }
+      try { result = await db.block.activate(uuid) } catch (error) { return error }
       if (result === 200) {
-        const client = await socket().catch((err) => {
-          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
-        })
-        message = {
+        socket({
           topic: 'block/change/state',
           body: {
             uuid,
             state: 'active',
             date: null
           }
-        }
-
-        if (client) {
-          client.emit('message', message)
-        }
+        })
       }
       return result
     },
     blockWaiting: async (_, { uuid }) => {
       let result
-      let message
       try {
         result = await db.block.waiting(uuid)
       } catch (error) {
         return error
       }
       if (result === 200) {
-        const client = await socket().catch((err) => {
-          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
-        })
-        message = {
+        socket({
           topic: 'block/change/state',
           body: {
             uuid,
             state: 'waiting',
             date: null
           }
-        }
-
-        if (client) {
-          client.emit('message', message)
-        }
+        })
       }
       return result
     },
     blockRun: async (_, { uuid, startDate }) => {
       let result
-      let message
       try {
         result = await db.block.run(uuid, startDate)
       } catch (error) {
         return error
       }
       if (result === 200) {
-        const client = await socket().catch((err) => {
-          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
-        })
-        message = {
+        socket({
           topic: 'block/change/state',
           body: {
             uuid,
             state: 'running',
             date: startDate
           }
-        }
-        if (client) {
-          client.emit('message', message)
-        }
+        })
       }
       return result
     },
     blockPause: async (_, { uuid }) => {
       let result
-      let message
       try {
         result = await db.block.pause(uuid)
       } catch (error) {
         return error
       }
       if (result === 200) {
-        const client = await socket().catch((err) => {
-          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
-        })
-        message = {
+        socket({
           topic: 'block/change/state',
           body: {
             uuid,
             state: 'paused',
             date: null
           }
-        }
-        if (client) {
-          client.emit('message', message)
-        }
+        })
       }
       return result
     },
     blockCancel: async (_, { uuid }) => {
       let result
-      let message
       try {
         result = await db.block.cancel(uuid)
       } catch (error) {
         return error
       }
       if (result === 200) {
-        const client = await socket().catch((err) => {
-          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
-        })
-        message = {
+        socket({
           topic: 'block/change/state',
           body: {
             uuid,
             state: 'cancel',
             date: null
           }
-        }
-        if (client) {
-          client.emit('message', message)
-        }
+        })
       }
       return result
     },
     blockFinish: async (_, { uuid }) => {
       let result
-      let message
       try {
         result = await db.block.finish(uuid)
       } catch (error) {
         return error
       }
       if (result === 200) {
-        const client = await socket().catch((err) => {
-          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
-        })
-        message = {
+        socket({
           topic: 'block/change/state',
           body: {
             uuid,
             state: 'finished',
             date: null
           }
-        }
-        if (client) {
-          client.emit('message', message)
-        }
+        })
       }
       return result
     },
     blockEarnings: async (_, { uuid, earnings }) => {
       let result
-      let message
       try {
         result = await db.block.setInfoDays(uuid, earnings)
       } catch (error) {
         return error
       }
       if (result.length > 0) {
-        const client = await socket().catch((err) => {
-          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
-        })
-        message = {
+        socket({
           topic: 'block/earnings',
           body: {
             uuid,
             daysInfo: result
           }
-        }
-        if (client) {
-          client.emit('message', message)
-        }
+        })
       }
       return result
     },
@@ -321,33 +266,42 @@ module.exports = {
       } catch (error) {
         throw error
       }
-      
-      const client = await socket().catch((err) => { 
-        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)          
-      })
 
-      if (client) { 
-        const message = {
-          topic: 'block/make/pay',
-          body: {
-            uuid,
-            last_pay: result.to,
-            investments: newInvestments.map(investment => ({
-              pays: investment.pays,
-              last_pay: investment.last_pay,
-              uuid: investment.uuid,
-              _user: investment._user
-            }))
-          }
+      socket({
+        topic: 'block/make/pay',
+        body: {
+          uuid,
+          last_pay: result.to,
+          investments: newInvestments.map(investment => ({
+            pays: investment.pays,
+            last_pay: investment.last_pay,
+            uuid: investment.uuid,
+            _user: investment._user
+          }))
         }
-      }
-      
+      })
 
       paysMap.delete(uuid)
       return newInvestments
     },
     blockAmount: async (_, { uuid, amount }) => {
-      return db.block.updateAmount(uuid, amount)
+      let result
+      try {
+        result = await db.block.updateAmount(uuid, amount)
+      } catch (error) {
+        return error
+      }
+      if (result.status === 200) {
+        socket({
+          topic: 'block/amount',
+          body: {
+            uuid,
+            amount,
+            amountLeft: result.amountLeft
+          }
+        })
+      }
+      return result.status
     }
   })
 }
