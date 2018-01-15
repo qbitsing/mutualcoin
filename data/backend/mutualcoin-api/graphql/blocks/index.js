@@ -113,7 +113,8 @@ module.exports = {
     blockAdd: (_, { block }) => db.block.create(block),
     blockActivate: async (_, { uuid }) => {
       let result
-      try { result = await db.block.activate(uuid) } catch (error) { return error }
+      try { result = await db.block.activate(uuid) }
+      catch (error) { return error }
       if (result === 200) {
         socket({
           topic: 'block/change/state',
