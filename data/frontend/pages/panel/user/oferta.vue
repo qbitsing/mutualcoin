@@ -18,16 +18,17 @@ export default {
   computed: mapState(['blocks', 'authToken']),
   data () {
     return {
-      client: null,
       blocksActive: []
     }
   },
   methods: {
     async conectSocket () {
-      this.client = await socket().catch((err) => {
+      const client = await socket().catch((err) => {
         console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
       })
-      console.log(this.client)
+      if (client.connected) {
+        client.emit('suscribe')
+      }
     }
   },
   created () {
