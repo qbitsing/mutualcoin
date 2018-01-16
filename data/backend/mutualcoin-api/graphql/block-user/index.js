@@ -48,8 +48,12 @@ module.exports = {
         return error
       }
       if (result) {
+        let { nickname } = await db.user.getUuid(obj.user)
         obj._block = await db.block.getUuid(obj.block)
-        obj._user = await db.user.getUuid(obj.user)
+        obj._user = { nickname }
+        obj.uuid = result.uuid
+        obj.pays = result.pays
+        obj.last_pay = result.last_pay
         socket({
           topic: 'block/user/add',
           body: obj

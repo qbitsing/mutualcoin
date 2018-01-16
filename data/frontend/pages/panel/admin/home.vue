@@ -10,8 +10,7 @@ export default {
   middleware: 'auth',
   data () {
     return {
-      message: 'ola',
-      client: null
+      message: 'ola'
     }
   },
   methods: {
@@ -19,16 +18,13 @@ export default {
       const client = await socket().catch((err) => {
         console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
       })
-      client.emit('suscribe', 'block/change/state')
-    },
-    subscribe () {
-      // this.client.emit('suscribe', 'block/change/state')
+      console.log(client)
+      // client.emit('suscribe', 'block/change/state')
     }
 
   },
   created () {
     this.conectSocket()
-    this.subscribe()
     this.$store.commit('TITLE_VIEW', 'Tablero')
   }
 }

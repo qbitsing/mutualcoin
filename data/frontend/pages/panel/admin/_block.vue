@@ -279,6 +279,7 @@ import mutationMakePay from '~/plugins/mutations/makePay'
 import swal from 'sweetalert2'
 import api from '~/plugins/axios'
 import BigNumber from 'bignumber.js'
+import socket from '~/plugins/socket'
 export default {
   layout: 'dashboard',
   middleware: ['auth', 'coins', 'blocks', 'blocksUser'],
@@ -519,8 +520,30 @@ export default {
     },
     decimal (result) {
       return parseFloat(result.toFixed(8))
+    },
+    async socketInvestment () {
+      const client = await socket().catch((err) => {
+        console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+      })
+      if (client.connected) {
+        client.emit('suscribe', 'block/user/add')
+        client.on('block/user/add', (data) => {
+          for (var prop in this.blocks) {
+            let index = this.blocks[prop].findIndex(block => block.uuid === data._block.uuid)
+            if (index !== -1) {
+              this.blocks[prop][index].amountLeft = data._block.amountLeft
+              this.blocks[prop][index].state = data._block.state
+              break
+            }
+          }
+          if (data.block === this.$route.params.block) {
+            // let newBlockUser
+          }
+        })
+      }
     }
   },
+
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
 
