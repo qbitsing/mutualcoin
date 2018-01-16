@@ -48,7 +48,7 @@ module.exports = {
         return error
       }
       if (result) {
-        let { nickname }= await db.user.getUuid(obj.user)
+        let { nickname } = await db.user.getUuid(obj.user)
         obj._block = await db.block.getUuid(obj.block)
         obj._user = { nickname }
         obj.uuid = result.uuid
