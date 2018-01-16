@@ -9,7 +9,7 @@
       <v-card-actions>
         <v-btn @click="propsDialog.state = true" color="primary" >Invetir</v-btn>
       </v-card-actions>
-      <mutual-dialog :dialog="propsDialog">
+      <mutual-dialog :dialog="propsDialog" @close="clear">
         <section slot="contenDialog">
             <v-form ref ="inversion" lazy-validation>
               <v-card flat class="no-padding-bottom">
@@ -90,7 +90,6 @@ import MutualDialog from '~/components/dialog.vue'
 import mutation from '~/plugins/mutations/invert'
 import api from '~/plugins/axios'
 import swal from 'sweetalert2'
-import BigNumber from 'bignumber.js'
 import {mapState} from 'vuex'
 export default {
   data () {
@@ -133,23 +132,12 @@ export default {
         }
         try {
           const res = await api(mutation(data), 'post', this.authToken)
-          this.loading = false
-          console.log(res)
           if (res.data.data.inversion) {
-            this.blocks.active.map(e => {
-              if (e.uuid === this.data.uuid) {
-                const amountLeft = new BigNumber(e.amountLeft.toString())
-                e.amountLeft = amountLeft.minus(this.amount).toString()
-                if (e.amountLeft === 0) {
-                  e.state = 'waiting'
-                }
-              }
-              return e
-            })
-            this.userInversions.push(res.data.data.inversion)
-            swal('Excelente', 'Inversión guardada con éxito', 'success')
+            swal('Excelente', 'Inversión realizada con éxito', 'success')
             this.clear()
           }
+          this.loading = false
+          console.log(res)
         } catch (error) {
           this.loading = false
           swal('Ooops...', 'Error al invertir, intentalo más tarde!', 'error')
@@ -162,7 +150,7 @@ export default {
       if (ev.keyCode < 48 || ev.keyCode > 57) {
         if (ev.keyCode !== 46) ev.preventDefault()
       }
-      if (this.amount.toString().length > 9) ev.preventDefault()
+      if ((this.amount + '').length > 9) ev.preventDefault()
     },
     preventAll (ev) {
       if (ev.keyCode < 48 || ev.keyCode > 57) {

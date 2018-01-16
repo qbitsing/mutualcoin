@@ -47,7 +47,7 @@ module.exports = {
       } catch (error) {
         return error
       }
-      if (result) { 
+      if (result) {
         obj._block = await db.block.getUuid(obj.block)
         obj._user = await db.user.getUuid(obj.user)
         socket({

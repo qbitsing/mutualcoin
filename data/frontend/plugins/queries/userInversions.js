@@ -1,6 +1,7 @@
 module.exports = function (uuid) {
   return { query: `{
     blocksUsersBy(propertie: "user", value: "${uuid}") {
+    block
     _block {
       amount
       amountLeft
