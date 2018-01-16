@@ -19,7 +19,9 @@ export default {
         console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
       })
       console.log(client)
+      // client.emit('suscribe', 'block/change/state')
     }
+
   },
   created () {
     this.conectSocket()

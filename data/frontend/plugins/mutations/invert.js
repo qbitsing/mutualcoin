@@ -33,7 +33,14 @@ module.exports = (data) => {
      high
      medium
      low
-     pays
+     pays {
+       app
+      user
+      red
+      trader
+      from
+      to
+     }
       }
   }`
   }
