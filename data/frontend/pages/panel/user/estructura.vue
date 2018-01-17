@@ -135,11 +135,12 @@
 <script>
   import query from '~/plugins/queries/estructure'
   import {mapState} from 'vuex'
+  import realTime from '~/plugins/userRealTime'
   import MutualLoader from '~/components/loader.vue'
   import api from '~/plugins/axios'
   export default {
     middleware: 'auth',
-    computed: mapState(['authUser', 'authToken']),
+    computed: mapState(['authUser', 'authToken', 'blocks', 'userInversions']),
     layout: 'dashboard',
     components: {MutualLoader},
     data () {
@@ -157,6 +158,7 @@
       }
     },
     async created () {
+      realTime(this)
       this.$store.commit('TITLE_VIEW', 'Estructura')
       const res = await api({}, 'get', this.authToken, {params: query(this.authUser.uuid)})
       this.estructure = res.data.data.user.line

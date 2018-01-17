@@ -191,6 +191,7 @@ import api from '~/plugins/axios'
 import query from '~/plugins/queries/profile'
 import mutation from '~/plugins/mutations/editUser'
 import MutualDialog from '~/components/dialog'
+import realTime from '~/plugins/userRealTime'
 export default {
   middleware: 'auth',
   layout: 'dashboard',
@@ -259,31 +260,35 @@ export default {
     remove (item) {
       this.userData.hobbies.splice(this.userData.hobbies.indexOf(item), 1)
       this.userData.hobbies = [...this.userData.hobbies]
+    },
+    async loadData () {
+      const res = await api({}, 'get', this.authToken, {params: query(this.authUser.uuid)})
+      this.userData = res.data.data.user
+      this.lastData = {
+        bch: this.userData.bch,
+        age: this.userData.age,
+        firstName: this.userData.firstName,
+        lastName: this.userData.lastName,
+        address: this.userData.address,
+        email2: this.userData.email2,
+        phone: this.userData.phone,
+        bchType: this.userData.bchType,
+        birthdate: this.userData.birthdate,
+        hobbies: this.userData.hobbies,
+        nickname: this.userData.nickname
+      }
+      if (this.userData.gender) {
+        this.userData.spanishGender = this.userData.gender === 'male' ? 'Masculino' : 'Femenino'
+        this.lastData.spanishGender = this.userData.spanishGender
+      }
     }
   },
   async created () {
+    realTime(this)
+    this.loadData()
     this.$store.commit('TITLE_VIEW', 'Perfil')
-    const res = await api({}, 'get', this.authToken, {params: query(this.authUser.uuid)})
-    this.userData = res.data.data.user
-    this.lastData = {
-      bch: this.userData.bch,
-      age: this.userData.age,
-      firstName: this.userData.firstName,
-      lastName: this.userData.lastName,
-      address: this.userData.address,
-      email2: this.userData.email2,
-      phone: this.userData.phone,
-      bchType: this.userData.bchType,
-      birthdate: this.userData.birthdate,
-      hobbies: this.userData.hobbies,
-      nickname: this.userData.nickname
-    }
-    if (this.userData.gender) {
-      this.userData.spanishGender = this.userData.gender === 'male' ? 'Masculino' : 'Femenino'
-      this.lastData.spanishGender = this.userData.spanishGender
-    }
   },
-  computed: mapState(['authUser', 'authToken'])
+  computed: mapState(['authUser', 'authToken', 'blocks', 'userInversions'])
 }
 </script>
 <style scoped>

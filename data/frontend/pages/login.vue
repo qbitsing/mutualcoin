@@ -46,6 +46,7 @@
 <script>
 import swal from 'sweetalert2'
 export default {
+  middleware: 'auth',
   data: () => ({
     valid: true,
     e1: true,

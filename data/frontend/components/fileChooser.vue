@@ -42,6 +42,7 @@
             })
           })
           this.imageData.imageBase64 = await wait
+          console.log(this.imageData.imageBase64.length)
           if (!this.validBase64Image()) {
             swal('Ooops...', 'La imagen seleccionada no es válida o está dañada.', 'error')
             this.imageData = {

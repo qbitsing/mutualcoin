@@ -10,11 +10,15 @@
 <script>
 import MutualBloqueHistorial from '~/components/bloqueHistorial.vue'
 import {mapState} from 'vuex'
+import realTime from '~/plugins/userRealTime'
 export default {
+  created () {
+    realTime(this)
+  },
   components: { MutualBloqueHistorial },
   layout: 'dashboard',
   middleware: ['auth', 'userInversions'],
-  computed: mapState(['userInversions']),
+  computed: mapState(['userInversions', 'blocks']),
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Historial')
   }

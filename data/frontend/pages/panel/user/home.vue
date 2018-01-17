@@ -7,9 +7,15 @@
 
 </template>
 <script>
+import {mapState} from 'vuex'
+import realTime from '~/plugins/userRealTime'
 export default {
   layout: 'dashboard',
   middleware: 'auth',
+  computed: mapState(['blocks', 'userInversions']),
+  created () {
+    realTime(this)
+  },
   methods: {
     async logout () {
       await this.$store.dispatch('logout')

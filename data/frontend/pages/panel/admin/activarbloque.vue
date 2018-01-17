@@ -186,8 +186,8 @@ export default {
           let block = res.data.data.result
           block.spanishState = this.spanishText(block.state)
           block.inverted = 0
-          this.allBlocks.push(block)
-          this.blocks.inactive.push(block)
+          this.allBlocks.unshift(block)
+          this.blocks.inactive.unshift(block)
           this.clear()
           swal('Excelente', 'Bloque creado correctamente', 'success')
         }
@@ -233,7 +233,7 @@ export default {
             }
             const waitingAmount = item.inverted
             item.amount = newState === 'waiting' ? waitingAmount : item.amount
-            this.blocks[item.state].push(item)
+            this.blocks[item.state].unshift(item)
             item.spanishState = this.spanishText(newState)
             this.$store.commit('SET_BLOCKS', this.blocks)
             return swal('Excelente', `Bloque ${text2} con éxito.`, 'success')

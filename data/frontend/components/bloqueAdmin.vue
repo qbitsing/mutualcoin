@@ -18,7 +18,7 @@
       <p>Plan de: {{data.amount}} {{data.coin}}</p>
       <p>Semanas: {{data.weeks}}</p>
       <p>Invertidos:
-        {{data.inverted}}
+        {{data.amount - data.amountLeft}}
       </p>
       <v-card-actions>
         <v-btn color="success" @click="goBlock(data.uuid)">Detalles</v-btn>
