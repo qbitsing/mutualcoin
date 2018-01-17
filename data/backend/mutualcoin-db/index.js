@@ -6,6 +6,7 @@ const user = require('./controllers/users')
 const coin = require('./controllers/coins')
 const block = require('./controllers/blocks')
 const blockUser = require('./controllers/block-user')
+const ticket = require('./controllers/ticket')
 
 module.exports = async function(config) {
   // configuramos la configuracion por defecto
@@ -37,6 +38,7 @@ module.exports = async function(config) {
     user: user(db),
     coin: coin(db),
     block: block(db),
-    blockUser: blockUser(db)
+    blockUser: blockUser(db),
+    ticket: ticket(db)
   }
 }
