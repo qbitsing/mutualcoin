@@ -1,4 +1,5 @@
 import socket from '~/plugins/socket'
+import swal from 'sweetalert2'
 import BigNumber from 'bignumber.js'
 export default async function (self) {
   const client = await socket().catch((err) => {
@@ -60,7 +61,48 @@ export default async function (self) {
       client.emit('suscribe', 'block/earnings')
       client.removeListener('block/earnings')
       client.on('block/earnings', res => {
-        console.log(res)
+        self.userInversions.forEach(el => {
+          if (el.block === res.uuid) {
+            el._block.daysInfo = res.daysInfo
+          }
+        })
+        if (self.inversion && self.inversion.block === res.uuid) {
+          self.inversion.formatedInfo = self.formatearArray(self.dividirArray(res.daysInfo))
+          self.inversion.nowWeek = self.inversion.formatedInfo.length
+          swal('Se acaban de registrar nuevas ganancias.')
+        }
+      })
+
+      client.emit('suscribe', 'block/make/pay')
+      client.removeListener('block/make/pay')
+      client.on('block/make/pay', res => {
+        let isBlock = false
+        for (const iterable of self.userInversions) {
+          if (iterable.block === res.uuid) {
+            isBlock = true
+            break
+          }
+        }
+        if (isBlock) {
+          console.log(res)
+          self.userInversions.forEach(el => {
+            for (const iterable of res.investments) {
+              if (iterable.uuid === el.uuid) {
+                el.pays = iterable.pays
+                break
+              }
+            }
+          })
+          for (const iterable of res.investments) {
+            if (self.inversion && self.inversion.uuid === iterable.uuid) {
+              self.inversion.pays = iterable.pays.map(e => {
+                e.week = Math.ceil(e.to / 7)
+                return e
+              })
+              break
+            }
+          }
+        }
       })
     }
   }
