@@ -3,6 +3,7 @@ const { makeExecutableSchema } = require('graphql-tools')
 const { User, QueryUser } = require('./user')
 const { Block, QueryBlock } = require('./blocks')
 const { Coin, QueryCoins } = require('./coin')
+const { Query, Ticket } = require('./ticket')
 const { BlockUser, QueryBlockUser } = require('./block-user')
 
 const rootQuery = `
@@ -11,10 +12,13 @@ const rootQuery = `
     user(uuid: String): User
     usersBy(value: String, propertie: String): [User]
     blocks: [Block]
+    block(uuid: String): Block
     blocksState(states: [String]): [Block]
     coins: [Coin]
     blocksUsers: [BlockUser]
     blocksUsersBy(propertie: String, value: String): [BlockUser]
+    tickets(user: String): [Ticket]
+    ticketsActives(user: String): [Ticket]
   }
 
   type Mutation {
@@ -32,14 +36,17 @@ const rootQuery = `
     blockMakePay(uuid: String): [BlockUser]
     blockAmount(uuid: String, amount: Int): Block
     blockUserAdd(blockUser: newBlockUser): BlockUser
+    ticketAdd(ticket: newTicket): Ticket
+    ticketAnswer(uuid: String, response: Response): Ticket
   }
 `
 
 // module.exports = makeExecutableSchema({typeDefs})
 module.exports = function (db) {
   const { users, usersBy, user, referred, line, userAdd, userEdit } = QueryUser(db)
-  const { _coin, blocks, blocksState, blockAdd, blockActivate, blockWaiting, blockRun, blockPause, blockCancel, blockFinish, blockEarnings, blockAmount, blockMakePay, blockPay } = QueryBlock(db)
+  const { _coin, block, blocks, blocksState, blockAdd, blockActivate, blockWaiting, blockRun, blockPause, blockCancel, blockFinish, blockEarnings, blockAmount, blockMakePay, blockPay } = QueryBlock(db)
   const { coins } = QueryCoins(db)
+  const { ticketAdd, ticketAnswer, tickets, ticketsActives } = Query(db)
   const { blocksUsers, blocksUsersBy, _block, _user, blockUserAdd } = QueryBlockUser(db)
   const resolvers = {
     Query: {
@@ -47,10 +54,13 @@ module.exports = function (db) {
       usersBy,
       user,
       blocks,
+      block,
       blocksState,
       coins,
       blocksUsers,
-      blocksUsersBy
+      blocksUsersBy,
+      tickets,
+      ticketsActives
     },
     User: {
       referred,
@@ -77,7 +87,9 @@ module.exports = function (db) {
       blockAmount,
       blockMakePay,
       blockPay,
-      blockUserAdd
+      blockUserAdd,
+      ticketAdd,
+      ticketAnswer
     }
   }
 
@@ -87,7 +99,8 @@ module.exports = function (db) {
       User,
       Block,
       Coin,
-      BlockUser
+      BlockUser,
+      Ticket
     ],
     resolvers
   })

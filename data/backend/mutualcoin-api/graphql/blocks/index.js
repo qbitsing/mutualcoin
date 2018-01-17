@@ -105,6 +105,7 @@ module.exports = {
   `,
   QueryBlock: (db) => ({
     blocks: (rootValue, args, context) => db.block.get(),
+    block: (_, { uuid }) => db.block.getUuid(uuid),
     blocksState: (rootValue, { states }, context) => {
       const conds = setConds(states)
       return db.block.getState(conds)
