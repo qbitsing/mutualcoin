@@ -237,7 +237,7 @@ function validateInfo(info, length) {
   let oldDay = length
   for (let i of info) {
     oldDay++
-    if ((i.day === oldDay) && i.high && !isNaN(i.high) && i.medium && !isNaN(i.medium) && i.low && !isNaN(i.low)) {
+    if ((i.day === oldDay) && i.high === null && !isNaN(i.high) && i.medium === null && !isNaN(i.medium) && i.low === null && !isNaN(i.low)) {
     } else {
       throw new Error('bad request: the info is not valid')
     }
