@@ -134,17 +134,25 @@ module.exports = {
       } catch (error) {
         return error
       }
-      if (result === 200) {
+      if (result.result === 200) {
         socket({
           topic: 'block/change/state',
           body: {
             uuid,
             state: 'waiting',
-            amount: result.amount,
-            amountLeft: result.amountLeft,
             date: null
           }
         })
+        if (result.amount) { 
+          socket({
+            topic: 'block/change/state',
+            body: {
+              uuid,
+              amount: result.amount,
+              amountLeft: result.amountLeft
+            }
+          })
+        }
       }
       return result.result
     },
