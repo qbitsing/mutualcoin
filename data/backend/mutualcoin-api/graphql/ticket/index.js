@@ -1,6 +1,6 @@
 'use strict'
 
-const asnwer = `
+const answer = `
   body: String
   file: String
   date: String

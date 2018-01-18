@@ -101,9 +101,9 @@
                 :flat="inversion.nowWeek == n"
                 :key="n"
                 :class="inversion._block.weeks > 26 ? 'much-wel' : 'wel'"
-                @click="week = n"
+                @click="setWeek(n)"
                 :color="'primary'"
-                :disabled="n > weeks.length">
+                :disabled="n > inversion.formatedInfo.length">
                   {{n}}
                 </v-btn>
               </div>
@@ -196,6 +196,10 @@ export default {
     calcular (exp) {
       return parseFloat(exp.toFixed(8))
     },
+
+    setWeek (n) {
+      this.inversion.nowWeek = n
+    },
     dividirArray (arr) {
       let result = []
       for (let index = 1; index <= Math.ceil(arr.length / 7); index++) {
@@ -236,9 +240,7 @@ export default {
     BigNumber.config({EXPONENTIAL_AT: [-20, 20]})
     this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
     this.inversion.formatedInfo = this.formatearArray(this.dividirArray(this.inversion._block.daysInfo))
-    console.log(this.inversion.formatedInfo)
     this.inversion.nowWeek = this.inversion.formatedInfo.length
-    console.log(this.inversion.nowWeek)
     this.inversion.pays.forEach(e => {
       e.week = Math.ceil(e.to / 7)
     })
