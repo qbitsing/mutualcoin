@@ -227,9 +227,11 @@ export default {
             data.startDate = moment().format('DD/MM/YY')
           }
           let res
-          try{
+          try {
             res = await api(mutation(data), 'post', this.authToken)
-          } catch {
+          } catch (e) {
+            console.error(e.message)
+            console.error(e.stack)
             swal('Ooops...', 'Network error', 'error')
           }
           if (res.data.data.result === 200) {
