@@ -145,7 +145,7 @@ module.exports = {
         })
         if (result.amount) { 
           socket({
-            topic: 'block/change/state',
+            topic: 'block/amount',
             body: {
               uuid,
               amount: result.amount,
