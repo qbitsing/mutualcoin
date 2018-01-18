@@ -134,7 +134,7 @@ module.exports = {
       } catch (error) {
         return error
       }
-      if (result === 200) {
+      if (result.result === 200) {
         socket({
           topic: 'block/change/state',
           body: {
@@ -143,8 +143,18 @@ module.exports = {
             date: null
           }
         })
+        if (result.amount) { 
+          socket({
+            topic: 'block/amount',
+            body: {
+              uuid,
+              amount: result.amount,
+              amountLeft: result.amountLeft
+            }
+          })
+        }
       }
-      return result
+      return result.result
     },
     blockRun: async (_, { uuid, startDate }) => {
       let result
