@@ -140,11 +140,13 @@ module.exports = {
           body: {
             uuid,
             state: 'waiting',
+            amount: result.amount,
+            amountLeft: result.amountLeft,
             date: null
           }
         })
       }
-      return result
+      return result.result
     },
     blockRun: async (_, { uuid, startDate }) => {
       let result

@@ -26,7 +26,7 @@ const rootQuery = `
     userEdit(uuid: String, user: userEditable): User
     blockAdd(block: newBlock): Block
     blockActivate(uuid: String): Int
-    blockWaiting(uuid: String): Int
+    blockWaiting(uuid: String, amount: Float): Int
     blockRun(uuid: String, startDate: String): Int
     blockPause(uuid: String): Int
     blockCancel(uuid: String): Int
@@ -34,7 +34,7 @@ const rootQuery = `
     blockEarnings(uuid: String, earnings: [dayInfo]): [infoDay]
     blockPay(uuid: String, to: Int): [pay]
     blockMakePay(uuid: String): [BlockUser]
-    blockAmount(uuid: String, amount: Int): Block
+    blockAmount(uuid: String): Block
     blockUserAdd(blockUser: newBlockUser): BlockUser
     ticketAdd(ticket: newTicket): Ticket
     ticketAnswer(uuid: String, response: Response): Ticket

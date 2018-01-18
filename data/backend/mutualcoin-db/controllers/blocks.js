@@ -129,7 +129,7 @@ async function waiting(uuid) {
 
   await BlockModel.findByIdAndUpdate(block._id, update)
 
-  return 200
+  return { result: 200, amount: update.amount, amountLeft: update.amountLeft }
 }
 
 async function run(uuid, startDate) {
