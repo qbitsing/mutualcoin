@@ -56,6 +56,11 @@ export default async function (self) {
           }
         }
       })
+      client.emit('suscribe', 'block/amount')
+      client.removeListener('block/amount')
+      client.on('block/amount', res => {
+        console.log(res)
+      })
     }
     if (self.userInversions) {
       client.emit('suscribe', 'block/earnings')

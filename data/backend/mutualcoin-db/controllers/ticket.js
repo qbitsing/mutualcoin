@@ -60,7 +60,7 @@ function getActives(user) {
 module.exports = function (db) { 
   TicketModel = mongosse.model('ticket', ticketSchema)
 
-  ticketMethods = {}
+  const ticketMethods = {}
   ticketMethods.create = create
   ticketMethods.answer = answer
   ticketMethods.get = get
