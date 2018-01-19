@@ -8,7 +8,7 @@ const answer = `
 `
 module.exports = {
   Ticket: `
-    type Ticket: {
+    type Ticket {
       subjet: String
       body: String
       file: String

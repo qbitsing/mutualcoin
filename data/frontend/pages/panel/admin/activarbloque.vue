@@ -103,10 +103,11 @@
               <td class="text-xs-center">{{ props.item.inverted}}</td>
               <td class="text-xs-center">{{ props.item.weeks }}</td>
               <td class="text-xs-center">{{ props.item.spanishState }}</td>
-              <td class="text-xs-right">
+              <td class="text-xs-center">
                 <v-btn small color="primary" @click="changeState(props.item, 'Activate', 'active', 'activar', 'activado')" v-if="props.item.state == 'inactive'">activar</v-btn>
                 <v-btn small color="primary" @click="changeState(props.item, 'Waiting', 'waiting', 'cerrar', 'cerrado')" v-if="props.item.state == 'active'">cerrar</v-btn>
                 <v-btn small color="primary" @click="changeState(props.item, 'Run', 'running', 'iniciar', 'corriendo')" v-if="props.item.state == 'waiting'">iniciar</v-btn>
+                <v-btn small color="primary" @click="changeAmount" v-if="props.item.state == 'inactive' || props.item.state == 'active'">cambiar monto</v-btn>
                 <v-btn small color="primary" @click="changeState(props.item, 'Run', 'running', 'reanudar', 'corriendo')" v-if="props.item.state == 'paused'">reanudar</v-btn>
                 <v-btn small color="warning" @click="changeState(props.item, 'Pause', 'paused', 'pausar', 'pausado')" v-if="props.item.state == 'running'">pausar</v-btn>
                 <v-btn small color="error" @click="changeState(props.item, 'Cancel', 'cancel', 'cancelar', 'cancelado')" v-if="props.item.state != 'finished' && props.item.state != 'cancel'">cancelar</v-btn>
@@ -162,6 +163,9 @@ export default {
   },
   computed: mapState(['coins', 'authToken', 'blocks']),
   methods: {
+    changeAmount () {
+      swal('Cambiar monto', 'Ingrese el nuevo monto del bloque', 'warning')
+    },
     async submit () {
       if (this.$refs.activarBloque.validate()) {
         this.loading = true
@@ -190,6 +194,8 @@ export default {
           this.blocks.inactive.unshift(block)
           this.clear()
           swal('Excelente', 'Bloque creado correctamente', 'success')
+        } else {
+          swal('Ooops...', 'Error al crear bloque', 'error')
         }
         this.loading = false
       }
@@ -220,7 +226,14 @@ export default {
           if (text1 === 'iniciar') {
             data.startDate = moment().format('DD/MM/YY')
           }
-          const res = await api(mutation(data), 'post', this.authToken)
+          let res
+          try {
+            res = await api(mutation(data), 'post', this.authToken)
+          } catch (e) {
+            console.error(e.message)
+            console.error(e.stack)
+            swal('Ooops...', 'Network error', 'error')
+          }
           if (res.data.data.result === 200) {
             // let objBlocks = this.blocks
             this.blocks[item.state] = this.blocks[item.state].filter(e => {
