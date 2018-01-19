@@ -143,7 +143,7 @@ module.exports = {
             date: null
           }
         })
-        if (result.amount) { 
+        if (result.amount) {
           socket({
             topic: 'block/amount',
             body: {

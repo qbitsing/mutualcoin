@@ -2,6 +2,7 @@
 
 const bodyParser = require('body-parser')
 const http = require('http')
+const path = require('path')
 const express = require('express')
 const chalk = require('chalk')
 const asyncify = require('express-asyncify')
@@ -26,6 +27,7 @@ async function init () {
 }
 
 app.use(bodyParser.json())
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization')
