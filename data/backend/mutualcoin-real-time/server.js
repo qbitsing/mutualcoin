@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
     }
   })
   socket.on('message', (payload) => {
-    debug(`a message has come from ${socket.id}`)
+    debug(`a message has come from ${socket.id} ${payload.topic}`)
     io.to(payload.topic).emit(payload.topic, payload.body)
   })
 })

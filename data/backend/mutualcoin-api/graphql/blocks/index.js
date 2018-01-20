@@ -143,7 +143,7 @@ module.exports = {
             date: null
           }
         })
-        if (result.amount) {
+        if (!isNaN(result.amount) && result.amount !== null) {
           socket({
             topic: 'block/amount',
             body: {

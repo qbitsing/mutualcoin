@@ -175,8 +175,6 @@ export default {
           amount: parseInt(this.amount),
           weeks: parseInt(this.weeks)
         }
-        console.log(data)
-        console.log(create(data))
         if (this.userCheck) {
           data.user = this.user
         }
@@ -186,7 +184,7 @@ export default {
           swal('Ooops...', 'Error al crear el bloque, intentálo más tarde', 'error')
         }
         console.log(res)
-        if (res.data.data.result) {
+        if (res && res.data.data.result) {
           let block = res.data.data.result
           block.spanishState = this.spanishText(block.state)
           block.inverted = 0

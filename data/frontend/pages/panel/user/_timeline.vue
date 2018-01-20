@@ -98,7 +98,7 @@
               <div :class="inversion._block.weeks > 26 ? 'wp scroll' : 'wp' ">
                 <v-btn
                 v-for="n in inversion._block.weeks"
-                :flat="inversion.nowWeek == n"
+                :flat="nowWeek == n"
                 :key="n"
                 :class="inversion._block.weeks > 26 ? 'much-wel' : 'wel'"
                 @click="setWeek(n)"
@@ -115,7 +115,7 @@
                 v-if="inversion._block.daysInfo.length"
                 :headers="headers"
                 hide-actions
-                :items="inversion.formatedInfo[inversion.nowWeek-1]"
+                :items="inversion.formatedInfo[nowWeek-1]"
                 class="elevation-1"
               >
                 <template slot="items" scope="props">
@@ -130,7 +130,7 @@
               </v-data-table>
             </v-flex>
           </v-layout>
-          <v-layout row v-show="this.inversion.pays.some(e => e.week === inversion.nowWeek)">
+          <v-layout row v-show="this.inversion.pays.some(e => e.week === nowWeek)">
             <v-flex xs12 offset-md1 md10>
               <h2>Pagos</h2>
               <v-data-table
@@ -164,7 +164,7 @@ export default {
   computed: {
     ...mapState(['inversion', 'blocks', 'userInversions']),
     payItems () {
-      return this.inversion.pays.filter(e => e.week === this.inversion.nowWeek)
+      return this.inversion.pays.filter(e => e.week === this.nowWeek)
     },
     headers () {
       return [
@@ -187,6 +187,7 @@ export default {
   },
   data () {
     return {
+      nowWeek: null,
       percentToUser: 0.4,
       weeks: [],
       week: 1
@@ -198,7 +199,7 @@ export default {
     },
 
     setWeek (n) {
-      this.inversion.nowWeek = n
+      this.nowWeek = n
     },
     dividirArray (arr) {
       let result = []
@@ -240,7 +241,7 @@ export default {
     BigNumber.config({EXPONENTIAL_AT: [-20, 20]})
     this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
     this.inversion.formatedInfo = this.formatearArray(this.dividirArray(this.inversion._block.daysInfo))
-    this.inversion.nowWeek = this.inversion.formatedInfo.length
+    this.nowWeek = this.inversion.formatedInfo.length
     this.inversion.pays.forEach(e => {
       e.week = Math.ceil(e.to / 7)
     })
