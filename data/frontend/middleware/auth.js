@@ -1,7 +1,9 @@
 export default function ({ store, redirect, route }) {
   const path = route.name.split('-')
   if (!store.state.authUser) {
-    return redirect('/login')
+    if (path[0] !== 'login') {
+      return redirect('/login')
+    }
   } else {
     login()
   }

@@ -50,6 +50,7 @@ module.exports = {
       if (result) {
         let { nickname } = await db.user.getUuid(obj.user)
         obj._block = await db.block.getUuid(obj.block)
+        obj._coin = await db.coin.getUuid(obj._block.coin)
         obj._user = { nickname }
         obj.uuid = result.uuid
         obj.pays = result.pays

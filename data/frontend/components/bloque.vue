@@ -137,7 +137,6 @@ export default {
             this.clear()
           }
           this.loading = false
-          console.log(res)
         } catch (error) {
           this.loading = false
           swal('Ooops...', 'Error al invertir, intentalo más tarde!', 'error')
@@ -158,7 +157,7 @@ export default {
       }
     },
     clear () {
-      this.$refs.inversion.reset()
+      if (this.$refs.inversion) this.$refs.inversion.reset()
       this.high = '0'
       this.medium = '0'
       this.bottom = '0'

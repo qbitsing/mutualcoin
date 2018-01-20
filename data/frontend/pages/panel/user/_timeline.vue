@@ -95,12 +95,12 @@
         <v-container grid-list-md text-xs-center>
           <v-layout row>
             <v-flex xs12 offset-md1 md10>
-              <div class="wp">
+              <div :class="inversion._block.weeks > 26 ? 'wp scroll' : 'wp' ">
                 <v-btn
                 v-for="n in inversion._block.weeks"
-                :flat="week == n"
+                :flat="inversion.nowWeek == n"
                 :key="n"
-                class="wel"
+                :class="inversion._block.weeks > 26 ? 'much-wel' : 'wel'"
                 @click="week = n"
                 :color="'primary'"
                 :disabled="n > weeks.length">
@@ -112,10 +112,10 @@
           <v-layout row>
             <v-flex xs12 offset-md1 md10>
               <v-data-table
-                v-if="weeks.length"
+                v-if="inversion._block.daysInfo.length"
                 :headers="headers"
                 hide-actions
-                :items="weeks[week-1]"
+                :items="inversion.formatedInfo[inversion.nowWeek-1]"
                 class="elevation-1"
               >
                 <template slot="items" scope="props">
@@ -130,11 +130,11 @@
               </v-data-table>
             </v-flex>
           </v-layout>
-          <v-layout row v-show="this.inversion.pays.some(e => e.week === week)">
+          <v-layout row v-show="this.inversion.pays.some(e => e.week === inversion.nowWeek)">
             <v-flex xs12 offset-md1 md10>
               <h2>Pagos</h2>
               <v-data-table
-                v-if="weeks.length"
+                v-if="inversion.formatedInfo.length"
                 :headers="payHeaders"
                 hide-actions
                 :items="payItems"
@@ -153,18 +153,18 @@
   </v-layout>
 </template>
 <script>
-// import decimal from 'decimal'
 import BigNumber from 'bignumber.js'
 import MutualTimeline from '~/components/timeline.vue'
 import MutualTable from '~/components/table.vue'
+import realTime from '~/plugins/userRealTime'
 import {mapState} from 'vuex'
 export default {
   middleware: ['auth', 'userInversions', 'setInversion'],
   layout: 'dashboard',
   computed: {
-    ...mapState(['inversion']),
+    ...mapState(['inversion', 'blocks', 'userInversions']),
     payItems () {
-      return this.inversion.pays.filter(e => e.week === this.week)
+      return this.inversion.pays.filter(e => e.week === this.inversion.nowWeek)
     },
     headers () {
       return [
@@ -232,11 +232,13 @@ export default {
   },
   components: { MutualTimeline, MutualTable },
   created () {
+    realTime(this)
     BigNumber.config({EXPONENTIAL_AT: [-20, 20]})
     this.$store.commit('TITLE_VIEW', 'Línea del tiempo')
-    const weeks = this.dividirArray(this.inversion._block.daysInfo)
-    this.weeks = this.formatearArray(weeks)
-    this.week = this.weeks.length
+    this.inversion.formatedInfo = this.formatearArray(this.dividirArray(this.inversion._block.daysInfo))
+    console.log(this.inversion.formatedInfo)
+    this.inversion.nowWeek = this.inversion.formatedInfo.length
+    console.log(this.inversion.nowWeek)
     this.inversion.pays.forEach(e => {
       e.week = Math.ceil(e.to / 7)
     })
@@ -252,6 +254,10 @@ export default {
   justify-content: space-between;
   height: 36px;
 }
+.scroll {
+  overflow-x: scroll;
+  height: 55px !important;
+}
 .title, .mutual-text{
   padding: 7px !important;
 }
@@ -260,6 +266,13 @@ export default {
 }
 .coin{
   width: 75% !important;
+}
+.much-wel {
+  min-width: 35px;
+  width: 35px;
+  margin: 0 !important;
+  border:0;
+  border-radius: 0 !important;
 }
 .wel {
   min-width: 0;

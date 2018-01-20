@@ -8,7 +8,7 @@
 </template>
 <script>
 import {mapState} from 'vuex'
-import realTime from '~/plugins/clientRealTime'
+import realTime from '~/plugins/userRealTime'
 export default {
   layout: 'dashboard',
   middleware: 'auth',
