@@ -9,8 +9,15 @@ export default async function ({route, store}) {
     need = ['active', 'waiting', 'running', 'paused']
   } else if (path[2] === 'oferta') {
     need = ['active']
+  } else {
+    need = ['active']
   }
-  const have = Object.keys(store.state.blocks)
+  let have = []
+  for (const key in store.state.blocks) {
+    if (store.state.blocks[key]) {
+      have.push(key)
+    }
+  }
 
   let missing = faltantes(need, have)
 

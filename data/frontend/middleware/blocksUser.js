@@ -3,10 +3,12 @@ import blocksUsers from '~/plugins/queries/blockUser'
 export default async function ({store, route, redirect}) {
   let isBlock = false
   for (const key in store.state.blocks) {
-    const index = store.state.blocks[key].filter(block => block.uuid === route.params.block)
-    if (index.length === 1) {
-      isBlock = true
-      break
+    if (store.state.blocks[key]) {
+      const index = store.state.blocks[key].filter(block => block.uuid === route.params.block)
+      if (index.length === 1) {
+        isBlock = true
+        break
+      }
     }
   }
   if (isBlock) {

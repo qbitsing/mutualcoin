@@ -1,5 +1,6 @@
 <template>
-  <v-layout class="relative" row>
+ <section>
+  <v-layout class="relative" v-show="!image" row>
       <v-text-field
       label="Seleccione una imagen"
       prepend-icon="attach_file"
@@ -13,17 +14,27 @@
       >
       <div class="activator" @click="pickFile"></div>
   </v-layout>
+  <v-layout row v-show="image">
+    <div class="image-container" :style="`background-image: url`">
+    </div>
+  </v-layout>
+ </section>
 </template>
 <script>
   import swal from 'sweetalert2'
   export default {
     props: ['imageData'],
+    data () {
+      return {
+        image: null
+      }
+    },
     methods: {
       pickFile () {
         this.$refs.image.click()
       },
-      validBase64Image () {
-        let code = this.imageData.imageBase64.split('base64,')[1]
+      validBase64Image (image) {
+        let code = image.split('base64,')[1]
         try {
           atob(code)
           return true
@@ -38,19 +49,15 @@
           fileReader.readAsDataURL(files[0])
           const wait = new Promise((resolve, reject) => {
             fileReader.addEventListener('load', (e) => {
-              resolve(fileReader.result)
+              if (this.validBase64Image(fileReader.result)) {
+                resolve(fileReader.result)
+              } else {
+                swal('Ooops...', 'La imagen seleccionada no es válida o está dañada.', 'error')
+              }
             })
           })
-          this.imageData.imageBase64 = await wait
+          this.image = await wait
           console.log(this.imageData.imageBase64.length)
-          if (!this.validBase64Image()) {
-            swal('Ooops...', 'La imagen seleccionada no es válida o está dañada.', 'error')
-            this.imageData = {
-              imageName: null
-            }
-          } else {
-            this.imageData.imageName = files[0].name
-          }
         }
       }
     }
@@ -66,5 +73,13 @@
     bottom: 10px;
     left: 0;
     right: 0;
+  }
+  .image-container {
+        width: 120px;
+    height: 120px;
+    overflow: hidden;
+  }
+  img {
+    max-width: 100%;
   }
 </style>

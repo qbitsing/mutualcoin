@@ -60,18 +60,20 @@ export default async function (self) {
       client.removeListener('block/user/add')
       client.on('block/user/add', res => {
         if (self.userInversions) {
-          if (res.user === self.$store.state.authUser.uuid) {
-            self.userInversions.map(e => {
+          self.userInversions.map(e => {
+            if (e.block === res.block) {
               e._block.amountLeft = calcAmountLeft(e._block.amountLeft, res.amount)
-              return e
-            })
+            }
+            return e
+          })
+          if (res.user === self.$store.state.authUser.uuid) {
             res._block._coin = res._coin
             delete res._coin
             self.userInversions.unshift(res)
           }
         }
         if (Object.keys(self.blocks).length) {
-          self.blocks.active = self.blocks.active.map(e => {
+          self.blocks.active.map(e => {
             if (e.uuid === res.block) {
               e.amountLeft = calcAmountLeft(e.amountLeft, res.amount)
             }
@@ -83,14 +85,23 @@ export default async function (self) {
       client.emit('suscribe', 'block/amount')
       client.removeListener('block/amount')
       client.on('block/amount', res => {
-        console.log(res)
+        if (self.userInversions) {
+          self.userInversions = calcNewAmounts(res, self.userInversions)
+        }
+        if (self.inversion && self.inversion.block === res.uuid) {
+          if (validataion(res.amountLeft)) self.inversion._block.amountLeft = res.amountLeft
+          self.inversion._block.amount = res.amount
+        }
+        if (Object.keys(self.blocks).length) {
+          self.blocks.active = calcNewAmounts(res, self.blocks.active)
+        }
       })
       // changue/state
       client.removeListener('block/change/state')
       client.emit('suscribe', 'block/change/state')
       client.on('block/change/state', async (res) => {
         if (self.userInversions) {
-          self.userInversions.map(e => {
+          self.userInversions = self.userInversions.map(e => {
             if (e.block === res.uuid) {
               e._block.state = res.state
               if (res.date) e._block.startDate = res.date
@@ -109,7 +120,8 @@ export default async function (self) {
           } else if (res.state === 'active') {
             const token = self.$store.state.authToken
             const blockRes = await api({}, 'get', token, { params: blockByUuid(res.uuid) })
-            self.blocks.active.push(blockRes.data.data.block)
+            self.blocks.active.unshift(blockRes.data.data.block)
+            console.log(self.blocks.active)
           }
         }
       })
@@ -121,3 +133,18 @@ function calcAmountLeft (amountLeft, inversion) {
   let amount = new BigNumber(amountLeft.toString())
   return amount.minus(inversion.toString()).toNumber()
 }
+function calcNewAmounts (res, el) {
+  return el.map(e => {
+    if (e.hasOwnProperty('_block')) {
+      if (e.block === res.uuid) {
+        if (validataion(res.amountLeft)) e._block.amountLeft = res.amountLeft
+        e._block.amount = res.amount
+      }
+    } else {
+      if (e.uuid === res.uuid) {
+        e.amount = res.amount
+      }
+    }
+  })
+}
+const validataion = number => !isNaN(number) && number !== null

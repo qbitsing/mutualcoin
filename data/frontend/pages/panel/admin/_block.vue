@@ -548,10 +548,12 @@ export default {
     this.$store.commit('TITLE_VIEW', 'Bloque')
 
     for (var prop in this.blocks) {
-      this.indexBlock = this.blocks[prop].findIndex(block => block.uuid === this.$route.params.block)
-      if (this.indexBlock !== -1) {
-        this.state = prop
-        break
+      if (this.blocks[prop]) {
+        this.indexBlock = this.blocks[prop].findIndex(block => block.uuid === this.$route.params.block)
+        if (this.indexBlock !== -1) {
+          this.state = prop
+          break
+        }
       }
     }
     this.blocksUser.forEach((ele) => {

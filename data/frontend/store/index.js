@@ -7,7 +7,15 @@ export const state = () => ({
   authToken: null,
   authUser: null,
   coins: null,
-  blocks: {},
+  blocks: {
+    active: null,
+    inactive: null,
+    waiting: null,
+    running: null,
+    paused: null,
+    cancel: null,
+    finished: null
+  },
   blocksUser: null,
   inversion: null,
   userInversions: null
