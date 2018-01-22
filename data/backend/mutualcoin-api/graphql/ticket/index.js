@@ -46,7 +46,7 @@ module.exports = {
       } catch (error) {
         throw error
       }
-      if (result) { 
+      if (result) {
         socket({
           payload: 'ticket/add',
           body: result
@@ -61,7 +61,7 @@ module.exports = {
       } catch (error) {
         throw error
       }
-      if (result) { 
+      if (result) {
         socket({
           payload: 'ticket/response',
           body: result

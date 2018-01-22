@@ -39,7 +39,7 @@ const rootQuery = `
     ticketAdd(ticket: newTicket): Ticket
     ticketAnswer(uuid: String, response: Response): Ticket
     coinAdd(coin: newCoin): Coin
-    coinEdit(uuid: String, newCoin): Coin
+    coinEdit(uuid: String, coin: newCoin): Coin
   }
 `
 
