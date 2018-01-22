@@ -20,13 +20,13 @@ const secret = {
   credentialsRequired: false
 }
 
-async function init () {
+async function init() {
   let connect = await db(config.db)
 
   return schema(connect)
 }
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '5mb' }))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*')
