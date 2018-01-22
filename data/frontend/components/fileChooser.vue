@@ -15,18 +15,28 @@
       <div class="activator" @click="pickFile"></div>
   </v-layout>
   <v-layout row v-show="image">
-    <div class="image-container" :style="`background-image: url`">
+    <div class="image-container" :style="`background-image: url(${image})`">
+      <div v-show="loading" class="center-flex image-loader">
+       <v-progress-circular  indeterminate v-bind:size="50" color="primary"></v-progress-circular>
+      </div>
+      <div class="center-flex clear-mask">
+        <v-btn class="image-btn" fab dark small color="error">
+          <v-icon dark>clear</v-icon>
+        </v-btn>
+      </div>
     </div>
   </v-layout>
  </section>
 </template>
 <script>
+  import api from '~/plugins/axios'
   import swal from 'sweetalert2'
   export default {
     props: ['imageData'],
     data () {
       return {
-        image: null
+        image: null,
+        loading: true
       }
     },
     methods: {
@@ -57,6 +67,8 @@
             })
           })
           this.image = await wait
+  
+          const res = api({})
           console.log(this.imageData.imageBase64.length)
         }
       }
@@ -74,10 +86,39 @@
     left: 0;
     right: 0;
   }
+  .center-flex {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+
+  }
+  .clear-mask {
+    background: rgba(200,200,200,0);
+    transition: .4s;
+  }
+  .image-container:hover .clear-mask {
+    background: rgba(200,200,200,.6);
+  }
+  .image-container:hover .image-btn{
+    transform: scale(1);
+  }
+  .image-loader {
+    background: rgba(200,200,200,.6);
+    display: none;
+  }
   .image-container {
-        width: 120px;
+    background-size: cover;
+    background-position: center;
+    width: 120px;
+    border-radius: 2px;
     height: 120px;
     overflow: hidden;
+  }
+  .image-btn {
+    transform: scale(0);
+    transition: .4s;
   }
   img {
     max-width: 100%;
