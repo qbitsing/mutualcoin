@@ -1,5 +1,7 @@
 'use strict'
 
+const socket = require('../../io/emit-message')
+
 const answer = `
   body: String
   file: String
@@ -35,9 +37,37 @@ module.exports = {
     }
   `,
   Query: (db) => ({
-    tickets: (_, { user }) => db.ticket.get(user),
-    ticketsActives: (_, { user }) => db.ticket.getActives(user),
-    ticketAdd: (_, { ticket }) => db.ticket.create(ticket),
-    ticketAnswer: (_, { uuid, respose }) => db.ticket.answer(uuid, respose)
+    tickets: (_, { user }, context) => db.ticket.get(user, context.user),
+    ticketsActives: (_, { user }, context) => db.ticket.getActives(user, context.user),
+    ticketAdd: async (_, { ticket }) => {
+      let result
+      try {
+        result = await db.ticket.create(ticket)
+      } catch (error) {
+        throw error
+      }
+      if (result) { 
+        socket({
+          payload: 'ticket/add',
+          body: result
+        })
+      }
+      return result
+    },
+    ticketAnswer: async (_, { uuid, respose }, { user }) => {
+      let result
+      try {
+        result = await db.ticket.answer(uuid, respose, user)
+      } catch (error) {
+        throw error
+      }
+      if (result) { 
+        socket({
+          payload: 'ticket/response',
+          body: result
+        })
+      }
+      return result
+    }
   })
 }

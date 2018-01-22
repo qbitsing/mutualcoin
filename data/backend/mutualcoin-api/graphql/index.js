@@ -38,6 +38,8 @@ const rootQuery = `
     blockUserAdd(blockUser: newBlockUser): BlockUser
     ticketAdd(ticket: newTicket): Ticket
     ticketAnswer(uuid: String, response: Response): Ticket
+    coinAdd(coin: newCoin): Coin
+    coinEdit(uuid: String, newCoin): Coin
   }
 `
 
@@ -45,7 +47,7 @@ const rootQuery = `
 module.exports = function (db) {
   const { users, usersBy, user, referred, line, userAdd, userEdit } = QueryUser(db)
   const { _coin, block, blocks, blocksState, blockAdd, blockActivate, blockWaiting, blockRun, blockPause, blockCancel, blockFinish, blockEarnings, blockAmount, blockMakePay, blockPay } = QueryBlock(db)
-  const { coins } = QueryCoins(db)
+  const { coins, coinAdd, coinEdit } = QueryCoins(db)
   const { ticketAdd, ticketAnswer, tickets, ticketsActives } = Query(db)
   const { blocksUsers, blocksUsersBy, _block, _user, blockUserAdd } = QueryBlockUser(db)
   const resolvers = {
@@ -89,7 +91,9 @@ module.exports = function (db) {
       blockPay,
       blockUserAdd,
       ticketAdd,
-      ticketAnswer
+      ticketAnswer,
+      coinAdd,
+      coinEdit
     }
   }
 

@@ -2,9 +2,11 @@
 
 const coinsSchema = require('../models/coins')
 const v4 = require('uuid').v4
+const { isAdmin } = require('mutualcoin-utils')
 let CoinsModel
 
-async function create(coin) {
+async function create(coin, user) {
+  isAdmin(user)
   let invalidCoin = null
   let uuid = v4()
   invalidCoin = await CoinsModel.findOne({ uuid })
@@ -31,7 +33,8 @@ async function get() {
   return await CoinsModel.find({})
 }
 
-async function update(uuid, coin) {
+async function update(uuid, coin, user) {
+  isAdmin(user)
   const coinToUpdate = await CoinsModel.findOne({ uuid })
 
   if (!coinToUpdate) {

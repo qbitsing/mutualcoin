@@ -134,7 +134,10 @@ async function singin(credentials) {
   }
 }
 
-async function update(uuid, user) {
+async function update(uuid, user, login) {
+  if (login.uuid !== uuid) { 
+    throw new Error('bad request: the user can not be updated because it does not match the session')
+  }
   const userToUpdate = await UsersModel.findOne({ uuid })
   if (!userToUpdate) throw new Error('user not found')
   if (user.email2) {
@@ -187,15 +190,20 @@ function getLineReferred(codeReferred) {
   return UsersModel.find({ codeReferred }, {})
 }
 
-function get() {
+function get(user) {
+  utils.isAdmin(user)
   return UsersModel.find({})
 }
 
-function getUuid(uuid) {
+function getUuid(uuid, user, pass) {
+  if (!pass) { 
+    utils.isAdmin(user)   
+  }
   return UsersModel.findOne({ uuid })
 }
 
-function getBy(propertie) {
+function getBy(propertie, user) {
+  utils.isAdmin(user)  
   return function(value) {
     let search = {}
     search[propertie] = value
