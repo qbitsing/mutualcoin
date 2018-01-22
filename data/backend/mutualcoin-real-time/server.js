@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
       case 'block/amount':
       case 'block/user/add':
       case 'ticket/add':
-      case 'ticket/response':  
+      case 'ticket/response':
         debug(`suscribing to "${payload}" client: ${socket.id}`)
         socket.join(payload)
         break

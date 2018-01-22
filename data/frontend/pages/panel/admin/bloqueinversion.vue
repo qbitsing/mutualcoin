@@ -63,18 +63,26 @@ export default {
       })
       if (client.connected) {
         client.emit('suscribe', 'block/user/add')
+        client.removeListener('block/user/add')
         client.on('block/user/add', (data) => {
           for (var prop in this.blocks) {
             if (this.blocks[prop]) {
               let index = this.blocks[prop].findIndex(block => block.uuid === data._block.uuid)
               if (index !== -1) {
-                this.blocks[prop][index].amountLeft = data._block.amountLeft
-                this.blocks[prop][index].state = data._block.state
+                if (this.blocks[prop][index].state === data._block.state) {
+                  this.blocks[prop][index].amountLeft = data._block.amountLeft
+                  this.blocks[prop][index].state = data._block.state
+                } else {
+                  this.blocks[prop][index].amountLeft = data._block.amountLeft
+                  this.blocks[prop][index].state = data._block.state
+                  const block = this.blocks[prop][index]
+                  this.blocks[prop].splice(index, 1)
+                  this.blocks[data._block.state].push(block)
+                }
                 break
               }
             }
           }
-          console.log(data)
         })
       }
     },

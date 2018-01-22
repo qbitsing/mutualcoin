@@ -527,17 +527,40 @@ export default {
       })
       if (client.connected) {
         client.emit('suscribe', 'block/user/add')
+        client.removeListener('block/user/add')
         client.on('block/user/add', (data) => {
           for (var prop in this.blocks) {
             let index = this.blocks[prop].findIndex(block => block.uuid === data._block.uuid)
             if (index !== -1) {
-              this.blocks[prop][index].amountLeft = data._block.amountLeft
-              this.blocks[prop][index].state = data._block.state
+              if (this.blocks[prop][index].state === data._block.state) {
+                this.blocks[prop][index].amountLeft = data._block.amountLeft
+                this.blocks[prop][index].state = data._block.state
+              } else {
+                this.blocks[prop][index].amountLeft = data._block.amountLeft
+                this.blocks[prop][index].state = data._block.state
+                this.state = data._block.state
+                const block = this.blocks[prop][index]
+                this.blocks[prop].splice(index, 1)
+                this.blocks[this.state].push(block)
+                this.index = this.blocks[this.state].findIndex(block => block.uuid === data.block)
+              }
               break
             }
           }
           if (data.block === this.$route.params.block) {
-            // let newBlockUser
+            let blockUser = {
+              _user: data._user,
+              amount: data.amount,
+              block: data.block,
+              high: data.high,
+              last_pay: null,
+              low: data.low,
+              medium: data.medium,
+              pays: data.pays,
+              user: data.user,
+              uuid: data.uuid
+            }
+            this.blocksUser.push(blockUser)
           }
         })
       }
@@ -546,7 +569,6 @@ export default {
 
   created () {
     this.$store.commit('TITLE_VIEW', 'Bloque')
-
     for (var prop in this.blocks) {
       if (this.blocks[prop]) {
         this.indexBlock = this.blocks[prop].findIndex(block => block.uuid === this.$route.params.block)
@@ -574,6 +596,7 @@ export default {
     this.percentLow = lowTotal.dividedBy(totalInve.toString()).times('100').toNumber()
     this.dayMaximum()
     this.addItemsPay()
+    this.socketInvestment()
   }
 }
 </script>
