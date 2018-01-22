@@ -8,7 +8,7 @@ module.exports = {
       uuid: String!
     }
 
-    ipnut newCoin {
+    input newCoin {
       name: String!
       acronym: String!
     }
