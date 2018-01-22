@@ -5,6 +5,7 @@ const coinSchema = require('../models/coins')
 const userSchema = require('../models/users')
 const blockUserSchema = require('../models/block-user')
 const { v4 } = require('uuid')
+const { mate } = require('mutualcoin-utils')
 let BlockModel, CoinModel, UserModel, BlockUserModel
 
 async function validateCoin(uuid) {
@@ -88,8 +89,8 @@ async function create(block) {
 
   blockToCreate.weeks = block.weeks
 
-  blockToCreate.days = block.weeks * 7
-  blockToCreate.runDays = block.weeks * 7
+  blockToCreate.days = mate(`${block.weeks} * 7`)
+  blockToCreate.runDays = mate(`${block.weeks} * 7`)
 
   await validateUser(block.user)
   blockToCreate.user = block.user
@@ -123,7 +124,7 @@ async function waiting(uuid) {
   }
 
   if (block.amountLeft > 0) {
-    update.amount = block.amount - block.amountLeft
+    update.amount = mate(`${block.amount} - ${block.amountLeft}`)
     update.amountLeft = 0
   }
 
@@ -191,14 +192,14 @@ async function updateAmount(uuid, amount) {
   let invested = 0
 
   investments.forEach(investment => {
-    invested += investment.amount
+    invested = mate(`${invested} + ${investment.amount}`)
   })
 
   if (amount < invested) {
     throw new Error('bad request: the amount cannot be lower to amount invested')
   }
 
-  let amountLeft = block.amountLeft + (amount - block.amoun)
+  let amountLeft = mate(`${block.amountLeft} + ${amount} - ${block.amount}`)
 
   await BlockModel.findByIdAndUpdate(block._id, { amount, amountLeft })
 

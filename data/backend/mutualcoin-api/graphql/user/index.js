@@ -58,12 +58,12 @@ module.exports = {
     }
   `,
   QueryUser: (db) => ({
-    users: (rootValue, args, context) => db.user.get(),
-    usersBy: (rootValue, { propertie, value }, context) => db.user.getBy(propertie)(value),
-    user: (rootValue, { uuid }, context) => db.user.getUuid(uuid),
-    referred: ({ codeReferred }) => db.user.getUuid(codeReferred),
+    users: (no, args, { user }) => db.user.get(user),
+    usersBy: (no, { propertie, value }, { user }) => db.user.getBy(propertie, user)(value),
+    user: (no, { uuid }, { user }) => db.user.getUuid(uuid, user),
+    referred: ({ codeReferred }) => db.user.getUuid(codeReferred, user, true),
     line: ({ uuid }) => db.user.getLineReferred(uuid),
-    userAdd: (_, { user }) => db.user.register(user),
-    userEdit: (_, { uuid, user }) => db.user.update(uuid, user)
+    userAdd: (no, { user }) => db.user.register(user),
+    userEdit: (no, { uuid, user }, context) => db.user.update(uuid, user, context.user)
   })
 }

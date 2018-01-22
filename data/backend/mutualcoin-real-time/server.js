@@ -21,6 +21,8 @@ io.on('connection', (socket) => {
       case 'block/make/pay':
       case 'block/amount':
       case 'block/user/add':
+      case 'ticket/add':
+      case 'ticket/response':  
         debug(`suscribing to "${payload}" client: ${socket.id}`)
         socket.join(payload)
         break
@@ -35,6 +37,8 @@ io.on('connection', (socket) => {
       case 'block/make/pay':
       case 'block/amount':
       case 'block/user/add':
+      case 'ticket/add':
+      case 'ticket/response':
         debug(`unsuscribing to "${payload}" client: ${socket.id}`)
         socket.leave(payload)
         break
