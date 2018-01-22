@@ -4,6 +4,7 @@ const blockSchema = require('../models/blocks')
 const coinSchema = require('../models/coins')
 const userSchema = require('../models/users')
 const blockUserSchema = require('../models/block-user')
+const { isAdmin } = require('mutualcoin-utils')
 const { v4 } = require('uuid')
 const { mate } = require('mutualcoin-utils')
 let BlockModel, CoinModel, UserModel, BlockUserModel
@@ -44,7 +45,8 @@ async function validateUser(uuid) {
   }
 }
 
-function get() {
+function get(user) {
+  isAdmin(user)
   return BlockModel.find({})
 }
 
@@ -52,7 +54,8 @@ function getState(state) {
   return BlockModel.find({ $or: state })
 }
 
-async function create(block) {
+async function create(block, user) {
+  isAdmin(user)
   await validateCoin(block.coin)
   let invalidBlock = null
   let uuid = v4()
@@ -101,7 +104,8 @@ async function create(block) {
   return blockToCreate.save()
 }
 
-async function activate(uuid) {
+async function activate(uuid, user) {
+  isAdmin(user)
   const block = await validateBlock(uuid)
 
   if (block.state !== 'inactive') {
@@ -113,7 +117,8 @@ async function activate(uuid) {
   return 200
 }
 
-async function waiting(uuid) {
+async function waiting(uuid, user) {
+  isAdmin(user)
   const block = await validateBlock(uuid)
   let update = {
     state: 'waiting'
@@ -133,7 +138,8 @@ async function waiting(uuid) {
   return { result: 200, amount: update.amount, amountLeft: update.amountLeft }
 }
 
-async function run(uuid, startDate) {
+async function run(uuid, startDate, user) {
+  isAdmin(user)
   const block = await validateBlock(uuid)
   const up = {}
   if (block.state !== 'waiting' && block.state !== 'paused') {
@@ -149,7 +155,8 @@ async function run(uuid, startDate) {
   return 200
 }
 
-async function pause(uuid) {
+async function pause(uuid, user) {
+  isAdmin(user)
   const block = await validateBlock(uuid)
 
   if (block.state !== 'running') {
@@ -161,7 +168,8 @@ async function pause(uuid) {
   return 200
 }
 
-async function cancel(uuid) {
+async function cancel(uuid, user) {
+  isAdmin(user)
   const block = await validateBlock(uuid)
 
   if (block.state === 'finished') {
@@ -173,7 +181,8 @@ async function cancel(uuid) {
   return 200
 }
 
-async function finish(uuid) {
+async function finish(uuid, user) {
+  isAdmin(user)
   const block = await validateBlock(uuid)
 
   if (block.state !== 'running') {
@@ -185,7 +194,8 @@ async function finish(uuid) {
   return 200
 }
 
-async function updateAmount(uuid, amount) {
+async function updateAmount(uuid, amount, user) {
+  isAdmin(user)
   const block = await validateBlock(uuid)
   const investments = await BlockUserModel.find({ block: uuid })
 
@@ -206,7 +216,8 @@ async function updateAmount(uuid, amount) {
   return { status: 200, amountLeft }
 }
 
-async function setInfoDays(uuid, info) {
+async function setInfoDays(uuid, info, user) {
+  isAdmin(user)
   let { daysInfo, runDays, _id, state } = await validateBlock(uuid)
   if (state === 'running' || state === 'paused') {
     const length = daysInfo.length

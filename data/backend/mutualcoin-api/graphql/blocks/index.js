@@ -2,6 +2,7 @@
 
 const { pays } = require('mutualcoin-utils')
 const socket = require('../../io/emit-message')
+const { isAdmin } = require('mutualcoin-utils')
 const paysMap = new Map()
 function setConds (query) {
   const conds = []
@@ -104,17 +105,17 @@ module.exports = {
     }
   `,
   QueryBlock: (db) => ({
-    blocks: (rootValue, args, context) => db.block.get(),
+    blocks: (rootValue, args, { user }) => db.block.get(user),
     block: (_, { uuid }) => db.block.getUuid(uuid),
     blocksState: (rootValue, { states }, context) => {
       const conds = setConds(states)
       return db.block.getState(conds)
     },
     _coin: ({ coin }) => db.coin.getUuid(coin),
-    blockAdd: (_, { block }) => db.block.create(block),
-    blockActivate: async (_, { uuid }) => {
+    blockAdd: (_, { block }, { user }) => db.block.create(block, user),
+    blockActivate: async (_, { uuid }, { user }) => {
       let result
-      try { result = await db.block.activate(uuid) } catch (error) { return error }
+      try { result = await db.block.activate(uuid, user) } catch (error) { return error }
       if (result === 200) {
         socket({
           topic: 'block/change/state',
@@ -127,10 +128,10 @@ module.exports = {
       }
       return result
     },
-    blockWaiting: async (_, { uuid }) => {
+    blockWaiting: async (_, { uuid }, { user }) => {
       let result
       try {
-        result = await db.block.waiting(uuid)
+        result = await db.block.waiting(uuid, user)
       } catch (error) {
         return error
       }
@@ -156,10 +157,10 @@ module.exports = {
       }
       return result.result
     },
-    blockRun: async (_, { uuid, startDate }) => {
+    blockRun: async (_, { uuid, startDate }, { user }) => {
       let result
       try {
-        result = await db.block.run(uuid, startDate)
+        result = await db.block.run(uuid, startDate, user)
       } catch (error) {
         return error
       }
@@ -175,10 +176,10 @@ module.exports = {
       }
       return result
     },
-    blockPause: async (_, { uuid }) => {
+    blockPause: async (_, { uuid }, { user }) => {
       let result
       try {
-        result = await db.block.pause(uuid)
+        result = await db.block.pause(uuid, user)
       } catch (error) {
         return error
       }
@@ -194,10 +195,10 @@ module.exports = {
       }
       return result
     },
-    blockCancel: async (_, { uuid }) => {
+    blockCancel: async (_, { uuid }, { user }) => {
       let result
       try {
-        result = await db.block.cancel(uuid)
+        result = await db.block.cancel(uuid, user)
       } catch (error) {
         return error
       }
@@ -213,10 +214,10 @@ module.exports = {
       }
       return result
     },
-    blockFinish: async (_, { uuid }) => {
+    blockFinish: async (_, { uuid }, { user }) => {
       let result
       try {
-        result = await db.block.finish(uuid)
+        result = await db.block.finish(uuid, user)
       } catch (error) {
         return error
       }
@@ -232,10 +233,10 @@ module.exports = {
       }
       return result
     },
-    blockEarnings: async (_, { uuid, earnings }) => {
+    blockEarnings: async (_, { uuid, earnings }, { user }) => {
       let result
       try {
-        result = await db.block.setInfoDays(uuid, earnings)
+        result = await db.block.setInfoDays(uuid, earnings, user)
       } catch (error) {
         return error
       }
@@ -250,9 +251,10 @@ module.exports = {
       }
       return result
     },
-    blockPay: async (_, { uuid, to }) => {
+    blockPay: async (_, { uuid, to }, { user }) => {
       let result
       try {
+        isAdmin(user)
         result = await pays(to, uuid)
       } catch (error) {
         throw error
@@ -261,7 +263,7 @@ module.exports = {
 
       return result.pays
     },
-    blockMakePay: async (_, { uuid }) => {
+    blockMakePay: async (_, { uuid }, { user }) => {
       let result = paysMap.get(uuid)
       if (!result) {
         throw new Error('bad request: there is no payment generated with the indicated uuid')
@@ -271,6 +273,7 @@ module.exports = {
       let newInvestments = null
       let promises = investments.map(investment => db.blockUser.updatePays(investment.uuid, investment.pays, investment.last_pay))
       try {
+        isAdmin(user)
         await Promise.all(promises)
         await db.block.updateLatsPay(uuid, result.to)
         newInvestments = await db.blockUser.getBy('block')(uuid)
@@ -295,10 +298,10 @@ module.exports = {
       paysMap.delete(uuid)
       return newInvestments
     },
-    blockAmount: async (_, { uuid, amount }) => {
+    blockAmount: async (_, { uuid, amount }, { user }) => {
       let result
       try {
-        result = await db.block.updateAmount(uuid, amount)
+        result = await db.block.updateAmount(uuid, amount, user)
       } catch (error) {
         return error
       }
