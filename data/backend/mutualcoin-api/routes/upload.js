@@ -45,7 +45,7 @@ api.delete('/', (req, res) => {
     res.send({
       done: true
     })
-  });
+  })
 })
 
 module.exports = api
