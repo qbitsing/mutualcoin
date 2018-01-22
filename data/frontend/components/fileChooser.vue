@@ -80,7 +80,7 @@
       async unsetImage () {
         const token = this.$store.state.authToken
         const res = await api({name: this.imageData.url}, 'post', token, {}, 'upload/delete')
-        if (res.statu === 200) {
+        if (res.status === 200) {
           this.imageData.url = null
           this.imageData.image = null
         }

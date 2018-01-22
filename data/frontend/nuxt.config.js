@@ -42,7 +42,7 @@ module.exports = {
       ]
     },
     vendor: [
-      '~/plugins/vuetify.js', 'axios', 'sweetalert2', 'bignumber.js'
+      '~/plugins/vuetify.js', 'axios', 'sweetalert2', 'bignumber.js', 'moment'
     ],
     extractCSS: true,
     /*

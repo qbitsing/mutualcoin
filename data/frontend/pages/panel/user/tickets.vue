@@ -58,8 +58,12 @@
   </v-container>
 </template>
 <script>
+  import moment from 'moment'
   import MutualDialog from '~/components/dialog.vue'
   import FileChooser from '~/components/fileChooser.vue'
+  import api from '~/plugins/axios'
+  import mutation from '~/plugins/mutations/ticketAdd'
+  moment.locale('es')
   export default {
     components: {MutualDialog, FileChooser},
     data () {
@@ -91,9 +95,21 @@
       }
     },
     methods: {
-      submit () {
+      async submit () {
         if (this.$refs.ticket.validate()) {
-          alert('Hello')
+          const date = moment().format('MM/DD/YYYY, h:mm a')
+          let data = {
+            date,
+            issue: this.issue,
+            body: this.message,
+            uuid: this.$store.state.authUser.uuid
+          }
+          if (this.imageData.url) {
+            data.imageUrl = this.imageData.url
+          }
+          const token = this.$store.state.authToken
+          const res = await api(mutation(data), 'post', token)
+          console.log(res)
         }
       },
       clear () {
