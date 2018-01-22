@@ -1,10 +1,10 @@
 <template>
  <section>
-  <v-layout class="relative" v-show="!image" row>
+  <v-layout class="relative" v-show="!imageData.image" row>
       <v-text-field
       label="Seleccione una imagen"
       prepend-icon="attach_file"
-      v-model="imageData.imageName"></v-text-field>
+      v-model="imageData.url"></v-text-field>
       <input
         type="file"
         style="display: none"
@@ -14,13 +14,13 @@
       >
       <div class="activator" @click="pickFile"></div>
   </v-layout>
-  <v-layout row v-show="image">
-    <div class="image-container" :style="`background-image: url(${image})`">
-      <div v-show="loading" class="center-flex image-loader">
+  <v-layout row v-show="imageData.image">
+    <div class="image-container" :style="`background-image: url(${imageData.image})`">
+      <div v-show="imageData.loading" class="center-flex image-loader">
        <v-progress-circular  indeterminate v-bind:size="50" color="primary"></v-progress-circular>
       </div>
       <div class="center-flex clear-mask">
-        <v-btn class="image-btn" fab dark small color="error">
+        <v-btn class="image-btn" @click="unsetImage" fab dark small color="error">
           <v-icon dark>clear</v-icon>
         </v-btn>
       </div>
@@ -33,12 +33,6 @@
   import swal from 'sweetalert2'
   export default {
     props: ['imageData'],
-    data () {
-      return {
-        image: null,
-        loading: true
-      }
-    },
     methods: {
       pickFile () {
         this.$refs.image.click()
@@ -59,19 +53,37 @@
           fileReader.readAsDataURL(files[0])
           const wait = new Promise((resolve, reject) => {
             fileReader.addEventListener('load', (e) => {
-              if (this.validBase64Image(fileReader.result)) {
-                resolve(fileReader.result)
+              if (fileReader.result.length < 5000000) {
+                if (this.validBase64Image(fileReader.result)) {
+                  resolve(fileReader.result)
+                } else {
+                  resolve({error: 'La imagen seleccionada está dañada.'})
+                }
               } else {
-                swal('Ooops...', 'La imagen seleccionada no es válida o está dañada.', 'error')
+                resolve({error: 'La imagen seleccionada no puede pesar más de 5mb.'})
               }
             })
           })
-          this.image = await wait
-  
-          const res = api({})
-          console.log(res)
-          console.log(this.imageData.imageBase64.length)
+          const fileReaderResponse = await wait
+          if (fileReaderResponse.error) {
+            swal('Ooops...', fileReaderResponse.error, 'error')
+          } else {
+            this.imageData.loading = true
+            this.imageData.image = fileReaderResponse
+            const token = this.$store.state.authToken
+            const res = await api({base64: fileReaderResponse}, 'post', token, {}, 'upload/')
+            this.imageData.loading = false
+            this.imageData.url = res.data.name
+            console.log(this.imageUrl)
+          }
         }
+      },
+      async unsetImage () {
+        const token = this.$store.state.authToken
+        const res = await api({name: this.imageData.url}, 'delete', token, {}, 'upload/')
+        console.log(res)
+        this.imageData.url = null
+        this.imageData.image = null
       }
     }
   }
@@ -107,7 +119,6 @@
   }
   .image-loader {
     background: rgba(200,200,200,.6);
-    display: none;
   }
   .image-container {
     background-size: cover;

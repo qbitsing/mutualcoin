@@ -30,22 +30,24 @@
       </v-card-actions>
       <mutual-dialog :dialog="propsDialog">
         <section slot="contenDialog">
-            <v-form ref="ticket" lazy-validation>
+            <v-form v-model="valid" ref="ticket" lazy-validation>
               <v-card flat class="no-padding-bottom">
                 <v-card-text class="no-padding-bottom">
                   <v-text-field
                   label="Asunto"
+                  :rules="inputRules"
                   v-model="issue">
                   </v-text-field>
                   <v-text-field
                     v-model="message"
                     label="Describa brevemente su inconformidad."
+                    :rules="inputRules"
                     textarea
                   ></v-text-field>
                   <file-chooser :image-data="imageData"></file-chooser>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary" @click="submit" :loading="loading">Abrir</v-btn>
+                  <v-btn color="primary" :disabled="!valid || imageData.loading" @click="submit" :loading="loading">Abrir</v-btn>
                   <v-btn color="error" @click="clear">cancelar</v-btn>
                 </v-card-actions>
               </v-card>
@@ -62,13 +64,16 @@
     components: {MutualDialog, FileChooser},
     data () {
       return {
+        valid: false,
         imageData: {
-          imageName: null,
-          imageBase64: ''
+          url: null,
+          loading: false,
+          image: null
         },
         loading: false,
         message: null,
         issue: '',
+        inputRules: [(v) => !!v || 'Este campo es requerido.'],
         propsDialog: {title: 'Abrir ticket', state: false},
         ticketsHeader: [
           {text: 'Asunto', align: 'center', value: 'issue'},
@@ -87,7 +92,9 @@
     },
     methods: {
       submit () {
-        alert('Hello')
+        if (this.$refs.ticket.validate()) {
+          alert('Hello')
+        }
       },
       clear () {
         this.$refs.ticket.reset()
