@@ -37,8 +37,8 @@ module.exports = {
     }
   `,
   Query: (db) => ({
-    tickets: (_, { user }) => db.ticket.get(user),
-    ticketsActives: (_, { user }) => db.ticket.getActives(user),
+    tickets: (_, { user }, context) => db.ticket.get(user, context.user),
+    ticketsActives: (_, { user }, context) => db.ticket.getActives(user, context.user),
     ticketAdd: async (_, { ticket }) => {
       let result
       try {
@@ -54,10 +54,10 @@ module.exports = {
       }
       return result
     },
-    ticketAnswer: async (_, { uuid, respose }) => {
+    ticketAnswer: async (_, { uuid, respose }, { user }) => {
       let result
       try {
-        result = await db.ticket.answer(uuid, respose)
+        result = await db.ticket.answer(uuid, respose, user)
       } catch (error) {
         throw error
       }

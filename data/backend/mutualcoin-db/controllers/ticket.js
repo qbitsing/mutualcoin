@@ -2,9 +2,10 @@
 
 const mongosse = require('mongoose')
 const ticketSchema = require('../models/ticket')
+const { isAdmin } = require('mutualcoin-utils')
 let TicketModel
 
-async function create(ticket) { 
+async function create(ticket) {
   const ticketToCreate = new TicketModel()
 
   ticketToCreate.subject = ticket.subject
@@ -18,7 +19,8 @@ async function create(ticket) {
   return await ticketToCreate.save()
 }
 
-async function answer(uuid, response) { 
+async function answer(uuid, response, user) {
+  isAdmin(user)
   let { answers, _id, state } = await TicketModel.findOne({ uuid })
 
   if (!_id) {
@@ -42,18 +44,19 @@ async function answer(uuid, response) {
   return await TicketModel.findById(_id)
 }
 
-function get(user) {
+function get(user, login) {
   if (user) { 
     return TicketModel.find({ user })
   }
+  isAdmin(login)
   return TicketModel.find()
 }
 
-function getActives(user) { 
+function getActives(user, login) { 
   if (user) { 
     return TicketModel.find({ user, state: { $not: 'closed' } })
   }
-
+  isAdmin(login)
   return TicketModel.find({ state: { $not: 'closed' } })
 }
 
