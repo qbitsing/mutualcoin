@@ -69,6 +69,7 @@
           this.image = await wait
   
           const res = api({})
+          console.log(res)
           console.log(this.imageData.imageBase64.length)
         }
       }
