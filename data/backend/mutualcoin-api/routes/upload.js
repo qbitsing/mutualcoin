@@ -31,7 +31,7 @@ api.post('/', (req, res) => {
   )
 })
 
-api.post('/', (req, res) => {
+api.post('/delete', (req, res) => {
   const { name } = req.body
   const image = name.split('/').pop()
   const file = path.join(__dirname, '../', 'uploads', image)

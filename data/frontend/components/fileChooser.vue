@@ -74,16 +74,16 @@
             const res = await api({base64: fileReaderResponse}, 'post', token, {}, 'upload/')
             this.imageData.loading = false
             this.imageData.url = res.data.name
-            console.log(this.imageUrl)
           }
         }
       },
       async unsetImage () {
         const token = this.$store.state.authToken
-        const res = await api({name: this.imageData.url}, 'delete', token, {}, 'upload/')
-        console.log(res)
-        this.imageData.url = null
-        this.imageData.image = null
+        const res = await api({name: this.imageData.url}, 'post', token, {}, 'upload/delete')
+        if (res.statu === 200) {
+          this.imageData.url = null
+          this.imageData.image = null
+        }
       }
     }
   }
