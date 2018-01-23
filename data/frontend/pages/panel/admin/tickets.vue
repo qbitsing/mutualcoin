@@ -31,8 +31,6 @@
 </template>
 <script>
   import moment from 'moment'
-  import api from '~/plugins/axios'
-  import qTickets from '~/plugins/queries/tickets'
   import {mapState} from 'vuex'
   moment.locale('es')
   export default {
@@ -62,15 +60,8 @@
     layout: 'dashboard',
     middleware: 'auth',
     computed: mapState(['authToken']),
-    methods: {
-      async getTickets () {
-        const res = await api({}, 'get', this.authToken, {params: qTickets()})
-        console.log(res)
-      }
-    },
     created () {
       this.$store.commit('TITLE_VIEW', 'Tickets')
-      this.getTickets()
     }
   }
 </script>
