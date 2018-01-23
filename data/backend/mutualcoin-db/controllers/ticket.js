@@ -21,7 +21,6 @@ function create(ticket) {
 }
 
 async function answer(uuid, response, user) {
-  isAdmin(user)
   let { answers, _id, state } = await TicketModel.findOne({ uuid })
 
   if (!_id) {
@@ -34,6 +33,7 @@ async function answer(uuid, response, user) {
 
   if (response.from === 'admin') {
     state = 'responsed'
+    isAdmin(user)
   } else { 
     state = 'customer-reply'
   }
