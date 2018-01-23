@@ -6,7 +6,7 @@
 <script>
 export default {
   layout: 'dashboard',
-  middleware: ['auth'],
+  middleware: ['auth', 'tickets'],
   data () {
     return {
       message: 'ola'

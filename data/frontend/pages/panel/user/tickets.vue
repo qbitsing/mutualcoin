@@ -58,6 +58,7 @@
   </v-container>
 </template>
 <script>
+  import swal from 'sweetalert2'
   import moment from 'moment'
   import MutualDialog from '~/components/dialog.vue'
   import FileChooser from '~/components/fileChooser.vue'
@@ -109,8 +110,18 @@
             data.imageUrl = this.imageData.url
           }
           const token = this.$store.state.authToken
-          const res = await api(mutation(data), 'post', token)
+          let res
+          try {
+            res = await api(mutation(data), 'post', token)
+          } catch (e) {
+            swal('Ooops...', 'Network error.', 'error')
+          }
           console.log(res)
+          if (res.data.data.result) {
+            swal('Excelente', 'Ticket creado con éxito', 'success')
+          } else {
+            swal('Ooops...', 'Error inesperado al crear ticket', 'error')
+          }
         }
       },
       clear () {
@@ -122,7 +133,7 @@
       }
     },
     layout: 'dashboard',
-    middleware: 'auth',
+    middleware: ['auth', 'tickets'],
     created () {
       this.$store.commit('TITLE_VIEW', 'Tickets')
     }
