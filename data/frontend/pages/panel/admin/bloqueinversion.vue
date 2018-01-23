@@ -55,6 +55,12 @@ export default {
     this.socketInvestment()
     this.$store.commit('TITLE_VIEW', 'Bloques en inversión')
   },
+  async beforeDestroy () {
+    const client = await socket().catch((err) => {
+      console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+    })
+    client.removeListener('block/user/add')
+  },
   components: {MutualBlock},
   methods: {
     async socketInvestment () {

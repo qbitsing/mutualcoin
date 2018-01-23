@@ -31,7 +31,7 @@ module.exports = {
       return db.blockUser.getBy(propertie)(value)
     },
     _block: ({ block }) => db.block.getUuid(block),
-    _user: ({ user }) => db.user.getUuid(user),
+    _user: ({ user }) => db.user.getUuid(user, null, true),
     blockUserAdd: async (_, { blockUser }) => {
       let obj = {
         amount: blockUser.amount,
