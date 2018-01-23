@@ -8,6 +8,13 @@ export default async function ({store}) {
     else params = query(uuid)
     const token = store.state.authToken
     const res = await api({}, 'get', token, { params })
-    store.commit('SET_TICKETS', res.data.data.tickets)
+    let tickets = res.data.data.tickets
+    tickets = tickets.map(el => {
+      el.createDate = el.answers[0]
+      const lastItem = el.answers.length - 1
+      el.lastMessage = el.answers[lastItem]
+      return el
+    })
+    store.commit('SET_TICKETS', tickets)
   }
 }

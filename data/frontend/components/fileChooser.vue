@@ -1,10 +1,10 @@
 <template>
  <section>
-  <v-layout class="relative" v-show="!imageData.image" row>
-      <v-text-field
-      label="Seleccione una imagen"
-      prepend-icon="attach_file"
-      v-model="imageData.url"></v-text-field>
+  <v-layout v-show="!imageData.image" row>
+      <v-btn @click="pickFile" dark color="primary">
+        <v-icon left>camera</v-icon>
+        Imagen
+      </v-btn> 
       <input
         type="file"
         style="display: none"
@@ -12,7 +12,6 @@
         accept="image/*"
         @change="onFilePicked"
       >
-      <div class="activator" @click="pickFile"></div>
   </v-layout>
   <v-layout row v-show="imageData.image">
     <div class="image-container" :style="`background-image: url(${imageData.image})`">
@@ -89,16 +88,6 @@
   }
 </script>
 <style scoped>
-    .relative {
-      position: relative
-    }
-  .activator {
-    position: absolute;
-    top: 0;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-  }
   .center-flex {
     width: 100%;
     height: 100%;

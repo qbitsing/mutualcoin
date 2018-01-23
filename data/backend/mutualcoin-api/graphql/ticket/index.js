@@ -12,12 +12,11 @@ module.exports = {
   Ticket: `
     type Ticket {
       subjet: String
-      body: String
-      file: String
+      id: Int
       state: String
-      date: String
       answers: [Answer]
       user: String
+      _user: User
     }
 
     type Answer {
@@ -68,6 +67,7 @@ module.exports = {
         })
       }
       return result
-    }
+    },
+    getUser: ({ user }) => db.user.getUuid(user, null, true)
   })
 }

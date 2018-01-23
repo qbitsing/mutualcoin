@@ -8,17 +8,19 @@ function create(ticket) {
   const ticketToCreate = new TicketModel()
   
   ticketToCreate.subjet = ticket.subjet
-  ticketToCreate.body = ticket.body
-  ticketToCreate.file = ticket.file
   ticketToCreate.date = ticket.date
   ticketToCreate.user = ticket.user
-  ticketToCreate.answer = []
+  ticketToCreate.answer = [{
+    body: ticket.body,
+    file: ticket.file,
+    date: ticket.date,
+    from: 'user'
+  }]
   ticketToCreate.state = 'opened'
   return ticketToCreate.save()
 }
 
 async function answer(uuid, response, user) {
-  isAdmin(user)
   let { answers, _id, state } = await TicketModel.findOne({ uuid })
 
   if (!_id) {
@@ -31,6 +33,7 @@ async function answer(uuid, response, user) {
 
   if (response.from === 'admin') {
     state = 'responsed'
+    isAdmin(user)
   } else { 
     state = 'customer-reply'
   }

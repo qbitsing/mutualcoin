@@ -12,7 +12,7 @@
           slot="items"
           scope="props">
           <tr @click="redirect(props.item.uuid)">
-            <td class="text-xs-center">{{ props.item.issue}}</td>
+            <td class="text-xs-center">{{ props.item.subjet}}</td>
             <td class="text-xs-center">
               <v-chip color="secondary" text-color="white">{{props.item.state}}</v-chip>
             </td>
@@ -63,6 +63,7 @@
   import MutualDialog from '~/components/dialog.vue'
   import FileChooser from '~/components/fileChooser.vue'
   import api from '~/plugins/axios'
+  import {mapState} from 'vuex'
   import mutation from '~/plugins/mutations/ticketAdd'
   moment.locale('es')
   export default {
@@ -81,17 +82,10 @@
         inputRules: [(v) => !!v || 'Este campo es requerido.'],
         propsDialog: {title: 'Abrir ticket', state: false},
         ticketsHeader: [
-          {text: 'Asunto', align: 'center', value: 'issue'},
+          {text: 'Asunto', align: 'center', value: 'subjet'},
           {text: 'Estado', align: 'center', value: 'state'},
-          {text: 'Ultimo Mensaje', align: 'center', value: 'lastMessage'}
-        ],
-        tickets: [
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'}
+          {text: 'Fecha de Creacion', align: 'center', value: 'dateCreate'},
+          {text: 'Fecha Último mensaje', align: 'center', value: 'dateLastMessage'}
         ]
       }
     },
@@ -132,8 +126,9 @@
         this.$router.push({path: `/panel/user/ticket/${uuid}`})
       }
     },
-    layout: 'dashboard',
     middleware: ['auth', 'tickets'],
+    computed: mapState(['tickets']),
+    layout: 'dashboard',
     created () {
       this.$store.commit('TITLE_VIEW', 'Tickets')
     }

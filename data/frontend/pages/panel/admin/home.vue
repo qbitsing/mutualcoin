@@ -9,7 +9,7 @@ export default {
   middleware: 'auth',
   data () {
     return {
-      message: 'ola'
+      message: 'Hola'
     }
   },
   created () {
