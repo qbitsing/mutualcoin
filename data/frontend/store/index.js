@@ -16,6 +16,7 @@ export const state = () => ({
     cancel: null,
     finished: null
   },
+  tickets: null,
   blocksUser: null,
   inversion: null,
   userInversions: null
@@ -35,6 +36,9 @@ export const mutations = {
   },
   TITLE_VIEW: (state, title) => {
     state.titleView = title
+  },
+  SET_TICKETS: (state, tickets) => {
+    state.tickets = tickets
   },
   SET_USER_INVERSIONS: (state, userInversions) => {
     state.userInversions = userInversions
