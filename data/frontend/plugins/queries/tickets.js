@@ -3,10 +3,8 @@ module.exports = (uuid) => {
     query: `{
   tickets${uuid ? '(user: "' + uuid + '")' : ' '}{
     subjet
-    body
-    file
+    id
     state
-    date
     answers {
       body
       file
@@ -14,6 +12,9 @@ module.exports = (uuid) => {
       from
     }
     user
+    _user {
+      nickname
+    }
   }
 }`
   }

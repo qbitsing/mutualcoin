@@ -16,7 +16,8 @@
             <td class="text-xs-center">
               <v-chip color="secondary" text-color="white">{{props.item.state}}</v-chip>
             </td>
-            <td class="text-xs-center">{{ props.item.lastMessage}}</td>
+            <td class="text-xs-center">{{props.item.createDate}}</td>
+            <td class="text-xs-center">{{props.item.lastMessage}}</td>
           </tr>  
         </template>
         <template slot="no-data">
@@ -110,8 +111,11 @@
           } catch (e) {
             swal('Ooops...', 'Network error.', 'error')
           }
-          console.log(res)
-          if (res.data.data.result) {
+          let ticket = res.data.data.result
+          if (ticket) {
+            ticket.createDate = ticket.answers[0].date
+            ticket.lastMessage = ticket.answers[0].date
+            this.tickets.unshift(ticket)
             swal('Excelente', 'Ticket creado con éxito', 'success')
           } else {
             swal('Ooops...', 'Error inesperado al crear ticket', 'error')
