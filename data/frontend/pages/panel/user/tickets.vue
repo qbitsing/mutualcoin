@@ -122,7 +122,7 @@
       }
     },
     layout: 'dashboard',
-    middlewae: 'auth',
+    middleware: 'auth',
     created () {
       this.$store.commit('TITLE_VIEW', 'Tickets')
     }
