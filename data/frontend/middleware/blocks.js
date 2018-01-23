@@ -9,8 +9,6 @@ export default async function ({route, store}) {
     need = ['active', 'waiting', 'running', 'paused']
   } else if (path[2] === 'oferta') {
     need = ['active']
-  } else {
-    need = ['active']
   }
   let have = []
   for (const key in store.state.blocks) {

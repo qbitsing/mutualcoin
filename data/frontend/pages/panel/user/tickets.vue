@@ -12,7 +12,7 @@
           slot="items"
           scope="props">
           <tr @click="redirect(props.item.uuid)">
-            <td class="text-xs-center">{{ props.item.issue}}</td>
+            <td class="text-xs-center">{{ props.item.subjet}}</td>
             <td class="text-xs-center">
               <v-chip color="secondary" text-color="white">{{props.item.state}}</v-chip>
             </td>
@@ -58,10 +58,12 @@
   </v-container>
 </template>
 <script>
+  import swal from 'sweetalert2'
   import moment from 'moment'
   import MutualDialog from '~/components/dialog.vue'
   import FileChooser from '~/components/fileChooser.vue'
   import api from '~/plugins/axios'
+  import {mapState} from 'vuex'
   import mutation from '~/plugins/mutations/ticketAdd'
   moment.locale('es')
   export default {
@@ -80,17 +82,10 @@
         inputRules: [(v) => !!v || 'Este campo es requerido.'],
         propsDialog: {title: 'Abrir ticket', state: false},
         ticketsHeader: [
-          {text: 'Asunto', align: 'center', value: 'issue'},
+          {text: 'Asunto', align: 'center', value: 'subjet'},
           {text: 'Estado', align: 'center', value: 'state'},
-          {text: 'Ultimo Mensaje', align: 'center', value: 'lastMessage'}
-        ],
-        tickets: [
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'}
+          {text: 'Fecha de Creacion', align: 'center', value: 'dateCreate'},
+          {text: 'Fecha Último mensaje', align: 'center', value: 'dateLastMessage'}
         ]
       }
     },
@@ -109,8 +104,18 @@
             data.imageUrl = this.imageData.url
           }
           const token = this.$store.state.authToken
-          const res = await api(mutation(data), 'post', token)
+          let res
+          try {
+            res = await api(mutation(data), 'post', token)
+          } catch (e) {
+            swal('Ooops...', 'Network error.', 'error')
+          }
           console.log(res)
+          if (res.data.data.result) {
+            swal('Excelente', 'Ticket creado con éxito', 'success')
+          } else {
+            swal('Ooops...', 'Error inesperado al crear ticket', 'error')
+          }
         }
       },
       clear () {
@@ -121,8 +126,9 @@
         this.$router.push({path: `/panel/user/ticket/${uuid}`})
       }
     },
+    middleware: ['auth', 'tickets'],
+    computed: mapState(['tickets']),
     layout: 'dashboard',
-    middlewae: 'auth',
     created () {
       this.$store.commit('TITLE_VIEW', 'Tickets')
     }

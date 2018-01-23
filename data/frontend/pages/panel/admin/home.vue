@@ -6,10 +6,10 @@
 <script>
 export default {
   layout: 'dashboard',
-  middleware: ['auth'],
+  middleware: 'auth',
   data () {
     return {
-      message: 'ola'
+      message: 'Hola'
     }
   },
   created () {
