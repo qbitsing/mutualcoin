@@ -1,22 +1,20 @@
 'use strict'
 
-const mongosse = require('mongoose')
 const ticketSchema = require('../models/ticket')
 const { isAdmin } = require('mutualcoin-utils')
 let TicketModel
 
-async function create(ticket) {
+function create(ticket) {
   const ticketToCreate = new TicketModel()
-
-  ticketToCreate.subject = ticket.subject
+  
+  ticketToCreate.subjet = ticket.subjet
   ticketToCreate.body = ticket.body
   ticketToCreate.file = ticket.file
   ticketToCreate.date = ticket.date
   ticketToCreate.user = ticket.user
   ticketToCreate.answer = []
   ticketToCreate.state = 'opened'
-
-  return await ticketToCreate.save()
+  return ticketToCreate.save()
 }
 
 async function answer(uuid, response, user) {
@@ -61,7 +59,7 @@ function getActives(user, login) {
 }
 
 module.exports = function (db) { 
-  TicketModel = mongosse.model('ticket', ticketSchema)
+  TicketModel = db.model('ticket', ticketSchema)
 
   const ticketMethods = {}
   ticketMethods.create = create
