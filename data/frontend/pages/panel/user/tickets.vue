@@ -97,6 +97,7 @@
     methods: {
       async submit () {
         if (this.$refs.ticket.validate()) {
+          console.log('make')
           const date = moment().format('MM/DD/YYYY, h:mm a')
           let data = {
             date,

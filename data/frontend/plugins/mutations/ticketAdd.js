@@ -1,7 +1,7 @@
 module.exports = (data) => {
   return {
     query: `mutation{
-    result: tickerAdd (ticket: {
+    result: ticketAdd (ticket: {
     subjet: "${data.issue}"
     body: "${data.body}"
     ${data.imageUrl ? 'file: "' + data.imageUrl + '"' : ''}
