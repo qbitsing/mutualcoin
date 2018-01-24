@@ -10,7 +10,7 @@ function create(ticket) {
   ticketToCreate.subjet = ticket.subjet
   ticketToCreate.date = ticket.date
   ticketToCreate.user = ticket.user
-  ticketToCreate.answer = [{
+  ticketToCreate.answers = [{
     body: ticket.body,
     file: ticket.file,
     date: ticket.date,

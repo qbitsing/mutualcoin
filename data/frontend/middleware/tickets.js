@@ -9,12 +9,12 @@ export default async function ({store}) {
     const token = store.state.authToken
     const res = await api({}, 'get', token, { params })
     let tickets = res.data.data.tickets
-    tickets = tickets.map(el => {
-      el.createDate = el.answers[0]
+    tickets.forEach(el => {
+      el.createDate = el.answers[0].date
       const lastItem = el.answers.length - 1
-      el.lastMessage = el.answers[lastItem]
-      return el
+      el.lastMessage = el.answers[lastItem].date
     })
+    console.log(tickets)
     store.commit('SET_TICKETS', tickets)
   }
 }

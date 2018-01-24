@@ -43,23 +43,17 @@
         issue: '',
         inputRules: [(v) => !!v || 'Este campo es requerido.'],
         ticketsHeader: [
+          {text: 'Nickname', align: 'center', value: 'issue'},
           {text: 'Asunto', align: 'center', value: 'issue'},
           {text: 'Estado', align: 'center', value: 'state'},
           {text: 'Ultimo Mensaje', align: 'center', value: 'lastMessage'}
-        ],
-        tickets: [
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'},
-          {issue: 'My Awesome Title', lastMessage: '17/09/2017', state: 'Abierto', uuid: 'adasd'}
         ]
+  
       }
     },
     layout: 'dashboard',
-    middleware: 'auth',
-    computed: mapState(['authToken']),
+    middleware: ['auth', 'tickets'],
+    computed: mapState(['authToken', 'tickets']),
     created () {
       this.$store.commit('TITLE_VIEW', 'Tickets')
     }

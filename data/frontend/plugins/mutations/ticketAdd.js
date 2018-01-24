@@ -7,20 +7,21 @@ module.exports = (data) => {
     ${data.imageUrl ? 'file: "' + data.imageUrl + '"' : ''}
     date: "${data.date}"
     user: "${data.uuid}"
-  }) {
-    subjet
-    body
-    file
-    state
-    date
-    answers {
-      body
-      file
-      date
-      from
+    }) {
+      subjet
+      id
+      state
+      answers {
+        body
+        file
+        date
+        from
+      }
+      user
+      _user {
+        nickname
+      }
     }
-    user
-  }
   }`
   }
 }
