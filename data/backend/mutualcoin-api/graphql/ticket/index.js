@@ -53,10 +53,10 @@ module.exports = {
       }
       return result
     },
-    ticketAnswer: async (_, { uuid, respose }, { user }) => {
+    ticketAnswer: async (_, { uuid, response }, { user }) => {
       let result
       try {
-        result = await db.ticket.answer(uuid, respose, user)
+        result = await db.ticket.answer(uuid, response, user)
       } catch (error) {
         throw error
       }

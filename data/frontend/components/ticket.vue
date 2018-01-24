@@ -3,26 +3,26 @@
     <v-form ref="message" v-model="valid">
         <v-card>
           <v-card-title class="mutual-title">
-            <h2>Asunto: My Awsome Issue</h2>
+            <h2>Asunto: {{ticket.subjet}}</h2>
           </v-card-title>
           <v-container class="messages" ref="chat">
-            <v-layout row v-for="message in messages" :key="message.uuid" :justify-end="user ? message.admin : !message.admin" class="message">
+            <v-layout row v-for="message in ticket.answers" :key="message.uuid" :justify-end="user ? message.from === 'admin' : message.from === 'user'" class="message">
               <v-flex xs11 sm9 md7>
                 <v-card flat :color="message.admin ? 'blue lighten-2' : 'amber lighten-2'">
                   <v-layout row>
                     <v-card-title class="no-padding-bottom">
-                      <h3>{{message.admin ? 'Admin' : 'User'}}</h3>
+                      <h3 class="message-title">{{message.from}}</h3>
                     </v-card-title>
                   </v-layout>
                   <v-layout row>
-                    <v-flex xs3 v-if="message.imageBase64" @click="showImage(message.imageBase64)">
+                    <v-flex xs3 v-if="message.file" @click="showImage(message.file)">
                       <div class="image-container">
-                      <div class="message-image" :style="'background-image: url('+ message.imageBase64 + ')'"></div>
+                      <div class="message-image" :style="'background-image: url('+ message.file + ')'"></div>
                       </div>
                     </v-flex>
-                    <v-flex :xs9="message.imageBase64 ? true : false" :xs12="message.imageBase64 ? false : true">
+                    <v-flex :xs9="message.file ? true : false" :xs12="message.file ? false : true">
                       <v-card-text>
-                        {{message.message}}
+                        {{message.body}}
                       </v-card-text>
                     </v-flex>
                   </v-layout>
@@ -43,7 +43,7 @@
             <file-chooser :imageData="imageData"></file-chooser>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="ask">Responder</v-btn>
+            <v-btn color="primary" :disabled="imageData.loading" @click="answer">Responder</v-btn>
             <v-btn color="warning">Cerrar Ticket</v-btn>
           </v-card-actions>
         </v-card>
@@ -54,8 +54,11 @@
   </section>
 </template>
 <script>
+  import mutation from '~/plugins/mutations/answer'
   import FileChooser from '~/components/fileChooser.vue'
   import moment from 'moment'
+  import swal from 'sweetalert2'
+  import api from '~/plugins/axios'
   moment.locale('es')
   export default {
     components: {FileChooser},
@@ -65,42 +68,55 @@
         dialog: false,
         modalImage: '',
         imageData: {
-          imageName: null
+          url: null,
+          loading: false,
+          image: null
         },
         message: null
       }
     },
     props: {
-      messages: {
-        type: Array,
+      ticket: {
+        type: Object,
         required: true
       },
       user: Boolean
     },
     methods: {
-      ask () {
+      async answer () {
         if (this.$refs.message.validate()) {
           let message = {
-            message: this.message,
-            admin: false,
-            uuid: 'messageuuid',
-            date: moment().calendar()
+            body: this.message,
+            id: this.ticket.id,
+            date: moment().format('MM/DD/YYYY, h:mm a'),
+            from: this.user ? 'user' : 'admin'
           }
-          if (this.imageData.imageBase64) {
-            message.imageBase64 = this.imageData.imageBase64
+          if (this.imageData.url) {
+            message.file = this.imageData.url
           }
-          console.log(this.user)
-          this.messages.unshift(message)
-          this.$refs.message.reset()
-          console.log(this.imageData.imageBase64)
-          this.imageData = {
-            imageName: ''
+          try {
+            const res = await api(mutation(message), 'post', this.$store.state.authToken)
+            if (res.data.data.errors) {
+              swal('Ooops...', 'Error al responder.', 'error')
+            }
+            console.log(res)
+            this.clear()
+          } catch (e) {
+            swal('Ooops...', 'Error al responder.', 'error')
           }
         }
       },
       showImage (image) {
         this.modalImage = image
         this.dialog = true
+      },
+      clear () {
+        this.$refs.message.reset()
+        this.imageData = {
+          url: null,
+          loading: false,
+          image: null
+        }
       }
     },
     mounted () {
@@ -121,6 +137,9 @@
 </style>
 
 <style scoped>
+  .message-title {
+    text-transform: capitalize;
+  }
   .message-image {
     height: 100%;
     transition: .3s;

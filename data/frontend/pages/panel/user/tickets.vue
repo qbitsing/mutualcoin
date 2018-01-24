@@ -11,7 +11,7 @@
         <template
           slot="items"
           scope="props">
-          <tr @click="redirect(props.item.uuid)">
+          <tr @click="redirect(props.item.id)">
             <td class="text-xs-center">{{ props.item.subjet}}</td>
             <td class="text-xs-center">
               <v-chip color="secondary" text-color="white">{{props.item.state}}</v-chip>

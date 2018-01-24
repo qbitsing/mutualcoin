@@ -14,7 +14,6 @@ export default async function ({store}) {
       const lastItem = el.answers.length - 1
       el.lastMessage = el.answers[lastItem].date
     })
-    console.log(tickets)
     store.commit('SET_TICKETS', tickets)
   }
 }
