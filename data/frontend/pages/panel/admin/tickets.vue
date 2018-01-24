@@ -11,8 +11,9 @@
         <template
           slot="items"
           scope="props">
-          <tr @click="redirect(props.item.uuid)">
-            <td class="text-xs-center">{{ props.item.issue}}</td>
+          <tr @click="redirect(props.item.id)">
+            <td class="text-xs-center">{{ props.item._user.nickname}}</td>
+            <td class="text-xs-center">{{ props.item.subjet}}</td>
             <td class="text-xs-center">
               <v-chip color="secondary" text-color="white">{{props.item.state}}</v-chip>
             </td>
@@ -49,6 +50,11 @@
           {text: 'Ultimo Mensaje', align: 'center', value: 'lastMessage'}
         ]
   
+      }
+    },
+    methods: {
+      redirect (uuid) {
+        this.$router.push({path: `/panel/admin/ticket/${uuid}`})
       }
     },
     layout: 'dashboard',
