@@ -5,9 +5,11 @@ module.exports = (data) => {
         body: "${data.body}"
         from: "${data.from}"
         date: "${data.date}"
+        ${data.file ? 'file: "' + data.file + '"' : ''}
       }) {
         answers {
           body
+          file
         }
       }
     }`

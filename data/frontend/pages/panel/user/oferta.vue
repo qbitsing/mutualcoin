@@ -15,7 +15,7 @@ export default {
   middleware: ['auth', 'blocks'],
   components: {MutualBloque},
   layout: 'dashboard',
-  computed: mapState(['userInversions', 'blocks']),
+  computed: mapState(['userInversions', 'blocks', 'tickets']),
   created () {
     this.$store.commit('TITLE_VIEW', 'Oferta')
     realTime(this)

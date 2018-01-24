@@ -288,7 +288,7 @@ export default {
     this.loadData()
     this.$store.commit('TITLE_VIEW', 'Perfil')
   },
-  computed: mapState(['authUser', 'authToken', 'blocks', 'userInversions'])
+  computed: mapState(['authUser', 'authToken', 'blocks', 'userInversions', 'tickets'])
 }
 </script>
 <style scoped>

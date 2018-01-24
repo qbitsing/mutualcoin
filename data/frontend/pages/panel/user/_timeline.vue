@@ -162,7 +162,7 @@ export default {
   middleware: ['auth', 'userInversions', 'setInversion'],
   layout: 'dashboard',
   computed: {
-    ...mapState(['inversion', 'blocks', 'userInversions']),
+    ...mapState(['inversion', 'userInversions', 'blocks', 'tickets']),
     payItems () {
       return this.inversion.pays.filter(e => e.week === this.nowWeek)
     },

@@ -12,7 +12,7 @@ import realTime from '~/plugins/userRealTime'
 export default {
   layout: 'dashboard',
   middleware: 'auth',
-  computed: mapState(['blocks', 'userInversions']),
+  computed: mapState(['userInversions', 'blocks', 'tickets']),
   created () {
     realTime(this)
   },

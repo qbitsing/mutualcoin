@@ -131,7 +131,7 @@
       }
     },
     middleware: ['auth', 'tickets'],
-    computed: mapState(['tickets']),
+    computed: mapState(['userInversions', 'blocks', 'tickets']),
     layout: 'dashboard',
     created () {
       this.$store.commit('TITLE_VIEW', 'Tickets')

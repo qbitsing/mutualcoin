@@ -126,6 +126,18 @@ export default async function (self) {
         }
       })
     }
+    if (self.tickets) {
+      client.emit('suscribe', 'ticket/response')
+      client.removeListener('ticket/response')
+      client.on('ticket/response', res => {
+        self.tickets.forEach(e => {
+          if (e.id === res.id) {
+            const newAnswer = res.answers.slice(-1)[0]
+            e.answers.push(newAnswer)
+          }
+        })
+      })
+    }
   }
 }
 

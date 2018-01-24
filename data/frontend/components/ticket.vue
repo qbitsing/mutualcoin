@@ -43,7 +43,7 @@
             <file-chooser :imageData="imageData"></file-chooser>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" :disabled="imageData.loading" @click="answer">Responder</v-btn>
+            <v-btn color="primary" :loading="loading" :disabled="imageData.loading" @click="answer">Responder</v-btn>
             <v-btn color="warning">Cerrar Ticket</v-btn>
           </v-card-actions>
         </v-card>
@@ -54,16 +54,18 @@
   </section>
 </template>
 <script>
-  import mutation from '~/plugins/mutations/answer'
   import FileChooser from '~/components/fileChooser.vue'
   import moment from 'moment'
+  import mutation from '~/plugins/mutations/answer'
   import swal from 'sweetalert2'
+  import socket from '~/plugins/socket'
   import api from '~/plugins/axios'
   moment.locale('es')
   export default {
     components: {FileChooser},
     data () {
       return {
+        loading: false,
         valid: false,
         dialog: false,
         modalImage: '',
@@ -94,12 +96,14 @@
           if (this.imageData.url) {
             message.file = this.imageData.url
           }
+          // console.log(mutation(message))
           try {
+            this.loading = true
             const res = await api(mutation(message), 'post', this.$store.state.authToken)
+            this.loading = false
             if (res.data.data.errors) {
               swal('Ooops...', 'Error al responder.', 'error')
             }
-            console.log(res)
             this.clear()
           } catch (e) {
             swal('Ooops...', 'Error al responder.', 'error')
@@ -117,10 +121,38 @@
           loading: false,
           image: null
         }
+      },
+      async realTime () {
+        const client = await socket().catch((err) => {
+          console.error(`Error en la conexion con el servidor en tiempo real: ${err.message}`)
+        })
+        if (client.connected) {
+          client.emit('suscribe', 'ticket/response')
+          client.removeListener('ticket/response')
+          client.on('ticket/response', async (e) => {
+            if (e.id === this.ticket.id) {
+              const newMessage = e.answers.slice(-1)[0]
+              this.ticket.answers.push(newMessage)
+              try {
+                const chat = await this.$refs.chat
+                chat.scrollTo(0, this.$refs.chat.scrollHeight)
+              } catch (e) {
+                console.log(e.message)
+                console.log(e.stack)
+              }
+            }
+          })
+        }
       }
     },
     mounted () {
       this.$refs.chat.scrollTo(0, this.$refs.chat.scrollHeight)
+    },
+    // destroyed() {
+
+    // },
+    created () {
+      this.realTime()
     }
   }
 </script>

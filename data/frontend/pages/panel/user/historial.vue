@@ -18,7 +18,7 @@ export default {
   components: { MutualBloqueHistorial },
   layout: 'dashboard',
   middleware: ['auth', 'userInversions'],
-  computed: mapState(['userInversions', 'blocks']),
+  computed: mapState(['userInversions', 'blocks', 'tickets']),
   beforeMount () {
     this.$store.commit('TITLE_VIEW', 'Historial')
   }

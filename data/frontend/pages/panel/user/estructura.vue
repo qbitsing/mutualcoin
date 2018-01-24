@@ -140,7 +140,7 @@
   import api from '~/plugins/axios'
   export default {
     middleware: 'auth',
-    computed: mapState(['authUser', 'authToken', 'blocks', 'userInversions']),
+    computed: mapState(['authUser', 'authToken', 'blocks', 'userInversions', 'tickets']),
     layout: 'dashboard',
     components: {MutualLoader},
     data () {

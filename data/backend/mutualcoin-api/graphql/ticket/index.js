@@ -62,7 +62,7 @@ module.exports = {
       }
       if (result) {
         socket({
-          payload: 'ticket/response',
+          topic: 'ticket/response',
           body: result
         })
       }
