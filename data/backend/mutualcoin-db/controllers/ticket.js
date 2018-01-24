@@ -20,8 +20,8 @@ function create(ticket) {
   return ticketToCreate.save()
 }
 
-async function answer(uuid, response, user) {
-  let { answers, _id, state } = await TicketModel.findOne({ uuid })
+async function answer(id, response, user) {
+  let { answers, _id, state } = await TicketModel.findOne({ id })
 
   if (!_id) {
     throw new Error('Bad request: the specified ticket does not exist')
