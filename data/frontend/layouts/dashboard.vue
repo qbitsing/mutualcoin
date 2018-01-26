@@ -110,7 +110,7 @@
             class="elevation-1">
             <template 
               slot="items"
-              scope="props">
+              scope="props">shopping_cart
               <td>{{ props.item.name }}</td>
               <td class="text-xs-right">{{ props.item.acronym }}</td>
               <td class="text-xs-right"><v-btn small color="warning" dark @click="editarMoneda(props.item)">editar</v-btn></td>
@@ -119,6 +119,10 @@
         </section>
         
       </mutual-dialog>
+      <v-badge left>
+      <span slot="badge">6</span>
+      <v-icon>textsms</v-icon>
+    </v-badge>
       <v-menu 
         offset-y
         origin="center center"

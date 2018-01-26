@@ -121,7 +121,6 @@ export default async function (self) {
             const token = self.$store.state.authToken
             const blockRes = await api({}, 'get', token, { params: blockByUuid(res.uuid) })
             self.blocks.active.unshift(blockRes.data.data.block)
-            console.log(self.blocks.active)
           }
         }
       })

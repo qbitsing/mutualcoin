@@ -25,7 +25,8 @@ import {
   VTabs,
   VChip,
   VDatePicker,
-  VDivider
+  VDivider,
+  VBadge
 } from 'vuetify'
 
 Vue.use(Vuetify, {
@@ -63,6 +64,7 @@ Vue.use(Vuetify, {
     VTabs,
     VChip,
     VDatePicker,
-    VDivider
+    VDivider,
+    VBadge
   }
 })

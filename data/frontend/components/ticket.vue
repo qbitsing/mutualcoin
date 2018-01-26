@@ -8,7 +8,7 @@
           <v-container class="messages" ref="chat">
             <v-layout row v-for="message in ticket.answers" :key="message.uuid" :justify-end="user ? message.from === 'admin' : message.from === 'user'" class="message">
               <v-flex xs11 sm9 md7>
-                <v-card flat :color="message.admin ? 'blue lighten-2' : 'amber lighten-2'">
+                <v-card flat :color="message.from == 'admin' ? 'blue lighten-2' : 'amber lighten-2'">
                   <v-layout row>
                     <v-card-title class="no-padding-bottom">
                       <h3 class="message-title">{{message.from}}</h3>
@@ -65,6 +65,7 @@
     components: {FileChooser},
     data () {
       return {
+        newMessage: false,
         loading: false,
         valid: false,
         dialog: false,
@@ -84,6 +85,17 @@
       },
       user: Boolean
     },
+    updated () {
+      if (this.newMessage) {
+        try {
+          this.$refs.chat.scrollTo(0, this.$refs.chat.scrollHeight)
+          this.newMessage = false
+        } catch (e) {
+          console.log(e.message)
+          console.log(e.stack)
+        }
+      }
+    },
     methods: {
       async answer () {
         if (this.$refs.message.validate()) {
@@ -96,7 +108,6 @@
           if (this.imageData.url) {
             message.file = this.imageData.url
           }
-          // console.log(mutation(message))
           try {
             this.loading = true
             const res = await api(mutation(message), 'post', this.$store.state.authToken)
@@ -129,28 +140,25 @@
         if (client.connected) {
           client.emit('suscribe', 'ticket/response')
           client.removeListener('ticket/response')
-          client.on('ticket/response', async (e) => {
+          client.on('ticket/response', (e) => {
             if (e.id === this.ticket.id) {
               const newMessage = e.answers.slice(-1)[0]
+              this.newMessage = true
               this.ticket.answers.push(newMessage)
-              try {
-                const chat = await this.$refs.chat
-                chat.scrollTo(0, this.$refs.chat.scrollHeight)
-              } catch (e) {
-                console.log(e.message)
-                console.log(e.stack)
-              }
             }
           })
         }
       }
     },
     mounted () {
-      this.$refs.chat.scrollTo(0, this.$refs.chat.scrollHeight)
+      try {
+        this.$refs.chat.scrollTo(0, this.$refs.chat.scrollHeight)
+      } catch (e) {
+        console.log(e.message)
+        console.log(e.stack)
+      }
     },
-    // destroyed() {
 
-    // },
     created () {
       this.realTime()
     }
