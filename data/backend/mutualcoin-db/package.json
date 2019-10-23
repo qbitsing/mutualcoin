@@ -17,7 +17,7 @@
     "debug": "^3.1.0",
     "decimal": "0.0.2",
     "defaults": "^1.0.3",
-    "mongoose": "^4.13.6",
+    "mongoose": "^5.7.5",
     "mutualcoin-utils": "file:../utils",
     "simple-mongoose-autoincrement": "^1.2.1",
     "uuid": "^3.1.0"
