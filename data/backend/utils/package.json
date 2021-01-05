@@ -15,7 +15,7 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/dinastia/mutualcoin#readme",
   "dependencies": {
-    "axios": "^0.17.1",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "bignumber.js": "^5.0.0",
     "decimal": "0.0.2",
