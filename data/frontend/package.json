@@ -21,7 +21,7 @@
     "graphql": "^0.12.3",
     "graphql-tag": "^2.6.1",
     "js-cookie": "^2.2.0",
-    "moment": "^2.20.1",
+    "moment": "^2.29.2",
     "nuxt": "^1.0.0-rc11",
     "socket.io-client": "^2.0.4",
     "sweetalert2": "^7.0.9",
