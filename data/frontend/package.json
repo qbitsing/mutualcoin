@@ -22,7 +22,7 @@
     "graphql-tag": "^2.6.1",
     "js-cookie": "^2.2.0",
     "moment": "^2.20.1",
-    "nuxt": "^1.0.0-rc11",
+    "nuxt": "^3.0.0",
     "socket.io-client": "^2.0.4",
     "sweetalert2": "^7.0.9",
     "vuetify": "^0.17.4",
@@ -33,13 +33,13 @@
     "babel-plugin-transform-imports": "^1.4.1",
     "eslint": "^4.3.0",
     "eslint-config-standard": "^10.2.1",
-    "eslint-loader": "^1.9.0",
+    "eslint-loader": "^4.0.2",
     "eslint-plugin-html": "^3.1.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "stylus": "^0.54.5",
-    "stylus-loader": "^3.0.1"
+    "stylus-loader": "^7.1.0"
   }
 }
